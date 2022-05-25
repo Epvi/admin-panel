@@ -1,0 +1,15 @@
+.appContainer{
+  /* border: 3px solid red; */
+  min-height: 100vh;
+  min-width: 100vw;
+  display: flex;
+  padding: 0.5rem;
+  /* overflow: hidden; */
+  position: relative;
+  
+}
+
+
+.heading{
+  text-align: center;
+}
