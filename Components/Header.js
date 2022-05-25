@@ -10,7 +10,6 @@ const Header = () => {
 
   const [,, isMenuOpen, setIsMenuOpen] = useContext(AppContext)
 
-  console.log(isMenuOpen, setIsMenuOpen);
 
   return (
     <div className={styles.headerContainer} >
