@@ -68,6 +68,6 @@
 @media (min-width:500px) {
   .navbarContainer{
     position: relative;
-    transform: translateX(0%);
+    transform: translateX(0%) !important;
   }
 }

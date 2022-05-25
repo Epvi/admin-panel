@@ -11,7 +11,7 @@ const AppContext = createContext()
 const App = () => {
 
   const [selectedIconIndex, setSelectedIconIndex] = useState(0)
-  const [isMenuOpen, setIsMenuOpen] = useState(true)
+  const [isMenuOpen, setIsMenuOpen] = useState(false)
 
 
 
