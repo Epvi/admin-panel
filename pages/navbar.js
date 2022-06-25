@@ -17,28 +17,29 @@ import ListItemButton from "@mui/material/ListItemButton";
 import ListItemIcon from "@mui/material/ListItemIcon";
 import ListItemText from "@mui/material/ListItemText";
 import InboxIcon from "@mui/icons-material/MoveToInbox";
-import MailIcon from '@mui/icons-material/Mail';
-import DraftsIcon from '@mui/icons-material/Drafts';
-import StarIcon from '@mui/icons-material/Star';
+import MailIcon from "@mui/icons-material/Mail";
+import DraftsIcon from "@mui/icons-material/Drafts";
+import StarIcon from "@mui/icons-material/Star";
 import TextField from "@mui/material/TextField";
 import Avatar from "@mui/material/Avatar";
 import NotificationsIcon from "@mui/icons-material/Notifications";
 import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
 import SearchIcon from "@mui/icons-material/Search";
-import dynamic from 'next/dynamic'
-import SendIcon from '@mui/icons-material/Send';
-import InsightsIcon from '@mui/icons-material/Insights';
-import MonetizationOnIcon from '@mui/icons-material/MonetizationOn';
-import AddPhotoAlternateIcon from '@mui/icons-material/AddPhotoAlternate';
-import InstagramIcon from '@mui/icons-material/Instagram';
-import ContactPageIcon from '@mui/icons-material/ContactPage';
-import SettingsApplicationsIcon from '@mui/icons-material/SettingsApplications';
-import AdminPanelSettingsIcon from '@mui/icons-material/AdminPanelSettings';
-import IntegrationInstructionsIcon from '@mui/icons-material/IntegrationInstructions';
+import dynamic from "next/dynamic";
+import SendIcon from "@mui/icons-material/Send";
+import InsightsIcon from "@mui/icons-material/Insights";
+import MonetizationOnIcon from "@mui/icons-material/MonetizationOn";
+import AddPhotoAlternateIcon from "@mui/icons-material/AddPhotoAlternate";
+import InstagramIcon from "@mui/icons-material/Instagram";
+import ContactPageIcon from "@mui/icons-material/ContactPage";
+import SettingsApplicationsIcon from "@mui/icons-material/SettingsApplications";
+import AdminPanelSettingsIcon from "@mui/icons-material/AdminPanelSettings";
+import IntegrationInstructionsIcon from "@mui/icons-material/IntegrationInstructions";
 
-const Card = dynamic(() => import('../pages/cards'), {
+const Card = dynamic(() => import("../pages/cards"), {
   suspense: true,
-})
+});
+
 const drawerWidth = 240;
 
 const openedMixin = (theme) => ({
@@ -106,7 +107,7 @@ const Drawer = styled(MuiDrawer, {
   }),
 }));
 
-export default function MiniDrawer({user}) {
+export default function MiniDrawer({ user }) {
   const theme = useTheme();
   const [open, setOpen] = React.useState(false);
   const handleDrawerOpen = () => {
@@ -122,6 +123,7 @@ export default function MiniDrawer({user}) {
         <CssBaseline />
         <AppBar
           sx={{
+            boxShadow:"3px 4px 5px 3px #888888",
             backgroundColor: "#556cd6",
             color: "white",
             display: "flex",
@@ -143,13 +145,11 @@ export default function MiniDrawer({user}) {
                 alignItems: "center",
               },
             }}
-          > 
-          
-          
-               <Typography
+          >
+            <Typography
               sx={{
-                cursor:"pointer",
-                fontFamily: 'Poppins',
+                cursor: "pointer",
+                fontFamily: "Poppins",
                 marginRight: "75px",
                 "@media only screen  and (max-width: 730px)": {
                   margin: "15px",
@@ -161,35 +161,37 @@ export default function MiniDrawer({user}) {
             >
               EPVI Technologies
             </Typography>
-            <Toolbar sx={{
-                 "@media only screen  and (max-width: 730px)": {
-                    display:"flex",
-                    flexDirection:"row",
-                    margin:"10px",
-                  },
-            }}>
-            <TextField
+            <Toolbar
               sx={{
-                fontFamily: 'Poppins',
-                width: "25vw",
                 "@media only screen  and (max-width: 730px)": {
-                  width: "70vw",
-                },
-              }}
-              id="outlined-basic"
-              label="Search"
-              variant="outlined"
-            />
-            <SearchIcon
-              sx={{
-                cursor: "pointer",
-                marginLeft: "10px",
-                fontSize: "35px",
-                "@media only screen  and (max-width: 730px)": {
+                  display: "flex",
+                  flexDirection: "row",
                   margin: "10px",
                 },
               }}
-            />
+            >
+              <TextField
+                sx={{
+                  fontFamily: "Poppins",
+                  width: "25vw",
+                  "@media only screen  and (max-width: 730px)": {
+                    width: "70vw",
+                  },
+                }}
+                id="outlined-basic"
+                label="Search"
+                variant="outlined"
+              />
+              <SearchIcon
+                sx={{
+                  cursor: "pointer",
+                  marginLeft: "10px",
+                  fontSize: "35px",
+                  "@media only screen  and (max-width: 730px)": {
+                    margin: "10px",
+                  },
+                }}
+              />
             </Toolbar>
           </Toolbar>
           <Toolbar>
@@ -230,7 +232,6 @@ export default function MiniDrawer({user}) {
               marginTop: "60px",
               "@media only screen  and (max-width: 730px)": {
                 marginTop: "32vh",
-                
               },
             }}
           >
@@ -244,8 +245,8 @@ export default function MiniDrawer({user}) {
                 marginRight: "5px",
                 color: "black",
                 "@media only screen  and (max-width: 730px)": {
-                    marginRight:"0",
-                  },
+                  marginRight: "0",
+                },
               }}
             >
               <MenuIcon />
@@ -263,90 +264,107 @@ export default function MiniDrawer({user}) {
           </DrawerHeader>
           <Divider />
           <List>
-            {["Inbox", "Starred", "Send email", "Drafts"].map((text, index) => (
-               (user==="admin"||user==="support") ?<ListItem key={text} disablePadding sx={{ display: "block" }}>
-                <ListItemButton
-                  sx={{
-                    minHeight: 48,
-                    justifyContent: open ? "initial" : "center",
-                    px: 2.5,
-                  }}
-                >
-                  <ListItemIcon
+            {["Inbox", "Starred", "Send email", "Drafts"].map((text, index) =>
+              user === "admin" || user === "support" ? (
+                <ListItem key={text} disablePadding sx={{ display: "block" }}>
+                  <ListItemButton
                     sx={{
-                      minWidth: 0,
-                      mr: open ? 3 : "auto",
-                      justifyContent: "center",
+                      minHeight: 48,
+                      justifyContent: open ? "initial" : "center",
+                      px: 2.5,
                     }}
                   >
-                    {index === 0 ? <InboxIcon /> :null}  
-                    {index === 1 ? <StarIcon /> :null}  
-                    {index === 2 ? <SendIcon /> :null}  
-                    {index === 3 ? <DraftsIcon /> :null}  
-                  </ListItemIcon>
-                  <ListItemText primary={text} sx={{ opacity: open ? 1 : 0 }} />
-                </ListItemButton>
-              </ListItem>:null
-            ))}
-            {["Insights", "Sales", "Advertisement", "Reach"].map((text, index) => (
-               (user==="admin"||user==="marketing") ?<ListItem key={text} disablePadding sx={{ display: "block" }}>
-                <ListItemButton
-                  sx={{
-                    minHeight: 48,
-                    justifyContent: open ? "initial" : "center",
-                    px: 2.5,
-                  }}
-                >
-                  <ListItemIcon
-                    sx={{
-                      minWidth: 0,
-                      mr: open ? 3 : "auto",
-                      justifyContent: "center",
-                    }}
-                  >
-                    {index === 0 ? <InsightsIcon /> :null}  
-                    {index === 1 ? <MonetizationOnIcon /> :null}  
-                    {index === 2 ? <AddPhotoAlternateIcon /> :null}  
-                    {index === 3 ? <InstagramIcon /> :null} 
-                  </ListItemIcon>
-                  <ListItemText primary={text} sx={{ opacity: open ? 1 : 0 }} />
-                </ListItemButton>
-              </ListItem>:null
-            ))}
-            {["Settings", "Users", "Authentication", "Source Code"].map((text, index) => (
-               (user==="admin"||user==="developer") ?<ListItem key={text} disablePadding sx={{ display: "block" }}>
-                <ListItemButton
-                  sx={{
-                    minHeight: 48,
-                    justifyContent: open ? "initial" : "center",
-                    px: 2.5,
-                  }}
-                >
-                  <ListItemIcon
-                    sx={{
-                      minWidth: 0,
-                      mr: open ? 3 : "auto",
-                      justifyContent: "center",
-                    }}
-                  >
-                   {index === 0 ? <SettingsApplicationsIcon /> :null}  
-                    {index === 1 ? <ContactPageIcon /> :null}  
-                    {index === 2 ? <AdminPanelSettingsIcon /> :null}  
-                    {index === 3 ? <IntegrationInstructionsIcon /> :null} 
-                  </ListItemIcon>
-                  <ListItemText primary={text} sx={{ opacity: open ? 1 : 0 }} />
-                </ListItemButton>
-              </ListItem>:null
-            ))}
+                    <ListItemIcon
+                      sx={{
+                        minWidth: 0,
+                        mr: open ? 3 : "auto",
+                        justifyContent: "center",
+                      }}
+                    >
+                      {index === 0 ? <InboxIcon /> : null}
+                      {index === 1 ? <StarIcon /> : null}
+                      {index === 2 ? <SendIcon /> : null}
+                      {index === 3 ? <DraftsIcon /> : null}
+                    </ListItemIcon>
+                    <ListItemText
+                      primary={text}
+                      sx={{ opacity: open ? 1 : 0 }}
+                    />
+                  </ListItemButton>
+                </ListItem>
+              ) : null
+            )}
+            {["Insights", "Sales", "Advertisement", "Reach"].map(
+              (text, index) =>
+                user === "admin" || user === "marketing" ? (
+                  <ListItem key={text} disablePadding sx={{ display: "block" }}>
+                    <ListItemButton
+                      sx={{
+                        minHeight: 48,
+                        justifyContent: open ? "initial" : "center",
+                        px: 2.5,
+                      }}
+                    >
+                      <ListItemIcon
+                        sx={{
+                          minWidth: 0,
+                          mr: open ? 3 : "auto",
+                          justifyContent: "center",
+                        }}
+                      >
+                        {index === 0 ? <InsightsIcon /> : null}
+                        {index === 1 ? <MonetizationOnIcon /> : null}
+                        {index === 2 ? <AddPhotoAlternateIcon /> : null}
+                        {index === 3 ? <InstagramIcon /> : null}
+                      </ListItemIcon>
+                      <ListItemText
+                        primary={text}
+                        sx={{ opacity: open ? 1 : 0 }}
+                      />
+                    </ListItemButton>
+                  </ListItem>
+                ) : null
+            )}
+            {["Settings", "Users", "Authentication", "Source Code"].map(
+              (text, index) =>
+                user === "admin" || user === "developer" ? (
+                  <ListItem key={text} disablePadding sx={{ display: "block" }}>
+                    <ListItemButton
+                      sx={{
+                        minHeight: 48,
+                        justifyContent: open ? "initial" : "center",
+                        px: 2.5,
+                      }}
+                    >
+                      <ListItemIcon
+                        sx={{
+                          minWidth: 0,
+                          mr: open ? 3 : "auto",
+                          justifyContent: "center",
+                        }}
+                      >
+                        {index === 0 ? <SettingsApplicationsIcon /> : null}
+                        {index === 1 ? <ContactPageIcon /> : null}
+                        {index === 2 ? <AdminPanelSettingsIcon /> : null}
+                        {index === 3 ? <IntegrationInstructionsIcon /> : null}
+                      </ListItemIcon>
+                      <ListItemText
+                        primary={text}
+                        sx={{ opacity: open ? 1 : 0 }}
+                      />
+                    </ListItemButton>
+                  </ListItem>
+                ) : null
+            )}
           </List>
         </Drawer>
         <DrawerHeader />
-        <Box component="main" sx={{width:"94%",
-      display:"flex",
-      flexDirection:"row",
-      marginTop:"60px",}} >
+        <Box
+          // component="main"
+          sx={{ width: "98%", overflow:"hidden", marginTop: "60px" }}
+        >
+          <Card />
           
-          <Card/>
         </Box>
       </Box>
     </>
