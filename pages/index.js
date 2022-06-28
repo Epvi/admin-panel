@@ -5,12 +5,9 @@ import { app, database } from '../firebaseConfig';
 import { collection, addDoc, getDocs } from 'firebase/firestore';
 
 const user = "admin";
-const Navbar = dynamic(() => import('../pages/navbar'), {
+const Login = dynamic(() => import('../pages/login'), {
   suspense: true,
 })
-
-
-
 const index = () => {
   const [usersArray, setUsersArray] = useState([]);
   const dbInstance = collection(database, 'Users');
@@ -19,7 +16,7 @@ const index = () => {
     getDocs(dbInstance)
         .then((data) => {
             setUsersArray(data.docs.map((item) => {
-              console.log({ ...item.data(), id: item.id});
+              // console.log({ ...item.data(), id: item.id});
               return { ...item.data(), id: item.id};
             }));
         })
@@ -35,10 +32,10 @@ const index = () => {
     <Head>
       <title>EPVI - Managing Electricity wisely</title>
     </Head>
-    <Navbar user={user}/>
-    {usersArray.map((userData, key) => <p key={key}>{userData.name}</p>)}
+    <h2 style={{textAlign:"center",margin:"30px 0"}}>Welcome to EPVI</h2>
+    <Login/>
     </>
   )
 }
 
-export default index
+export default index 

@@ -17,8 +17,8 @@ import ListItemButton from "@mui/material/ListItemButton";
 import ListItemIcon from "@mui/material/ListItemIcon";
 import ListItemText from "@mui/material/ListItemText";
 import InboxIcon from "@mui/icons-material/MoveToInbox";
-import MailIcon from "@mui/icons-material/Mail";
-import DraftsIcon from "@mui/icons-material/Drafts";
+import Router from "next/router"
+import { unauthenticateUser } from "../auth/userlogin"
 import StarIcon from "@mui/icons-material/Star";
 import TextField from "@mui/material/TextField";
 import Avatar from "@mui/material/Avatar";
@@ -35,7 +35,7 @@ import ContactPageIcon from "@mui/icons-material/ContactPage";
 import SettingsApplicationsIcon from "@mui/icons-material/SettingsApplications";
 import AdminPanelSettingsIcon from "@mui/icons-material/AdminPanelSettings";
 import IntegrationInstructionsIcon from "@mui/icons-material/IntegrationInstructions";
-
+import LogoutIcon from '@mui/icons-material/Logout';
 const Card = dynamic(() => import("../pages/cards"), {
   suspense: true,
 });
@@ -116,6 +116,15 @@ export default function MiniDrawer({ user }) {
   const handleDrawerClose = () => {
     setOpen(false);
   };
+  const handleOnClick=()=>{
+   
+      // logs the user out and redirects to home page
+      unauthenticateUser()
+      Router.push('/')
+    return <p>Logging out...</p>
+    
+  }
+
 
   return (
     <>
@@ -263,8 +272,8 @@ export default function MiniDrawer({ user }) {
             </IconButton>
           </DrawerHeader>
           <Divider />
-          <List>
-            {["Inbox", "Starred", "Send email", "Drafts"].map((text, index) =>
+          <List >
+            {["Inbox", "Starred", "Send email"].map((text, index) =>
               user === "admin" || user === "support" ? (
                 <ListItem key={text} disablePadding sx={{ display: "block" }}>
                   <ListItemButton
@@ -284,7 +293,6 @@ export default function MiniDrawer({ user }) {
                       {index === 0 ? <InboxIcon /> : null}
                       {index === 1 ? <StarIcon /> : null}
                       {index === 2 ? <SendIcon /> : null}
-                      {index === 3 ? <DraftsIcon /> : null}
                     </ListItemIcon>
                     <ListItemText
                       primary={text}
@@ -355,6 +363,34 @@ export default function MiniDrawer({ user }) {
                     </ListItemButton>
                   </ListItem>
                 ) : null
+            )}
+            {["Logout"].map(
+              (text, index) =>
+                  <ListItem onClick={handleOnClick} key={text} disablePadding sx={{ display: "block" }}>
+                    <ListItemButton
+                      sx={{
+                        minHeight: 48,
+                        justifyContent: open ? "initial" : "center",
+                        px: 2.5,
+                      }}
+                    >
+                      <ListItemIcon
+                        sx={{
+                          minWidth: 0,
+                          mr: open ? 3 : "auto",
+                          justifyContent: "center",
+                        }}
+                      >
+                        <LogoutIcon/>
+                        
+                      </ListItemIcon>
+                      <ListItemText
+                        primary={text}
+                        sx={{ opacity: open ? 1 : 0 }}
+                      />
+                    </ListItemButton>
+                  </ListItem>
+                
             )}
           </List>
         </Drawer>
