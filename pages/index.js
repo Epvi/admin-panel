@@ -4,7 +4,7 @@ import Head from 'next/head'
 import { app, database } from '../firebaseConfig';
 import { collection, addDoc, getDocs } from 'firebase/firestore';
 
-const user = "admin";
+
 const Login = dynamic(() => import('../pages/login'), {
   suspense: true,
 })
@@ -26,13 +26,12 @@ const index = () => {
   useEffect(() => {
     getUsers();
   }, [])
-
+  
   return (
     <>
     <Head>
       <title>EPVI - Managing Electricity wisely</title>
     </Head>
-    <h2 style={{textAlign:"center",margin:"30px 0"}}>Welcome to EPVI</h2>
     <Login/>
     </>
   )

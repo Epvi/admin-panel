@@ -7,7 +7,7 @@ const Table = dynamic(() => import("../pages/tables"), {
 });
 export default function SimpleContainer() {
   return (
-    <React.Fragment>
+      <>
       <Box sx={{ display:"flex",
       flexDirection:"row",
       width:"inherit",
@@ -97,6 +97,6 @@ export default function SimpleContainer() {
       </Box>
       </Box>
       <Table/>
-    </React.Fragment>
+    </>
   );
 }

@@ -17,8 +17,7 @@ import ListItemButton from "@mui/material/ListItemButton";
 import ListItemIcon from "@mui/material/ListItemIcon";
 import ListItemText from "@mui/material/ListItemText";
 import InboxIcon from "@mui/icons-material/MoveToInbox";
-import Router from "next/router"
-import { unauthenticateUser } from "../auth/userlogin"
+import Router from "next/router";
 import StarIcon from "@mui/icons-material/Star";
 import TextField from "@mui/material/TextField";
 import Avatar from "@mui/material/Avatar";
@@ -35,7 +34,9 @@ import ContactPageIcon from "@mui/icons-material/ContactPage";
 import SettingsApplicationsIcon from "@mui/icons-material/SettingsApplications";
 import AdminPanelSettingsIcon from "@mui/icons-material/AdminPanelSettings";
 import IntegrationInstructionsIcon from "@mui/icons-material/IntegrationInstructions";
-import LogoutIcon from '@mui/icons-material/Logout';
+import LogoutIcon from "@mui/icons-material/Logout";
+import { useAuth } from "../auth/AuthContext";
+
 const Card = dynamic(() => import("../pages/cards"), {
   suspense: true,
 });
@@ -107,8 +108,10 @@ const Drawer = styled(MuiDrawer, {
   }),
 }));
 
-export default function MiniDrawer({ user }) {
+export default function MiniDrawer({ userRole }) {
   const theme = useTheme();
+  // const state = useCount();
+  const { logout } = useAuth();
   const [open, setOpen] = React.useState(false);
   const handleDrawerOpen = () => {
     setOpen(true);
@@ -116,23 +119,20 @@ export default function MiniDrawer({ user }) {
   const handleDrawerClose = () => {
     setOpen(false);
   };
-  const handleOnClick=()=>{
-   
-      // logs the user out and redirects to home page
-      unauthenticateUser()
-      Router.push('/')
-    return <p>Logging out...</p>
-    
-  }
-
+  const handleOnClick = () => {
+    // logs the user out and redirects to home page
+    logout();
+    Router.push("/");
+    return <p>Logging out...</p>;
+  };
 
   return (
     <>
-      <Box sx={{ display: "flex" }}>
+      <Box sx={{ display: "flex", backgroundColor: "white" }}>
         <CssBaseline />
         <AppBar
           sx={{
-            boxShadow:"3px 4px 5px 3px #888888",
+            boxShadow: "3px 4px 5px 3px #888888",
             backgroundColor: "#556cd6",
             color: "white",
             display: "flex",
@@ -272,9 +272,9 @@ export default function MiniDrawer({ user }) {
             </IconButton>
           </DrawerHeader>
           <Divider />
-          <List >
+          <List sx={{ backgroundColor: "white" }}>
             {["Inbox", "Starred", "Send email"].map((text, index) =>
-              user === "admin" || user === "support" ? (
+              userRole === "admin" || userRole === "support" ? (
                 <ListItem key={text} disablePadding sx={{ display: "block" }}>
                   <ListItemButton
                     sx={{
@@ -304,7 +304,7 @@ export default function MiniDrawer({ user }) {
             )}
             {["Insights", "Sales", "Advertisement", "Reach"].map(
               (text, index) =>
-                user === "admin" || user === "marketing" ? (
+                userRole === "admin" || userRole === "marketing" ? (
                   <ListItem key={text} disablePadding sx={{ display: "block" }}>
                     <ListItemButton
                       sx={{
@@ -335,7 +335,7 @@ export default function MiniDrawer({ user }) {
             )}
             {["Settings", "Users", "Authentication", "Source Code"].map(
               (text, index) =>
-                user === "admin" || user === "developer" ? (
+                userRole === "admin" || userRole === "developer" ? (
                   <ListItem key={text} disablePadding sx={{ display: "block" }}>
                     <ListItemButton
                       sx={{
@@ -364,43 +364,46 @@ export default function MiniDrawer({ user }) {
                   </ListItem>
                 ) : null
             )}
-            {["Logout"].map(
-              (text, index) =>
-                  <ListItem onClick={handleOnClick} key={text} disablePadding sx={{ display: "block" }}>
-                    <ListItemButton
-                      sx={{
-                        minHeight: 48,
-                        justifyContent: open ? "initial" : "center",
-                        px: 2.5,
-                      }}
-                    >
-                      <ListItemIcon
-                        sx={{
-                          minWidth: 0,
-                          mr: open ? 3 : "auto",
-                          justifyContent: "center",
-                        }}
-                      >
-                        <LogoutIcon/>
-                        
-                      </ListItemIcon>
-                      <ListItemText
-                        primary={text}
-                        sx={{ opacity: open ? 1 : 0 }}
-                      />
-                    </ListItemButton>
-                  </ListItem>
-                
-            )}
+            {["Logout"].map((text, index) => (
+              <ListItem
+                onClick={handleOnClick}
+                key={text}
+                disablePadding
+                sx={{ display: "block" }}
+              >
+                <ListItemButton
+                  sx={{
+                    minHeight: 48,
+                    justifyContent: open ? "initial" : "center",
+                    px: 2.5,
+                  }}
+                >
+                  <ListItemIcon
+                    sx={{
+                      minWidth: 0,
+                      mr: open ? 3 : "auto",
+                      justifyContent: "center",
+                    }}
+                  >
+                    <LogoutIcon />
+                  </ListItemIcon>
+                  <ListItemText primary={text} sx={{ opacity: open ? 1 : 0 }} />
+                </ListItemButton>
+              </ListItem>
+            ))}
           </List>
         </Drawer>
         <DrawerHeader />
         <Box
           // component="main"
-          sx={{ width: "98%", overflow:"hidden", marginTop: "60px" }}
+          sx={{
+            width: "98%",
+            overflow: "hidden",
+            marginTop: "60px",
+            backgroundColor: "white",
+          }}
         >
           <Card />
-          
         </Box>
       </Box>
     </>
