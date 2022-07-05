@@ -1,14 +1,9 @@
 import React from 'react'
-import dynamic from 'next/dynamic'
 import Router from 'next/router'
 import { useEffect, useState, useContext } from 'react'
 // import { useCount } from '../src/reducer'
-import { useAuth } from '../src/AuthContext';
-
-
-const Navbar = dynamic(() => import('../pages/navbar'), {
-    suspense: true,
-  })
+import { useAuth } from '../auth/AuthContext';
+import Navbar from "../pages/navbar"
   const userRole = "admin";
   
   const home = () => {

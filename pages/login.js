@@ -1,4 +1,4 @@
-import React, { useContext, useEffect } from "react";
+import React, { useEffect } from "react";
 import Router from "next/router";
 import { useFormik } from "formik";
 import * as yup from "yup";
@@ -8,7 +8,7 @@ import "../firebaseConfig";
 import { auth } from "../firebaseConfig";
 // import { useCount } from "../src/reducer";
 import { signInWithEmailAndPassword } from "firebase/auth";
-import { useAuth } from '../src/AuthContext';
+import { useAuth } from '../auth/AuthContext';
 
 import Link from "next/link";
 

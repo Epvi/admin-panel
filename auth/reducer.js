@@ -1,20 +1,31 @@
 import * as React from 'react'
+import { database } from '../firebaseConfig';
+import { collection,onSnapshot } from 'firebase/firestore';
 
+const colRef = collection(database,'customerComplaint');
 const CountContext = React.createContext()
-function countReducer(state, action) {
+function userReducer(state, action) {
   switch (action.type) {
-    case 'loggedin': {
-      return {state , user:action.payload}
-    }
-    case 'loggedout':{
-        return state
+    case'GETTING':
+            return {...state };
+    case 'SUCCESS':
+            return { ...state,user: action.payload};
     }
   }
+  function getData(dispatch,arr){
+    dispatch({ type: 'GETTING', payload: {} })
+  onSnapshot(colRef,(snapshot)=>{
+      snapshot.docs.forEach((doc)=>{
+          arr.push({...doc.data(),id: doc.id})
+  }) 
+  dispatch({ type: 'SUCCESS', payload: arr })
+  console.log(arr);
+  // createData(arr);
+  })
 }
-
 function StateProvider({children}) {
-  const initialState =  { user: {} }
-  const [state, dispatch] = React.useReducer(countReducer, initialState)
+  const initialState =  { arr: [] }
+  const [state, dispatch] = React.useReducer(userReducer, initialState)
   // NOTE: you *might* need to memoize this value
   // Learn more in http://kcd.im/optimize-context
   const value = {state, dispatch}
@@ -29,4 +40,4 @@ function useCount() {
   return context
 }
 
-export {StateProvider, useCount}
+export {StateProvider, useCount, getData}

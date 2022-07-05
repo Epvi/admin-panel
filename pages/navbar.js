@@ -24,7 +24,6 @@ import Avatar from "@mui/material/Avatar";
 import NotificationsIcon from "@mui/icons-material/Notifications";
 import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
 import SearchIcon from "@mui/icons-material/Search";
-import dynamic from "next/dynamic";
 import SendIcon from "@mui/icons-material/Send";
 import InsightsIcon from "@mui/icons-material/Insights";
 import MonetizationOnIcon from "@mui/icons-material/MonetizationOn";
@@ -36,10 +35,7 @@ import AdminPanelSettingsIcon from "@mui/icons-material/AdminPanelSettings";
 import IntegrationInstructionsIcon from "@mui/icons-material/IntegrationInstructions";
 import LogoutIcon from "@mui/icons-material/Logout";
 import { useAuth } from "../auth/AuthContext";
-
-const Card = dynamic(() => import("../pages/cards"), {
-  suspense: true,
-});
+import Card from "../pages/cards"
 
 const drawerWidth = 240;
 
@@ -125,6 +121,10 @@ export default function MiniDrawer({ userRole }) {
     Router.push("/");
     return <p>Logging out...</p>;
   };
+  const handleClickOne = (index)=>{
+    if(index===0)
+     Router.push('/home/customercomplaint')
+  }
 
   return (
     <>
@@ -273,9 +273,9 @@ export default function MiniDrawer({ userRole }) {
           </DrawerHeader>
           <Divider />
           <List sx={{ backgroundColor: "white" }}>
-            {["Inbox", "Starred", "Send email"].map((text, index) =>
+            {[ "Customer Complaint","Inbox", "Send email"].map((text, index) =>
               userRole === "admin" || userRole === "support" ? (
-                <ListItem key={text} disablePadding sx={{ display: "block" }}>
+                <ListItem onClick={() => handleClickOne(index)} key={text} disablePadding sx={{ display: "block" }}>
                   <ListItemButton
                     sx={{
                       minHeight: 48,
