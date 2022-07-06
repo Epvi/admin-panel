@@ -39,6 +39,7 @@ export default function CustomizedTables() {
   const complaint = [];
   useEffect(()=>{
     getData(dispatch,complaint);
+       // eslint-disable-next-line react-hooks/exhaustive-deps
    },[])
   return (
     <>
