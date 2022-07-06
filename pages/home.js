@@ -1,9 +1,9 @@
-import React from 'react'
-import Router from 'next/router'
-import { useEffect, useState, useContext } from 'react'
+import React from 'react';
+import Router from 'next/router';
+import { useEffect, useState, useContext } from 'react';
 // import { useCount } from '../src/reducer'
 import { useAuth } from '../auth/AuthContext';
-import Navbar from "../pages/navbar"
+import CustomerComplaint from "./home/customercomplaint";
   const userRole = "admin";
   
   const home = () => {
@@ -19,11 +19,10 @@ import Navbar from "../pages/navbar"
     },[]);
   if (loading) return <p>Loading...</p>
 
-
+    console.log('working')
   return (
     <>
-     
-    { currentUser && <Navbar userRole={userRole}/>}
+    {/* { currentUser && <Layout userRole={userRole}/>} */}
      
     </>
   )
