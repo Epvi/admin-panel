@@ -36,8 +36,7 @@ import AdminPanelSettingsIcon from "@mui/icons-material/AdminPanelSettings";
 import IntegrationInstructionsIcon from "@mui/icons-material/IntegrationInstructions";
 import LogoutIcon from "@mui/icons-material/Logout";
 import { useAuth } from "../auth/AuthContext";
-import Card from "../pages/cards"
-import CustomizedTables from "./home/customercomplaint";
+// import Card from "../pages/cards"
 
 const drawerWidth = 240;
 
@@ -106,36 +105,34 @@ const Drawer = styled(MuiDrawer, {
   }),
 }));
 
-export default function MiniDrawer({ userRole }) {
-  
-  const theme = useTheme();
+export default function Layout({ userRole, children }) {
   // const state = useCount();
-  const { logout } = useAuth();
-  const [open, setOpen] = useState(false);
-  // const [flag, setFlag] = useState(0)
-  const handleDrawerOpen = () => {
-    setOpen(true);
-  };
-  const handleDrawerClose = () => {
-    setOpen(false);
-  };
-  const handleOnClick = () => {
-    // logs the user out and redirects to home page
-    logout();
-    Router.push("/");
-    return <p>Logging out...</p>;
-  };
-  const handleClickOne = (index)=>{
-    if(index===0)
-    Router.push('/home/customercomplaint')
-      //  setFlag(1);
-     
-  }
 
   return (
     <>
       <Box sx={{ display: "flex", backgroundColor: "white" }}>
         <CssBaseline />
+        <NavBar userRole={userRole} children={children}/>
+        <SideDrawer userRole={userRole}/>
+        <Box
+          sx={{
+            width: "98%",
+            overflow: "hidden",
+            marginTop: "60px",
+            backgroundColor: "white",
+          }}
+        >
+          {children }
+        </Box>
+      </Box>
+
+    </>
+  );
+}
+
+function NavBar() {
+  const [open, setOpen] = React.useState(false);
+  return <>
         <AppBar
           sx={{
             boxShadow: "3px 4px 5px 3px #888888",
@@ -241,178 +238,196 @@ export default function MiniDrawer({ userRole }) {
             />
           </Toolbar>
         </AppBar>
-        <Drawer variant="permanent" open={open}>
-          <DrawerHeader
-            sx={{
-              marginTop: "60px",
-              "@media only screen  and (max-width: 730px)": {
-                marginTop: "32vh",
-              },
-            }}
-          >
-            <IconButton
-              color="inherit"
-              aria-label="open drawer"
-              onClick={handleDrawerOpen}
-              edge="start"
+</>
+}
+
+function SideDrawer({userRole}) {
+  const theme = useTheme();
+  // const state = useCount();
+  const { logout } = useAuth();
+  const [open, setOpen] = React.useState(false);
+
+  const handleDrawerOpen = () => {
+    setOpen(true);
+  };
+  const handleDrawerClose = () => {
+    setOpen(false);
+  };
+  const handleOnClick = () => {
+    // logs the user out and redirects to home page
+    logout();
+    Router.push("/");
+    return <p>Logging out...</p>;
+  };
+  const handleClickOne = (index)=>{
+    if(index===0)
+     Router.push('/customercomplaint')
+    
+  }
+ 
+  
+
+  return (
+    <>
+    <Drawer variant="permanent" open={open}>
+    <DrawerHeader
+      sx={{
+        marginTop: "60px",
+        "@media only screen  and (max-width: 730px)": {
+          marginTop: "32vh",
+        },
+      }}
+    >
+      <IconButton
+        color="inherit"
+        aria-label="open drawer"
+        onClick={handleDrawerOpen}
+        edge="start"
+        sx={{
+          ...(open && { display: "none" }),
+          marginRight: "5px",
+          color: "black",
+          "@media only screen  and (max-width: 730px)": {
+            marginRight: "0",
+          },
+        }}
+      >
+        <MenuIcon />
+      </IconButton>
+      <IconButton
+        sx={open ? { display: "block" } : { display: "none" }}
+        onClick={handleDrawerClose}
+      >
+        {theme.direction === "ltl" ? (
+          <ChevronRightIcon />
+        ) : (
+          <ChevronLeftIcon />
+        )}
+      </IconButton>
+    </DrawerHeader>
+    <Divider />
+    <List sx={{ backgroundColor: "white" }}>
+      {[ "Customer Complaint","Inbox", "Send email"].map((text, index) =>
+        userRole === "admin" || userRole === "support" ? (
+          <ListItem onClick={() => handleClickOne(index)} key={text} disablePadding sx={{ display: "block" }}>
+            <ListItemButton
               sx={{
-                ...(open && { display: "none" }),
-                marginRight: "5px",
-                color: "black",
-                "@media only screen  and (max-width: 730px)": {
-                  marginRight: "0",
-                },
+                minHeight: 48,
+                justifyContent: open ? "initial" : "center",
+                px: 2.5,
               }}
             >
-              <MenuIcon />
-            </IconButton>
-            <IconButton
-              sx={open ? { display: "block" } : { display: "none" }}
-              onClick={handleDrawerClose}
-            >
-              {theme.direction === "ltl" ? (
-                <ChevronRightIcon />
-              ) : (
-                <ChevronLeftIcon />
-              )}
-            </IconButton>
-          </DrawerHeader>
-          <Divider />
-          <List sx={{ backgroundColor: "white" }}>
-            {[ "Customer Complaint","Inbox", "Send email"].map((text, index) =>
-              userRole === "admin" || userRole === "support" ? (
-                <ListItem onClick={() => handleClickOne(index)} key={text} disablePadding sx={{ display: "block" }}>
-                  <ListItemButton
-                    sx={{
-                      minHeight: 48,
-                      justifyContent: open ? "initial" : "center",
-                      px: 2.5,
-                    }}
-                  >
-                    <ListItemIcon
-                      sx={{
-                        minWidth: 0,
-                        mr: open ? 3 : "auto",
-                        justifyContent: "center",
-                      }}
-                    >
-                      {index === 0 ? <InboxIcon /> : null}
-                      {index === 1 ? <StarIcon /> : null}
-                      {index === 2 ? <SendIcon /> : null}
-                    </ListItemIcon>
-                    <ListItemText
-                      primary={text}
-                      sx={{ opacity: open ? 1 : 0 }}
-                    />
-                  </ListItemButton>
-                </ListItem>
-              ) : null
-            )}
-            {["Insights", "Sales", "Advertisement", "Reach"].map(
-              (text, index) =>
-                userRole === "admin" || userRole === "marketing" ? (
-                  <ListItem key={text} disablePadding sx={{ display: "block" }}>
-                    <ListItemButton
-                      sx={{
-                        minHeight: 48,
-                        justifyContent: open ? "initial" : "center",
-                        px: 2.5,
-                      }}
-                    >
-                      <ListItemIcon
-                        sx={{
-                          minWidth: 0,
-                          mr: open ? 3 : "auto",
-                          justifyContent: "center",
-                        }}
-                      >
-                        {index === 0 ? <InsightsIcon /> : null}
-                        {index === 1 ? <MonetizationOnIcon /> : null}
-                        {index === 2 ? <AddPhotoAlternateIcon /> : null}
-                        {index === 3 ? <InstagramIcon /> : null}
-                      </ListItemIcon>
-                      <ListItemText
-                        primary={text}
-                        sx={{ opacity: open ? 1 : 0 }}
-                      />
-                    </ListItemButton>
-                  </ListItem>
-                ) : null
-            )}
-            {["Settings", "Users", "Authentication", "Source Code"].map(
-              (text, index) =>
-                userRole === "admin" || userRole === "developer" ? (
-                  <ListItem key={text} disablePadding sx={{ display: "block" }}>
-                    <ListItemButton
-                      sx={{
-                        minHeight: 48,
-                        justifyContent: open ? "initial" : "center",
-                        px: 2.5,
-                      }}
-                    >
-                      <ListItemIcon
-                        sx={{
-                          minWidth: 0,
-                          mr: open ? 3 : "auto",
-                          justifyContent: "center",
-                        }}
-                      >
-                        {index === 0 ? <SettingsApplicationsIcon /> : null}
-                        {index === 1 ? <ContactPageIcon /> : null}
-                        {index === 2 ? <AdminPanelSettingsIcon /> : null}
-                        {index === 3 ? <IntegrationInstructionsIcon /> : null}
-                      </ListItemIcon>
-                      <ListItemText
-                        primary={text}
-                        sx={{ opacity: open ? 1 : 0 }}
-                      />
-                    </ListItemButton>
-                  </ListItem>
-                ) : null
-            )}
-            {["Logout"].map((text, index) => (
-              <ListItem
-                onClick={handleOnClick}
-                key={text}
-                disablePadding
-                sx={{ display: "block" }}
+              <ListItemIcon
+                sx={{
+                  minWidth: 0,
+                  mr: open ? 3 : "auto",
+                  justifyContent: "center",
+                }}
               >
-                <ListItemButton
+                {index === 0 ? <InboxIcon /> : null}
+                {index === 1 ? <StarIcon /> : null}
+                {index === 2 ? <SendIcon /> : null}
+              </ListItemIcon>
+              <ListItemText
+                primary={text}
+                sx={{ opacity: open ? 1 : 0 }}
+              />
+            </ListItemButton>
+          </ListItem>
+        ) : null
+      )}
+      {["Insights", "Sales", "Advertisement", "Reach"].map(
+        (text, index) =>
+          userRole === "admin" || userRole === "marketing" ? (
+            <ListItem key={text} disablePadding sx={{ display: "block" }}>
+              <ListItemButton
+                sx={{
+                  minHeight: 48,
+                  justifyContent: open ? "initial" : "center",
+                  px: 2.5,
+                }}
+              >
+                <ListItemIcon
                   sx={{
-                    minHeight: 48,
-                    justifyContent: open ? "initial" : "center",
-                    px: 2.5,
+                    minWidth: 0,
+                    mr: open ? 3 : "auto",
+                    justifyContent: "center",
                   }}
                 >
-                  <ListItemIcon
-                    sx={{
-                      minWidth: 0,
-                      mr: open ? 3 : "auto",
-                      justifyContent: "center",
-                    }}
-                  >
-                    <LogoutIcon />
-                  </ListItemIcon>
-                  <ListItemText primary={text} sx={{ opacity: open ? 1 : 0 }} />
-                </ListItemButton>
-              </ListItem>
-            ))}
-          </List>
-        </Drawer>
-        <DrawerHeader />
-        <Box
-          // component="main"
-          sx={{
-            width: "98%",
-            overflow: "hidden",
-            marginTop: "60px",
-            backgroundColor: "white",
-          }}
+                  {index === 0 ? <InsightsIcon /> : null}
+                  {index === 1 ? <MonetizationOnIcon /> : null}
+                  {index === 2 ? <AddPhotoAlternateIcon /> : null}
+                  {index === 3 ? <InstagramIcon /> : null}
+                </ListItemIcon>
+                <ListItemText
+                  primary={text}
+                  sx={{ opacity: open ? 1 : 0 }}
+                />
+              </ListItemButton>
+            </ListItem>
+          ) : null
+      )}
+      {["Settings", "Users", "Authentication", "Source Code"].map(
+        (text, index) =>
+          userRole === "admin" || userRole === "developer" ? (
+            <ListItem key={text} disablePadding sx={{ display: "block" }}>
+              <ListItemButton
+                sx={{
+                  minHeight: 48,
+                  justifyContent: open ? "initial" : "center",
+                  px: 2.5,
+                }}
+              >
+                <ListItemIcon
+                  sx={{
+                    minWidth: 0,
+                    mr: open ? 3 : "auto",
+                    justifyContent: "center",
+                  }}
+                >
+                  {index === 0 ? <SettingsApplicationsIcon /> : null}
+                  {index === 1 ? <ContactPageIcon /> : null}
+                  {index === 2 ? <AdminPanelSettingsIcon /> : null}
+                  {index === 3 ? <IntegrationInstructionsIcon /> : null}
+                </ListItemIcon>
+                <ListItemText
+                  primary={text}
+                  sx={{ opacity: open ? 1 : 0 }}
+                />
+              </ListItemButton>
+            </ListItem>
+          ) : null
+      )}
+      {["Logout"].map((text, index) => (
+        <ListItem
+          onClick={handleOnClick}
+          key={text}
+          disablePadding
+          sx={{ display: "block" }}
         >
-          <Card />
-          {/* {flag===1?<CustomizedTables/>:null} */}
-        </Box>
-      </Box>
-    </>
-  );
+          <ListItemButton
+            sx={{
+              minHeight: 48,
+              justifyContent: open ? "initial" : "center",
+              px: 2.5,
+            }}
+          >
+            <ListItemIcon
+              sx={{
+                minWidth: 0,
+                mr: open ? 3 : "auto",
+                justifyContent: "center",
+              }}
+            >
+              <LogoutIcon />
+            </ListItemIcon>
+            <ListItemText primary={text} sx={{ opacity: open ? 1 : 0 }} />
+          </ListItemButton>
+        </ListItem>
+      ))}
+    </List>
+  </Drawer>
+  <DrawerHeader />
+  </>
+  )
 }

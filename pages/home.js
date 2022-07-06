@@ -3,13 +3,13 @@ import Router from 'next/router'
 import { useEffect, useState, useContext } from 'react'
 // import { useCount } from '../src/reducer'
 import { useAuth } from '../auth/AuthContext';
-import Navbar from "../pages/navbar"
+// import Navbar from "../pages/navbar"
+
   const userRole = "admin";
   
   const home = () => {
   const { currentUser } = useAuth()
 
-  // const {state,dispatch} = useCount()
   
   const [loading, setLoading] = useState(true)
   useEffect(() => {
@@ -23,7 +23,7 @@ import Navbar from "../pages/navbar"
   return (
     <>
      
-    { currentUser && <Navbar userRole={userRole}/>}
+    {/* { currentUser && <Navbar userRole={userRole}/>} */}
      
     </>
   )
