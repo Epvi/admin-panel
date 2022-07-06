@@ -6,7 +6,8 @@ import Button from "@material-ui/core/Button";
 import TextField from "@material-ui/core/TextField";
 import "../firebaseConfig";
 import { auth } from "../firebaseConfig";
-const forgotPassword = () => {
+
+const ForgotPassword = () => {
 
   const validationSchema = yup.object({
     email: yup
