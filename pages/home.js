@@ -1,15 +1,15 @@
-import React from 'react';
-import Router from 'next/router';
-import { useEffect, useState, useContext } from 'react';
+import React from 'react'
+import Router from 'next/router'
+import { useEffect, useState, useContext } from 'react'
 // import { useCount } from '../src/reducer'
 import { useAuth } from '../auth/AuthContext';
-import CustomerComplaint from "./home/customercomplaint";
+// import Navbar from "../pages/navbar"
+
   const userRole = "admin";
   
   const home = () => {
   const { currentUser } = useAuth()
 
-  // const {state,dispatch} = useCount()
   
   const [loading, setLoading] = useState(true)
   useEffect(() => {
@@ -19,10 +19,11 @@ import CustomerComplaint from "./home/customercomplaint";
     },[]);
   if (loading) return <p>Loading...</p>
 
-    console.log('working')
+
   return (
     <>
-    {/* { currentUser && <Layout userRole={userRole}/>} */}
+     
+    {/* { currentUser && <Navbar userRole={userRole}/>} */}
      
     </>
   )

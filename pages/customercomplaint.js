@@ -40,29 +40,30 @@ export default function CustomizedTables() {
    },[])
   return (
     <>
-    <h1 style={{textAlign:"center",marginTop:"20px"}}>Customer Complaints </h1>
-    <TableContainer component={Paper}>
+    <h1 style={{textAlign:"center",marginTop:"20px"}}>Customer Complaints</h1>
+    <TableContainer component={Paper} sx={{marginRight:"100px"}}>
       <Table aria-label="customized table">
         <TableHead>
           <TableRow>
             <StyledTableCell sx={{width:"5vw"}}align="center">Sr.</StyledTableCell>
-            <StyledTableCell sx={{width:"20vw"}}align="center">userID</StyledTableCell>
-            <StyledTableCell sx={{width:"20vw"}}align="center">Phone no.</StyledTableCell>
-            <StyledTableCell sx={{width:"20vw"}}align="center">Time</StyledTableCell>
+            <StyledTableCell sx={{width:"15vw"}}align="center">userID</StyledTableCell>
+            <StyledTableCell sx={{width:"15vw"}}align="center">Phone no.</StyledTableCell>
+            <StyledTableCell sx={{width:"15vw"}}align="center">Date</StyledTableCell>
             <StyledTableCell sx={{width:"35vw"}}align="center">Complaint Text</StyledTableCell>
+            <StyledTableCell sx={{width:"15vw"}}align="center">Status</StyledTableCell>
           </TableRow>
         </TableHead>
         <TableBody>
          {state.complaint?.map((row,index) => (
-                  
             <StyledTableRow key={row.id}>
               <StyledTableCell align="center" component="th" scope="row">
                 {index}
               </StyledTableCell>
               <StyledTableCell align="center">{row.userID}</StyledTableCell>
               <StyledTableCell align="center">{row.phoneNo}</StyledTableCell>
-              <StyledTableCell align="center">{row.id}</StyledTableCell>
+              <StyledTableCell align="center">{row.time.toDate().toString().slice(4,15)}</StyledTableCell>
               <StyledTableCell align="center">{row.complaintText}</StyledTableCell>
+              <StyledTableCell align="center">{row.status}</StyledTableCell>
             </StyledTableRow>
           ))}
         </TableBody>
