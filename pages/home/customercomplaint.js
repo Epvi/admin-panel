@@ -8,7 +8,7 @@ import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
 import {getData,useCount} from '../../auth/reducer'
-import { useEffect,useState } from 'react';
+import { useEffect} from 'react';
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
     [`&.${tableCellClasses.head}`]: {
@@ -30,28 +30,14 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
   },
 }));
 
-function createData(name,calories,fat,carbs,protein) {
-    
-  return { name, calories, fat, carbs, protein };
-}
-
-const rows = [
-//    arr.forEach(index => {
-//      createData(index,arr[index].userID,arr[index].phoneNo,arr[index].time,arr[index].complaint)
-//    }),
-  createData('Frozen yoghurt', 159, 6.0, 24, 4.0),
-  createData('Ice cream sandwich', 237, 9.0, 37, 4.3),
-  createData('Eclair', 262, 16.0, 24, 6.0),
-  createData('Cupcake', 305, 3.7, 67, 4.3),
-  createData('Gingerbread', 356, 16.0, 49, 3.9),
-];
 
 export default function CustomizedTables() {
-  const [arr,setArr] = useState([]);
-  const [state,dispatch] = useCount();
+  const {state,dispatch} = useCount();
+  
+  const complaint = [];
   useEffect(()=>{
-    getData(dispatch,setArr)
-  },[dispatch])
+    getData(dispatch,complaint);
+   },[])
   return (
     <>
     <h1 style={{textAlign:"center",marginTop:"20px"}}>Customer Complaints </h1>
@@ -59,23 +45,24 @@ export default function CustomizedTables() {
       <Table aria-label="customized table">
         <TableHead>
           <TableRow>
-            <StyledTableCell sx={{width:"2vw"}}align="left">Sr no.</StyledTableCell>
-            <StyledTableCell sx={{width:"10vw"}}align="left">userID</StyledTableCell>
-            <StyledTableCell sx={{width:"10vw"}}align="left">Phone no.</StyledTableCell>
-            <StyledTableCell sx={{width:"10vw"}}align="left">Time</StyledTableCell>
-            <StyledTableCell sx={{width:"20vw"}}align="left">Complaint</StyledTableCell>
+            <StyledTableCell sx={{width:"5vw"}}align="center">Sr.</StyledTableCell>
+            <StyledTableCell sx={{width:"20vw"}}align="center">userID</StyledTableCell>
+            <StyledTableCell sx={{width:"20vw"}}align="center">Phone no.</StyledTableCell>
+            <StyledTableCell sx={{width:"20vw"}}align="center">Time</StyledTableCell>
+            <StyledTableCell sx={{width:"35vw"}}align="center">Complaint Text</StyledTableCell>
           </TableRow>
         </TableHead>
         <TableBody>
-          {rows.map((row) => (
-            <StyledTableRow key={row.name}>
-              <StyledTableCell align="left" component="th" scope="row">
-                {row.name}
+         {state.complaint?.map((row,index) => (
+                  
+            <StyledTableRow key={row.id}>
+              <StyledTableCell align="center" component="th" scope="row">
+                {index}
               </StyledTableCell>
-              <StyledTableCell align="left">{row.calories}</StyledTableCell>
-              <StyledTableCell align="left">{row.fat}</StyledTableCell>
-              <StyledTableCell align="left">{row.carbs}</StyledTableCell>
-              <StyledTableCell align="left">{row.protein}</StyledTableCell>
+              <StyledTableCell align="center">{row.userID}</StyledTableCell>
+              <StyledTableCell align="center">{row.phoneNo}</StyledTableCell>
+              <StyledTableCell align="center">{row.id}</StyledTableCell>
+              <StyledTableCell align="center">{row.complaintText}</StyledTableCell>
             </StyledTableRow>
           ))}
         </TableBody>

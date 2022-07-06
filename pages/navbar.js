@@ -124,6 +124,7 @@ export default function MiniDrawer({ userRole }) {
   const handleClickOne = (index)=>{
     if(index===0)
      Router.push('/home/customercomplaint')
+     
   }
 
   return (

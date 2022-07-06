@@ -1,30 +1,30 @@
 import * as React from 'react'
 import { database } from '../firebaseConfig';
-import { collection,onSnapshot } from 'firebase/firestore';
+import { collection,getDocs } from 'firebase/firestore';
 
 const colRef = collection(database,'customerComplaint');
 const CountContext = React.createContext()
 function userReducer(state, action) {
   switch (action.type) {
     case'GETTING':
-            return {...state };
+            return {state };
     case 'SUCCESS':
-            return { ...state,user: action.payload};
+            return { complaint:action.payload};
     }
   }
-  function getData(dispatch,arr){
-    dispatch({ type: 'GETTING', payload: {} })
-  onSnapshot(colRef,(snapshot)=>{
-      snapshot.docs.forEach((doc)=>{
-          arr.push({...doc.data(),id: doc.id})
-  }) 
-  dispatch({ type: 'SUCCESS', payload: arr })
-  console.log(arr);
-  // createData(arr);
+   function getData(dispatch,complaint){
+    complaint=[];
+    dispatch({ type: 'GETTING', payload:[] })
+   getDocs(colRef)
+  .then((snapshot)=>{
+    snapshot.docs.forEach((doc)=>{
+      complaint.push({...doc.data(),id: doc.id})
+    })
+  dispatch({ type: 'SUCCESS', payload: complaint })
   })
 }
 function StateProvider({children}) {
-  const initialState =  { arr: [] }
+  const initialState =  [];
   const [state, dispatch] = React.useReducer(userReducer, initialState)
   // NOTE: you *might* need to memoize this value
   // Learn more in http://kcd.im/optimize-context

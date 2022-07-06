@@ -3,11 +3,7 @@ import dynamic from 'next/dynamic'
 import Head from 'next/head'
 import { app, database } from '../firebaseConfig';
 import { collection, addDoc, getDocs } from 'firebase/firestore';
-
-
-const Login = dynamic(() => import('../pages/login'), {
-  suspense: true,
-})
+import Login from './login'
 const index = () => {
   const [usersArray, setUsersArray] = useState([]);
   const dbInstance = collection(database, 'Users');
