@@ -256,7 +256,7 @@ function SideDrawer({userRole}) {
   const handleOnClick = () => {
     // logs the user out and redirects to home page
     logout();
-    Router.push("/");
+    Router.push("/login");
     return <p>Logging out...</p>;
   };
   const handleClickOne = (index)=>{

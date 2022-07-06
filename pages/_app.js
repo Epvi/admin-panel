@@ -17,7 +17,8 @@ const clientSideEmotionCache = createEmotionCache();
 export default function MyApp(props) {
   const { Component, emotionCache = clientSideEmotionCache, pageProps } = props;
   const userRole = "admin";
-
+  const getLayout = Component.getLayout || ((page) => page)
+  
   return (
     <CacheProvider value={emotionCache}>
       <ThemeProvider theme={theme}>
@@ -28,9 +29,9 @@ export default function MyApp(props) {
         </Head>
         <AuthProvider>
           <StateProvider>
-            <Layout userRole={userRole}>
-              <Component {...pageProps} />
-            </Layout>
+            {/* <Layout userRole={userRole}> */}
+              {getLayout(<Component {...pageProps} />)}
+            {/* </Layout> */}
           </StateProvider>
         </AuthProvider>
       </ThemeProvider>

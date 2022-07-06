@@ -9,6 +9,8 @@ import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
 import {getData,useCount} from '../auth/reducer'
 import { useEffect} from 'react';
+import Layout from '../components/Layout';
+const userRole = "admin";
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
     [`&.${tableCellClasses.head}`]: {
@@ -71,4 +73,12 @@ export default function CustomizedTables() {
     </TableContainer>
           </>
   );
+}
+
+CustomizedTables.getLayout = function getLayout(page) {
+  return (
+    <Layout userRole={userRole}>
+      {page}
+    </Layout>
+  )
 }
