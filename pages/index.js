@@ -58,3 +58,8 @@ export default Index
 
     // "dashify": "^2.0.0",
     // "styled-components": "^5.3.5",
+    // "@emotion/server": "^11.4.0",
+    // "@material-ui/core": "^4.12.4",
+    // "@mui/icons-material": "^5.8.4",
+    // "@mui/styled-engine-sc": "^5.8.0",
+    // "@mui/x-data-grid": "^5.12.3",
