@@ -53,15 +53,14 @@ export default function CustomizedTables() {
           </TableRow>
         </TableHead>
         <TableBody>
-         {state.complaint?.map((row,index) => (
-                  
+         {state.complaint?.map((row,index,date) => (
             <StyledTableRow key={row.id}>
               <StyledTableCell align="center" component="th" scope="row">
                 {index}
               </StyledTableCell>
               <StyledTableCell align="center">{row.userID}</StyledTableCell>
               <StyledTableCell align="center">{row.phoneNo}</StyledTableCell>
-              <StyledTableCell align="center">{row.id}</StyledTableCell>
+              <StyledTableCell align="center">{row.time.toDate().toString()}</StyledTableCell>
               <StyledTableCell align="center">{row.complaintText}</StyledTableCell>
             </StyledTableRow>
           ))}

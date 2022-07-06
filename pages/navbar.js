@@ -1,4 +1,5 @@
 import * as React from "react";
+import { useState } from "react";
 import { styled, useTheme } from "@mui/material/styles";
 import Box from "@mui/material/Box";
 import MuiDrawer from "@mui/material/Drawer";
@@ -36,6 +37,7 @@ import IntegrationInstructionsIcon from "@mui/icons-material/IntegrationInstruct
 import LogoutIcon from "@mui/icons-material/Logout";
 import { useAuth } from "../auth/AuthContext";
 import Card from "../pages/cards"
+import CustomizedTables from "./home/customercomplaint";
 
 const drawerWidth = 240;
 
@@ -105,10 +107,12 @@ const Drawer = styled(MuiDrawer, {
 }));
 
 export default function MiniDrawer({ userRole }) {
+  
   const theme = useTheme();
   // const state = useCount();
   const { logout } = useAuth();
-  const [open, setOpen] = React.useState(false);
+  const [open, setOpen] = useState(false);
+  // const [flag, setFlag] = useState(0)
   const handleDrawerOpen = () => {
     setOpen(true);
   };
@@ -123,7 +127,8 @@ export default function MiniDrawer({ userRole }) {
   };
   const handleClickOne = (index)=>{
     if(index===0)
-     Router.push('/home/customercomplaint')
+    Router.push('/home/customercomplaint')
+      //  setFlag(1);
      
   }
 
@@ -405,6 +410,7 @@ export default function MiniDrawer({ userRole }) {
           }}
         >
           <Card />
+          {/* {flag===1?<CustomizedTables/>:null} */}
         </Box>
       </Box>
     </>
