@@ -264,6 +264,11 @@ function SideDrawer({userRole}) {
      Router.push('/customercomplaint')
     
   }
+  const handleClickTwo = (index)=>{
+    if(index===1)
+     Router.push('/users')
+    
+  }
  
   
 
@@ -370,7 +375,7 @@ function SideDrawer({userRole}) {
       {["Settings", "Users", "Authentication", "Source Code"].map(
         (text, index) =>
           userRole === "admin" || userRole === "developer" ? (
-            <ListItem key={text} disablePadding sx={{ display: "block" }}>
+            <ListItem onClick={() => handleClickTwo(index)} key={text} disablePadding sx={{ display: "block" }}>
               <ListItemButton
                 sx={{
                   minHeight: 48,

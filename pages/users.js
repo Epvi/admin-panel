@@ -7,7 +7,7 @@ import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
-import { getData, useCount } from "../auth/reducer";
+import { getData, useUser } from "../auth/userReducer";
 import { useEffect } from "react";
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
@@ -31,59 +31,51 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
 }));
 
 export default function CustomizedTables() {
-  const { state, dispatch } = useCount();
+  const { state, dispatch } = useUser();
 
-  const complaint = [];
+  const userArray = [];
   useEffect(() => {
-    getData(dispatch, complaint);
+    getData(dispatch, userArray);
   }, []);
   return (
     <>
       <div style={{ marginRight: "15px" }}>
-        <h1 style={{ textAlign: "center", marginTop: "20px" }}>
-          Customer Complaints
-        </h1>
+        <h1 style={{ textAlign: "center", marginTop: "20px" }}>Users</h1>
         <TableContainer component={Paper}>
           <Table aria-label="customized table">
             <TableHead>
               <TableRow>
-                <StyledTableCell sx={{ width:  "5vw" }} align="center">
+                <StyledTableCell sx={{ width: "5vw" }} align="center">
                   Sr.
                 </StyledTableCell>
-                <StyledTableCell sx={{ width: "15vw" }} align="center">
-                  userID
+                <StyledTableCell sx={{ width: "25vw" }} align="center">
+                  Name
                 </StyledTableCell>
-                <StyledTableCell sx={{ width: "15vw" }} align="center">
-                  Phone no.
+                <StyledTableCell sx={{ width: "25vw" }} align="center">
+                  Email
                 </StyledTableCell>
-                <StyledTableCell sx={{ width: "15vw" }} align="center">
-                  Date
+
+                <StyledTableCell sx={{ width: "25vw" }} align="center">
+                  Smifis
                 </StyledTableCell>
-                <StyledTableCell sx={{ width: "35vw" }} align="center">
-                  Complaint Text
-                </StyledTableCell>
-                <StyledTableCell sx={{ width: "15vw" }} align="center">
-                  Status
+                <StyledTableCell sx={{ width: "20vw" }} align="center">
+                  Subscribed
                 </StyledTableCell>
               </TableRow>
             </TableHead>
             <TableBody>
-              {state.complaint?.map((row, index) => (
+              {state.userArray?.map((row, index) => (
+                
                 <StyledTableRow key={row.id}>
                   <StyledTableCell align="center" component="th" scope="row">
                     {index}
                   </StyledTableCell>
-                  <StyledTableCell align="center">{row.userID}</StyledTableCell>
+                  <StyledTableCell align="center">{row.name}</StyledTableCell>
+                  <StyledTableCell align="center">{row.email}</StyledTableCell>
+                  <StyledTableCell align="center">{row.smifis+" "}</StyledTableCell>
                   <StyledTableCell align="center">
-                    {row.phoneNo}
+                    {row.subscribed?"True":"False"}
                   </StyledTableCell>
-                  <StyledTableCell align="center">
-                    {row.time.toDate().toString().slice(4, 15)}
-                  </StyledTableCell>
-                  <StyledTableCell align="center">
-                    {row.complaintText}
-                  </StyledTableCell>
-                  <StyledTableCell align="center">{row.status}</StyledTableCell>
                 </StyledTableRow>
               ))}
             </TableBody>

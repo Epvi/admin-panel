@@ -1,5 +1,4 @@
 import React, {useState, useEffect} from 'react'
-import dynamic from 'next/dynamic'
 import Head from 'next/head'
 import { app, database } from '../firebaseConfig';
 import { collection, addDoc, getDocs } from 'firebase/firestore';
