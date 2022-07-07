@@ -31,6 +31,7 @@ export default function MyApp(props) {
           <StateProvider>
             {/* <Layout userRole={userRole}> */}
               {getLayout(<Component {...pageProps} />)}
+              {/* <Component {...pageProps} /> */}
             {/* </Layout> */}
           </StateProvider>
         </AuthProvider>
