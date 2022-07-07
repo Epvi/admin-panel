@@ -112,7 +112,7 @@ export default function Layout({ userRole, children }) {
     <>
       <Box sx={{ display: "flex", backgroundColor: "white" }}>
         <CssBaseline />
-        <NavBar userRole={userRole} children={children}/>
+        <NavBar userRole={userRole}/>
         <SideDrawer userRole={userRole}/>
         <Box
           sx={{
@@ -122,7 +122,7 @@ export default function Layout({ userRole, children }) {
             backgroundColor: "white",
           }}
         >
-          {children }
+          {children}
         </Box>
       </Box>
 
