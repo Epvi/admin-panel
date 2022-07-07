@@ -2,6 +2,7 @@
 
 # dependencies
 /node_modules
+/utils/db/serviceAccountKey.json
 /.pnp
 .pnp.js
 
@@ -14,7 +15,6 @@
 
 # production
 /build
-
 # misc
 .DS_Store
 *.pem
