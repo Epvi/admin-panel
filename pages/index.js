@@ -55,9 +55,3 @@ Index.getLayout = function getLayout(page) {
 }
 
 export default Index
-
-
-    // "dashify": "^2.0.0",
-    // "styled-components": "^5.3.5",
-    // "@mui/styled-engine-sc": "^5.8.0",
-    // "@mui/x-data-grid": "^5.12.3",
