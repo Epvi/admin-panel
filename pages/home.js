@@ -1,32 +1,19 @@
-import React from 'react'
-import Router from 'next/router'
-import { useEffect, useState, useContext } from 'react'
-// import { useCount } from '../src/reducer'
-import { useAuth } from '../auth/AuthContext';
-// import Navbar from "../pages/navbar"
+import React from "react";
+import Router from "next/router";
+import { useEffect, useState } from "react";
+import { useAuth } from "../auth/AuthContext";
 
-  const userRole = "admin";
-  
-  const home = () => {
-  const { currentUser } = useAuth()
+const home = () => {
+  const { currentUser } = useAuth();
 
-  
-  const [loading, setLoading] = useState(true)
+  const [loading, setLoading] = useState(true);
   useEffect(() => {
-    if (!currentUser) 
-      Router.push('/')
-      setLoading(false);
-    },[]);
-  if (loading) return <p>Loading...</p>
+    if (!currentUser) Router.push("/");
+    setLoading(false);
+  }, []);
+  if (loading) return <p>Loading...</p>;
 
+  return <>{/* { currentUser && <Navbar userRole={userRole}/>} */}</>;
+};
 
-  return (
-    <>
-     
-    {/* { currentUser && <Navbar userRole={userRole}/>} */}
-     
-    </>
-  )
-}
-
-export default home
+export default home;

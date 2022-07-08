@@ -1,5 +1,4 @@
 import * as React from "react";
-import { useState } from "react";
 import { styled, useTheme } from "@mui/material/styles";
 import Box from "@mui/material/Box";
 import MuiDrawer from "@mui/material/Drawer";
@@ -36,7 +35,6 @@ import AdminPanelSettingsIcon from "@mui/icons-material/AdminPanelSettings";
 import IntegrationInstructionsIcon from "@mui/icons-material/IntegrationInstructions";
 import LogoutIcon from "@mui/icons-material/Logout";
 import { useAuth } from "../auth/AuthContext";
-// import Card from "../pages/cards"
 
 const drawerWidth = 240;
 
@@ -112,8 +110,8 @@ export default function Layout({ userRole, children }) {
     <>
       <Box sx={{ display: "flex", backgroundColor: "white" }}>
         <CssBaseline />
-        <NavBar userRole={userRole} children={children}/>
-        <SideDrawer userRole={userRole}/>
+        <NavBar userRole={userRole} children={children} />
+        <SideDrawer userRole={userRole} />
         <Box
           sx={{
             width: "98%",
@@ -122,126 +120,127 @@ export default function Layout({ userRole, children }) {
             backgroundColor: "white",
           }}
         >
-          {children }
+          {children}
         </Box>
       </Box>
-
     </>
   );
 }
 
 function NavBar() {
   const [open, setOpen] = React.useState(false);
-  return <>
-        <AppBar
+  return (
+    <>
+      <AppBar
+        sx={{
+          boxShadow: "3px 4px 5px 3px #888888",
+          backgroundColor: "#556cd6",
+          color: "white",
+          display: "flex",
+          flexDirection: "row",
+          justifyContent: "space-between",
+          "@media only screen  and (max-width: 730px)": {
+            flexDirection: "column",
+            justifyContent: "center",
+          },
+        }}
+        position="fixed"
+        open={open}
+      >
+        <Toolbar
           sx={{
-            boxShadow: "3px 4px 5px 3px #888888",
-            backgroundColor: "#556cd6",
-            color: "white",
             display: "flex",
-            flexDirection: "row",
-            justifyContent: "space-between",
             "@media only screen  and (max-width: 730px)": {
               flexDirection: "column",
-              justifyContent: "center",
+              alignItems: "center",
             },
           }}
-          position="fixed"
-          open={open}
         >
+          <Typography
+            sx={{
+              cursor: "pointer",
+              fontFamily: "Poppins",
+              marginRight: "75px",
+              "@media only screen  and (max-width: 730px)": {
+                margin: "15px",
+              },
+            }}
+            variant="h6"
+            noWrap
+            component="div"
+          >
+            EPVI Technologies
+          </Typography>
           <Toolbar
             sx={{
-              display: "flex",
               "@media only screen  and (max-width: 730px)": {
-                flexDirection: "column",
-                alignItems: "center",
+                display: "flex",
+                flexDirection: "row",
+                margin: "10px",
               },
             }}
           >
-            <Typography
+            <TextField
               sx={{
-                cursor: "pointer",
                 fontFamily: "Poppins",
-                marginRight: "75px",
+                width: "25vw",
                 "@media only screen  and (max-width: 730px)": {
-                  margin: "15px",
+                  width: "70vw",
                 },
               }}
-              variant="h6"
-              noWrap
-              component="div"
-            >
-              EPVI Technologies
-            </Typography>
-            <Toolbar
+              id="outlined-basic"
+              label="Search"
+              variant="outlined"
+            />
+            <SearchIcon
               sx={{
+                cursor: "pointer",
+                marginLeft: "10px",
+                fontSize: "35px",
                 "@media only screen  and (max-width: 730px)": {
-                  display: "flex",
-                  flexDirection: "row",
                   margin: "10px",
                 },
               }}
-            >
-              <TextField
-                sx={{
-                  fontFamily: "Poppins",
-                  width: "25vw",
-                  "@media only screen  and (max-width: 730px)": {
-                    width: "70vw",
-                  },
-                }}
-                id="outlined-basic"
-                label="Search"
-                variant="outlined"
-              />
-              <SearchIcon
-                sx={{
-                  cursor: "pointer",
-                  marginLeft: "10px",
-                  fontSize: "35px",
-                  "@media only screen  and (max-width: 730px)": {
-                    margin: "10px",
-                  },
-                }}
-              />
-            </Toolbar>
-          </Toolbar>
-          <Toolbar>
-            <Avatar
-              sx={{
-                cursor: "pointer",
-                marginRight: "15px",
-                "@media only screen  and (max-width: 730px)": {
-                  margin: "auto",
-                },
-              }}
-              src="/broken-image.jpg"
-            />
-            <NotificationsIcon
-              sx={{
-                cursor: "pointer",
-                marginRight: "15px",
-                fontSize: "35px",
-                "@media only screen  and (max-width: 730px)": {
-                  margin: "auto",
-                },
-              }}
-            />
-            <MoreHorizIcon
-              sx={{
-                cursor: "pointer",
-                fontSize: "35px",
-                "@media only screen  and (max-width: 730px)": {
-                  margin: "auto",
-                },
-              }}
             />
           </Toolbar>
-        </AppBar>
-</>
+        </Toolbar>
+        <Toolbar>
+          <Avatar
+            sx={{
+              cursor: "pointer",
+              marginRight: "15px",
+              "@media only screen  and (max-width: 730px)": {
+                margin: "auto",
+              },
+            }}
+            src="/broken-image.jpg"
+          />
+          <NotificationsIcon
+            sx={{
+              cursor: "pointer",
+              marginRight: "15px",
+              fontSize: "35px",
+              "@media only screen  and (max-width: 730px)": {
+                margin: "auto",
+              },
+            }}
+          />
+          <MoreHorizIcon
+            sx={{
+              cursor: "pointer",
+              fontSize: "35px",
+              "@media only screen  and (max-width: 730px)": {
+                margin: "auto",
+              },
+            }}
+          />
+        </Toolbar>
+      </AppBar>
+    </>
+  );
 }
 
-function SideDrawer({userRole}) {
+function SideDrawer({ userRole }) {
   const theme = useTheme();
   // const state = useCount();
   const { logout } = useAuth();
@@ -259,180 +258,177 @@ function SideDrawer({userRole}) {
     Router.push("/");
     return <p>Logging out...</p>;
   };
-  const handleClickOne = (index)=>{
-    if(index===0)
-     Router.push('/customercomplaint')
-    
-  }
-  const handleClickTwo = (index)=>{
-    if(index===1)
-     Router.push('/users')
-    
-  }
- 
-  
+  const handleClickOne = (index) => {
+    if (index === 0) Router.push("/customercomplaint");
+  };
+  const handleClickTwo = (index) => {
+    if (index === 1) Router.push("/users");
+  };
 
   return (
     <>
-    <Drawer variant="permanent" open={open}>
-    <DrawerHeader
-      sx={{
-        marginTop: "60px",
-        "@media only screen  and (max-width: 730px)": {
-          marginTop: "32vh",
-        },
-      }}
-    >
-      <IconButton
-        color="inherit"
-        aria-label="open drawer"
-        onClick={handleDrawerOpen}
-        edge="start"
-        sx={{
-          ...(open && { display: "none" }),
-          marginRight: "5px",
-          color: "black",
-          "@media only screen  and (max-width: 730px)": {
-            marginRight: "0",
-          },
-        }}
-      >
-        <MenuIcon />
-      </IconButton>
-      <IconButton
-        sx={open ? { display: "block" } : { display: "none" }}
-        onClick={handleDrawerClose}
-      >
-        {theme.direction === "ltl" ? (
-          <ChevronRightIcon />
-        ) : (
-          <ChevronLeftIcon />
-        )}
-      </IconButton>
-    </DrawerHeader>
-    <Divider />
-    <List sx={{ backgroundColor: "white" }}>
-      {[ "Customer Complaint","Inbox", "Send email"].map((text, index) =>
-        userRole === "admin" || userRole === "support" ? (
-          <ListItem onClick={() => handleClickOne(index)} key={text} disablePadding sx={{ display: "block" }}>
-            <ListItemButton
-              sx={{
-                minHeight: 48,
-                justifyContent: open ? "initial" : "center",
-                px: 2.5,
-              }}
-            >
-              <ListItemIcon
-                sx={{
-                  minWidth: 0,
-                  mr: open ? 3 : "auto",
-                  justifyContent: "center",
-                }}
-              >
-                {index === 0 ? <InboxIcon /> : null}
-                {index === 1 ? <StarIcon /> : null}
-                {index === 2 ? <SendIcon /> : null}
-              </ListItemIcon>
-              <ListItemText
-                primary={text}
-                sx={{ opacity: open ? 1 : 0 }}
-              />
-            </ListItemButton>
-          </ListItem>
-        ) : null
-      )}
-      {["Insights", "Sales", "Advertisement", "Reach"].map(
-        (text, index) =>
-          userRole === "admin" || userRole === "marketing" ? (
-            <ListItem key={text} disablePadding sx={{ display: "block" }}>
-              <ListItemButton
-                sx={{
-                  minHeight: 48,
-                  justifyContent: open ? "initial" : "center",
-                  px: 2.5,
-                }}
-              >
-                <ListItemIcon
-                  sx={{
-                    minWidth: 0,
-                    mr: open ? 3 : "auto",
-                    justifyContent: "center",
-                  }}
-                >
-                  {index === 0 ? <InsightsIcon /> : null}
-                  {index === 1 ? <MonetizationOnIcon /> : null}
-                  {index === 2 ? <AddPhotoAlternateIcon /> : null}
-                  {index === 3 ? <InstagramIcon /> : null}
-                </ListItemIcon>
-                <ListItemText
-                  primary={text}
-                  sx={{ opacity: open ? 1 : 0 }}
-                />
-              </ListItemButton>
-            </ListItem>
-          ) : null
-      )}
-      {["Settings", "Users", "Authentication", "Source Code"].map(
-        (text, index) =>
-          userRole === "admin" || userRole === "developer" ? (
-            <ListItem onClick={() => handleClickTwo(index)} key={text} disablePadding sx={{ display: "block" }}>
-              <ListItemButton
-                sx={{
-                  minHeight: 48,
-                  justifyContent: open ? "initial" : "center",
-                  px: 2.5,
-                }}
-              >
-                <ListItemIcon
-                  sx={{
-                    minWidth: 0,
-                    mr: open ? 3 : "auto",
-                    justifyContent: "center",
-                  }}
-                >
-                  {index === 0 ? <SettingsApplicationsIcon /> : null}
-                  {index === 1 ? <ContactPageIcon /> : null}
-                  {index === 2 ? <AdminPanelSettingsIcon /> : null}
-                  {index === 3 ? <IntegrationInstructionsIcon /> : null}
-                </ListItemIcon>
-                <ListItemText
-                  primary={text}
-                  sx={{ opacity: open ? 1 : 0 }}
-                />
-              </ListItemButton>
-            </ListItem>
-          ) : null
-      )}
-      {["Logout"].map((text, index) => (
-        <ListItem
-          onClick={handleOnClick}
-          key={text}
-          disablePadding
-          sx={{ display: "block" }}
+      <Drawer variant="permanent" open={open}>
+        <DrawerHeader
+          sx={{
+            marginTop: "60px",
+            "@media only screen  and (max-width: 730px)": {
+              marginTop: "32vh",
+            },
+          }}
         >
-          <ListItemButton
+          <IconButton
+            color="inherit"
+            aria-label="open drawer"
+            onClick={handleDrawerOpen}
+            edge="start"
             sx={{
-              minHeight: 48,
-              justifyContent: open ? "initial" : "center",
-              px: 2.5,
+              ...(open && { display: "none" }),
+              marginRight: "5px",
+              color: "black",
+              "@media only screen  and (max-width: 730px)": {
+                marginRight: "0",
+              },
             }}
           >
-            <ListItemIcon
-              sx={{
-                minWidth: 0,
-                mr: open ? 3 : "auto",
-                justifyContent: "center",
-              }}
+            <MenuIcon />
+          </IconButton>
+          <IconButton
+            sx={open ? { display: "block" } : { display: "none" }}
+            onClick={handleDrawerClose}
+          >
+            {theme.direction === "ltl" ? (
+              <ChevronRightIcon />
+            ) : (
+              <ChevronLeftIcon />
+            )}
+          </IconButton>
+        </DrawerHeader>
+        <Divider />
+        <List sx={{ backgroundColor: "white" }}>
+          {["Customer Complaint", "Inbox", "Send email"].map((text, index) =>
+            userRole === "admin" || userRole === "support" ? (
+              <ListItem
+                onClick={() => handleClickOne(index)}
+                key={text}
+                disablePadding
+                sx={{ display: "block" }}
+              >
+                <ListItemButton
+                  sx={{
+                    minHeight: 48,
+                    justifyContent: open ? "initial" : "center",
+                    px: 2.5,
+                  }}
+                >
+                  <ListItemIcon
+                    sx={{
+                      minWidth: 0,
+                      mr: open ? 3 : "auto",
+                      justifyContent: "center",
+                    }}
+                  >
+                    {index === 0 ? <InboxIcon /> : null}
+                    {index === 1 ? <StarIcon /> : null}
+                    {index === 2 ? <SendIcon /> : null}
+                  </ListItemIcon>
+                  <ListItemText primary={text} sx={{ opacity: open ? 1 : 0 }} />
+                </ListItemButton>
+              </ListItem>
+            ) : null
+          )}
+          {["Insights", "Sales", "Advertisement", "Reach"].map((text, index) =>
+            userRole === "admin" || userRole === "marketing" ? (
+              <ListItem key={text} disablePadding sx={{ display: "block" }}>
+                <ListItemButton
+                  sx={{
+                    minHeight: 48,
+                    justifyContent: open ? "initial" : "center",
+                    px: 2.5,
+                  }}
+                >
+                  <ListItemIcon
+                    sx={{
+                      minWidth: 0,
+                      mr: open ? 3 : "auto",
+                      justifyContent: "center",
+                    }}
+                  >
+                    {index === 0 ? <InsightsIcon /> : null}
+                    {index === 1 ? <MonetizationOnIcon /> : null}
+                    {index === 2 ? <AddPhotoAlternateIcon /> : null}
+                    {index === 3 ? <InstagramIcon /> : null}
+                  </ListItemIcon>
+                  <ListItemText primary={text} sx={{ opacity: open ? 1 : 0 }} />
+                </ListItemButton>
+              </ListItem>
+            ) : null
+          )}
+          {["Settings", "Users", "Authentication", "Source Code"].map(
+            (text, index) =>
+              userRole === "admin" || userRole === "developer" ? (
+                <ListItem
+                  onClick={() => handleClickTwo(index)}
+                  key={text}
+                  disablePadding
+                  sx={{ display: "block" }}
+                >
+                  <ListItemButton
+                    sx={{
+                      minHeight: 48,
+                      justifyContent: open ? "initial" : "center",
+                      px: 2.5,
+                    }}
+                  >
+                    <ListItemIcon
+                      sx={{
+                        minWidth: 0,
+                        mr: open ? 3 : "auto",
+                        justifyContent: "center",
+                      }}
+                    >
+                      {index === 0 ? <SettingsApplicationsIcon /> : null}
+                      {index === 1 ? <ContactPageIcon /> : null}
+                      {index === 2 ? <AdminPanelSettingsIcon /> : null}
+                      {index === 3 ? <IntegrationInstructionsIcon /> : null}
+                    </ListItemIcon>
+                    <ListItemText
+                      primary={text}
+                      sx={{ opacity: open ? 1 : 0 }}
+                    />
+                  </ListItemButton>
+                </ListItem>
+              ) : null
+          )}
+          {["Logout"].map((text, index) => (
+            <ListItem
+              onClick={handleOnClick}
+              key={text}
+              disablePadding
+              sx={{ display: "block" }}
             >
-              <LogoutIcon />
-            </ListItemIcon>
-            <ListItemText primary={text} sx={{ opacity: open ? 1 : 0 }} />
-          </ListItemButton>
-        </ListItem>
-      ))}
-    </List>
-  </Drawer>
-  <DrawerHeader />
-  </>
-  )
+              <ListItemButton
+                sx={{
+                  minHeight: 48,
+                  justifyContent: open ? "initial" : "center",
+                  px: 2.5,
+                }}
+              >
+                <ListItemIcon
+                  sx={{
+                    minWidth: 0,
+                    mr: open ? 3 : "auto",
+                    justifyContent: "center",
+                  }}
+                >
+                  <LogoutIcon />
+                </ListItemIcon>
+                <ListItemText primary={text} sx={{ opacity: open ? 1 : 0 }} />
+              </ListItemButton>
+            </ListItem>
+          ))}
+        </List>
+      </Drawer>
+      <DrawerHeader />
+    </>
+  );
 }

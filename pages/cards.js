@@ -1,6 +1,6 @@
 import * as React from "react";
 import Box from "@mui/material/Box";
-import Table from "../pages/tables"
+import Table from "../pages/tables";
 // import { doc, updateDoc, deleteDoc} from "firebase/firestore";
 // import {useState, useEffect} from 'react'
 // import { query, orderBy, onSnapshot} from "firebase/firestore"
@@ -10,7 +10,7 @@ export default function SimpleContainer() {
   // const handleSubmit = async (e) => {
   //   e.preventDefault()
   //   try {
-      
+
   //     await addDoc(collection(database, 'tasks'), {
   //       title: "EPVI Bills",
   //       description: "You have 15 days left to pay the bill",
@@ -36,7 +36,7 @@ export default function SimpleContainer() {
   // //   // console.log(tasks)
   // // },[])
   // const handleDelete = async () => {
-  //   const taskDocRef = doc(database, 'tasks', 
+  //   const taskDocRef = doc(database, 'tasks',
   //   "6t2vl7NGH93elxmZaBvc")
   //   try{
   //     await deleteDoc(taskDocRef)
@@ -47,7 +47,7 @@ export default function SimpleContainer() {
   // }
   // const handleUpdate = async (e) => {
   //   e.preventDefault()
-  //   const taskDocRef = doc(database, 'tasks', 
+  //   const taskDocRef = doc(database, 'tasks',
   //   '6t2vl7NGH93elxmZaBvc')
   //   try{
   //     await updateDoc(taskDocRef, {
@@ -58,104 +58,108 @@ export default function SimpleContainer() {
   //     // onClose()
   //   } catch (err) {
   //     alert(err)
-  //   }    
+  //   }
   // }
 
-
   return (
-      <>
-      <Box sx={{ display:"flex",
-      flexDirection:"row",
-      width:"inherit",
-      marginLeft:"20px"}}>
+    <>
       <Box
         sx={{
-          backgroundColor: "pink",
-          height: "50vh",
-          width: "50vw",
-          marginTop: "24px",
-          borderRadius: "25px",
-          padding: "10px",
-        }}>
+          display: "flex",
+          flexDirection: "row",
+          width: "inherit",
+          marginLeft: "20px",
+        }}
+      >
+        <Box
+          sx={{
+            backgroundColor: "pink",
+            height: "50vh",
+            width: "50vw",
+            marginTop: "24px",
+            borderRadius: "25px",
+            padding: "10px",
+          }}
+        >
           {/* <form onSubmit={handleSubmit} className='addTask' name='addTask'>
       <button type="submit">Add Task</button>
       </form>
       <button onClick={handleDelete}>Delete</button>
       <button onClick={handleUpdate}>Update</button> */}
-      </Box>
-      <Box
-        sx={{
-          height: "50vh",
-          width: "50vw",
-          marginTop: "24px",
-          padding: "10px",
-          marginLeft: "20px",
-          display: "flex",
-          flexDirection: "column",
-        }}
-      >
-        <Box
-          sx={{ display: "flex", flexDirection: "row", alignItems: "center" }}
-        >
-          <Box
-            sx={{
-              backgroundColor: "Pink",
-              padding: "15px",
-              width: "47%",
-              height: "23vh",
-              borderRadius: "25px",
-            }}
-          >
-            Hello
-          </Box>
-          <Box
-            sx={{
-              backgroundColor: "Pink",
-              padding: "15px",
-              marginLeft: "30px",
-              width: "47%",
-              height: "23vh",
-              borderRadius: "25px",
-            }}
-          >
-            Hello
-          </Box>
         </Box>
         <Box
           sx={{
+            height: "50vh",
+            width: "50vw",
+            marginTop: "24px",
+            padding: "10px",
+            marginLeft: "20px",
             display: "flex",
-            flexDirection: "row",
-            alignItems: "center",
-            marginTop: "10px",
+            flexDirection: "column",
           }}
         >
           <Box
-            sx={{
-              backgroundColor: "Pink",
-              padding: "15px",
-              width: "47%",
-              height: "23vh",
-              borderRadius: "25px",
-            }}
+            sx={{ display: "flex", flexDirection: "row", alignItems: "center" }}
           >
-            Hello
+            <Box
+              sx={{
+                backgroundColor: "Pink",
+                padding: "15px",
+                width: "47%",
+                height: "23vh",
+                borderRadius: "25px",
+              }}
+            >
+              Hello
+            </Box>
+            <Box
+              sx={{
+                backgroundColor: "Pink",
+                padding: "15px",
+                marginLeft: "30px",
+                width: "47%",
+                height: "23vh",
+                borderRadius: "25px",
+              }}
+            >
+              Hello
+            </Box>
           </Box>
           <Box
             sx={{
-              backgroundColor: "Pink",
-              padding: "15px",
-              marginLeft: "30px",
-              width: "47%",
-              height: "23vh",
-              borderRadius: "25px",
+              display: "flex",
+              flexDirection: "row",
+              alignItems: "center",
+              marginTop: "10px",
             }}
           >
-            Hello
+            <Box
+              sx={{
+                backgroundColor: "Pink",
+                padding: "15px",
+                width: "47%",
+                height: "23vh",
+                borderRadius: "25px",
+              }}
+            >
+              Hello
+            </Box>
+            <Box
+              sx={{
+                backgroundColor: "Pink",
+                padding: "15px",
+                marginLeft: "30px",
+                width: "47%",
+                height: "23vh",
+                borderRadius: "25px",
+              }}
+            >
+              Hello
+            </Box>
           </Box>
         </Box>
       </Box>
-      </Box>
-      <Table/>
+      <Table />
     </>
   );
 }
