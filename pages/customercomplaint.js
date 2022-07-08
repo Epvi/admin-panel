@@ -1,14 +1,16 @@
-import * as React from "react";
-import { styled } from "@mui/material/styles";
-import Table from "@mui/material/Table";
-import TableBody from "@mui/material/TableBody";
-import TableCell, { tableCellClasses } from "@mui/material/TableCell";
-import TableContainer from "@mui/material/TableContainer";
-import TableHead from "@mui/material/TableHead";
-import TableRow from "@mui/material/TableRow";
-import Paper from "@mui/material/Paper";
-import { getData, useCount } from "../auth/reducer";
-import { useEffect } from "react";
+import * as React from 'react';
+import { styled } from '@mui/material/styles';
+import Table from '@mui/material/Table';
+import TableBody from '@mui/material/TableBody';
+import TableCell, { tableCellClasses } from '@mui/material/TableCell';
+import TableContainer from '@mui/material/TableContainer';
+import TableHead from '@mui/material/TableHead';
+import TableRow from '@mui/material/TableRow';
+import Paper from '@mui/material/Paper';
+import {getData,useCount} from '../auth/reducer'
+import { useEffect} from 'react';
+import Layout from '../components/Layout';
+const userRole = "admin";
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
@@ -34,9 +36,10 @@ export default function CustomizedTables() {
   const { state, dispatch } = useCount();
 
   const complaint = [];
-  useEffect(() => {
-    getData(dispatch, complaint);
-  }, []);
+  useEffect(()=>{
+    getData(dispatch,complaint);
+       // eslint-disable-next-line react-hooks/exhaustive-deps
+   },[])
   return (
     <>
       <div style={{ marginRight: "15px" }}>
@@ -92,4 +95,12 @@ export default function CustomizedTables() {
       </div>
     </>
   );
+}
+
+CustomizedTables.getLayout = function getLayout(page) {
+  return (
+    <Layout userRole={userRole}>
+      {page}
+    </Layout>
+  )
 }

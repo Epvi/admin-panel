@@ -1,9 +1,16 @@
-import React, { useState, useEffect } from "react";
-import Head from "next/head";
-import { database } from "../firebaseConfig";
-import { collection, getDocs } from "firebase/firestore";
-import Login from "./login";
-const index = () => {
+import React, {useState, useEffect} from 'react'
+import Router from 'next/router'
+import dynamic from 'next/dynamic';
+import Head from 'next/head';
+import { app, database } from '../firebaseConfig';
+import { collection, addDoc, getDocs } from 'firebase/firestore';
+import Login from './login';
+import Layout from '../components/Layout';
+import { useAuth } from '../auth/AuthContext';
+
+
+const Index = () => {
+  const { currentUser } = useAuth()
   const [usersArray, setUsersArray] = useState([]);
   const dbInstance = collection(database, "Users");
 
@@ -21,17 +28,32 @@ const index = () => {
   };
 
   useEffect(() => {
-    getUsers();
-  }, []);
-
+    console.log(currentUser)
+    if (!currentUser) {
+      Router.push('/login')
+      // setLoading(false);
+    } else {
+      getUsers();
+    }
+   // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
+  
   return (
     <>
-      <Head>
-        <title>EPVI - Managing Electricity wisely</title>
-      </Head>
-      <Login />
+    <Head>
+      <title>EPVI - Managing Electricity wisely</title>
+    </Head>
     </>
-  );
-};
+  )
+}
+const userRole = "admin";
 
-export default index;
+Index.getLayout = function getLayout(page) {
+  return (
+    <Layout userRole={userRole}>
+      {page}
+    </Layout>
+  )
+}
+
+export default Index

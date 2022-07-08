@@ -30,7 +30,7 @@ const WithMaterialUI = () => {
 
   useEffect(() => {
     if (currentUser) 
-      Router.push('/home')
+      Router.push('/')
     },[currentUser]);
   // const { dispatch } = useCount();
   const formik = useFormik({
