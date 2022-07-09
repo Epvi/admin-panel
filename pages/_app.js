@@ -30,10 +30,13 @@ export default function MyApp(props) {
         </Head>
         <AuthProvider>
           <StateProvider>
+            <UserProvider>
+
             {/* <Layout userRole={userRole}> */}
               {getLayout(<Component {...pageProps} />)}
               {/* <Component {...pageProps} /> */}
             {/* </Layout> */}
+            </UserProvider>
           </StateProvider>
         </AuthProvider>
       </ThemeProvider>

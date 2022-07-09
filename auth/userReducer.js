@@ -36,7 +36,7 @@ function UserProvider({ children }) {
 function useUser() {
   const context = React.useContext(Context);
   if (context === undefined) {
-    throw new Error("useCount must be used within a Context");
+    throw new Error("useUser must be used within a Context");
   }
   return context;
 }

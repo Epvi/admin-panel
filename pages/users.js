@@ -9,6 +9,8 @@ import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
 import { getData, useUser } from "../auth/userReducer";
 import { useEffect } from "react";
+import Layout from "../components/Layout";
+import { useState } from "react";
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
@@ -30,13 +32,18 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
   },
 }));
 
-export default function CustomizedTables() {
+export default function UsersData() {
   const { state, dispatch } = useUser();
 
   const userArray = [];
   useEffect(() => {
     getData(dispatch, userArray);
   }, []);
+  const [value, setValue] = useState('Chonse');
+
+  const handleChange = (event) => {
+    setValue(event.target.value);
+  };
   return (
     <>
       <div style={{ marginRight: "15px" }}>
@@ -65,16 +72,21 @@ export default function CustomizedTables() {
             </TableHead>
             <TableBody>
               {state.userArray?.map((row, index) => (
-                
                 <StyledTableRow key={row.id}>
                   <StyledTableCell align="center" component="th" scope="row">
                     {index}
                   </StyledTableCell>
                   <StyledTableCell align="center">{row.name}</StyledTableCell>
                   <StyledTableCell align="center">{row.email}</StyledTableCell>
-                  <StyledTableCell align="center">{row.smifis+" "}</StyledTableCell>
                   <StyledTableCell align="center">
-                    {row.subscribed?"True":"False"}
+                    <Dropdown
+                      label={row.smifis}
+                      value={value}
+                      onChange={handleChange}
+                    />
+                  </StyledTableCell>
+                  <StyledTableCell align="center">
+                    {row.subscribed ? "True" : "False"}
                   </StyledTableCell>
                 </StyledTableRow>
               ))}
@@ -85,3 +97,16 @@ export default function CustomizedTables() {
     </>
   );
 }
+const Dropdown = ({ label, value, onChange }) => {
+  return (
+    <select value={value} onChange={onChange}>
+      {label.map((option,i) => (
+        <option key={i} value={option}>{option}</option>
+      ))}
+    </select>
+  );
+};
+const userRole = "admin";
+UsersData.getLayout = function getLayout(page) {
+  return <Layout userRole={userRole}>{page}</Layout>;
+};
