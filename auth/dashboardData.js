@@ -2,43 +2,46 @@ import * as React from "react";
 import { database } from "../firebaseConfig";
 import { collection, getDocs } from "firebase/firestore";
 
-const colRef = collection(database, "customerComplaint");
-const CountContext = React.createContext();
+const colRef = collection(database, "CurrentSmifiDevice");
+const Context = React.createContext();
 function userReducer(state, action) {
   switch (action.type) {
     case "GETTING":
       return { state };
     case "SUCCESS":
-      return { complaint: action.payload };
+      return { totalData: action.payload };
+      case "ONE":
+      return {state, payload};
   }
 }
-function getData(dispatch, complaint) {
-  complaint = [];
+function getData(dispatch, totalData) {
+  totalData = {};
   dispatch({ type: "GETTING", payload: [] });
   getDocs(colRef).then((snapshot) => {
     snapshot.docs.forEach((doc) => {
-      complaint.push({ ...doc.data(), id: doc.id });
+      totalData = { ...doc.data(), id: doc.id };
     });
-    dispatch({ type: "SUCCESS", payload: complaint });
+    dispatch({ type: "SUCCESS", payload: totalData });
+    // console.log(totalData);
   });
 }
-function StateProvider({ children }) {
+function TotalUserProvider({ children }) {
   const initialState = [];
   const [state, dispatch] = React.useReducer(userReducer, initialState);
   // NOTE: you *might* need to memoize this value
   // Learn more in http://kcd.im/optimize-context
   const value = { state, dispatch };
   return (
-    <CountContext.Provider value={value}>{children}</CountContext.Provider>
+    <Context.Provider value={value}>{children}</Context.Provider>
   );
 }
 
-function useComplaint() {
-  const context = React.useContext(CountContext);
+function useDashboard() {
+  const context = React.useContext(Context);
   if (context === undefined) {
-    throw new Error("useComplaint must be used within a Context");
+    throw new Error("useDashboard must be used within a Context");
   }
   return context;
 }
 
-export { StateProvider, useComplaint, getData };
+export { TotalUserProvider, useDashboard, getData };

@@ -18,7 +18,7 @@ import ListItemIcon from "@mui/material/ListItemIcon";
 import ListItemText from "@mui/material/ListItemText";
 import InboxIcon from "@mui/icons-material/MoveToInbox";
 import Router from "next/router";
-import StarIcon from "@mui/icons-material/Star";
+import DevicesIcon from '@mui/icons-material/Devices';
 import TextField from "@mui/material/TextField";
 import Avatar from "@mui/material/Avatar";
 import NotificationsIcon from "@mui/icons-material/Notifications";
@@ -35,6 +35,7 @@ import AdminPanelSettingsIcon from "@mui/icons-material/AdminPanelSettings";
 import IntegrationInstructionsIcon from "@mui/icons-material/IntegrationInstructions";
 import LogoutIcon from "@mui/icons-material/Logout";
 import { useAuth } from "../auth/AuthContext";
+import DashboardIcon from '@mui/icons-material/Dashboard';
 
 const drawerWidth = 240;
 
@@ -259,10 +260,12 @@ function SideDrawer({ userRole }) {
     return <p>Logging out...</p>;
   };
   const handleClickOne = (index) => {
-    if (index === 0) Router.push("/customercomplaint");
+    if (index === 0) Router.push("/");
+    if(index===1) Router.push("/customercomplaint");
+    if(index===2) Router.push("/devices");
   };
   const handleClickTwo = (index) => {
-    if (index === 1) Router.push("/users");
+    if (index === 0) Router.push("/users");
   };
 
   return (
@@ -305,7 +308,7 @@ function SideDrawer({ userRole }) {
         </DrawerHeader>
         <Divider />
         <List sx={{ backgroundColor: "white" }}>
-          {["Customer Complaint", "Inbox", "Send email"].map((text, index) =>
+          {["Dashboard","Customer Complaint", "Devices"].map((text, index) =>
             userRole === "admin" || userRole === "support" ? (
               <ListItem
                 onClick={() => handleClickOne(index)}
@@ -327,16 +330,16 @@ function SideDrawer({ userRole }) {
                       justifyContent: "center",
                     }}
                   >
-                    {index === 0 ? <InboxIcon /> : null}
-                    {index === 1 ? <StarIcon /> : null}
-                    {index === 2 ? <SendIcon /> : null}
+                    {index === 0 ? <DashboardIcon /> : null}
+                    {index === 1 ? <InboxIcon /> : null}
+                    {index === 2 ? <DevicesIcon /> : null}
                   </ListItemIcon>
                   <ListItemText primary={text} sx={{ opacity: open ? 1 : 0 }} />
                 </ListItemButton>
               </ListItem>
             ) : null
           )}
-          {["Insights", "Sales", "Advertisement", "Reach"].map((text, index) =>
+          {/* {["Insights", "Sales", "Advertisement", "Reach"].map((text, index) =>
             userRole === "admin" || userRole === "marketing" ? (
               <ListItem key={text} disablePadding sx={{ display: "block" }}>
                 <ListItemButton
@@ -361,9 +364,9 @@ function SideDrawer({ userRole }) {
                   <ListItemText primary={text} sx={{ opacity: open ? 1 : 0 }} />
                 </ListItemButton>
               </ListItem>
-            ) : null
-          )}
-          {["Settings", "Users", "Authentication", "Source Code"].map(
+            ) : null */}
+          {/* )} */}
+          {[ "Users"].map(
             (text, index) =>
               userRole === "admin" || userRole === "developer" ? (
                 <ListItem
@@ -386,10 +389,10 @@ function SideDrawer({ userRole }) {
                         justifyContent: "center",
                       }}
                     >
-                      {index === 0 ? <SettingsApplicationsIcon /> : null}
-                      {index === 1 ? <ContactPageIcon /> : null}
+                      {index === 0 ?  <ContactPageIcon />: null}
+                      {/* {index === 1 ? <SettingsApplicationsIcon /> : null}
                       {index === 2 ? <AdminPanelSettingsIcon /> : null}
-                      {index === 3 ? <IntegrationInstructionsIcon /> : null}
+                      {index === 3 ? <IntegrationInstructionsIcon /> : null} */}
                     </ListItemIcon>
                     <ListItemText
                       primary={text}

@@ -39,7 +39,7 @@ export default function UsersData() {
   useEffect(() => {
     getData(dispatch, userArray);
   }, []);
-  const [value, setValue] = useState('Chonse');
+  const [value, setValue] = useState("Choose");
 
   const handleChange = (event) => {
     setValue(event.target.value);
@@ -100,8 +100,10 @@ export default function UsersData() {
 const Dropdown = ({ label, value, onChange }) => {
   return (
     <select value={value} onChange={onChange}>
-      {label.map((option,i) => (
-        <option key={i} value={option}>{option}</option>
+      {label.map((option, i) => (
+        <option key={i} value={option}>
+          {option}
+        </option>
       ))}
     </select>
   );

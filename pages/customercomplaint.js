@@ -7,7 +7,7 @@ import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
-import {getData,useCount} from '../auth/reducer'
+import {getData,useComplaint} from '../auth/reducer'
 import { useEffect} from 'react';
 import Layout from '../components/Layout';
 const userRole = "admin";
@@ -33,7 +33,7 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
 }));
 
 export default function CustomizedTables() {
-  const { state, dispatch } = useCount();
+  const { state, dispatch } = useComplaint();
 
   const complaint = [];
   useEffect(()=>{

@@ -2,43 +2,41 @@ import * as React from "react";
 import { database } from "../firebaseConfig";
 import { collection, getDocs } from "firebase/firestore";
 
-const colRef = collection(database, "customerComplaint");
-const CountContext = React.createContext();
+const colRef = collection(database, "Smifis");
+const Context = React.createContext();
 function userReducer(state, action) {
   switch (action.type) {
     case "GETTING":
       return { state };
     case "SUCCESS":
-      return { complaint: action.payload };
+      return { deviceArray: action.payload };
   }
 }
-function getData(dispatch, complaint) {
-  complaint = [];
+function getData(dispatch, deviceArray) {
+  deviceArray = [];
   dispatch({ type: "GETTING", payload: [] });
   getDocs(colRef).then((snapshot) => {
     snapshot.docs.forEach((doc) => {
-      complaint.push({ ...doc.data(), id: doc.id });
+      deviceArray.push({ ...doc.data(), id: doc.id });
     });
-    dispatch({ type: "SUCCESS", payload: complaint });
+    dispatch({ type: "SUCCESS", payload: deviceArray });
   });
 }
-function StateProvider({ children }) {
+function DeviceProvider({ children }) {
   const initialState = [];
   const [state, dispatch] = React.useReducer(userReducer, initialState);
   // NOTE: you *might* need to memoize this value
   // Learn more in http://kcd.im/optimize-context
   const value = { state, dispatch };
-  return (
-    <CountContext.Provider value={value}>{children}</CountContext.Provider>
-  );
+  return <Context.Provider value={value}>{children}</Context.Provider>;
 }
 
-function useComplaint() {
-  const context = React.useContext(CountContext);
+function useDevices() {
+  const context = React.useContext(Context);
   if (context === undefined) {
-    throw new Error("useComplaint must be used within a Context");
+    throw new Error("useDevices must be used within a Context");
   }
   return context;
 }
 
-export { StateProvider, useComplaint, getData };
+export { DeviceProvider, useDevices, getData };

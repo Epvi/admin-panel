@@ -10,16 +10,17 @@ import "../styles/globals.css";
 import { AuthProvider } from "../auth/AuthContext";
 import { StateProvider } from "../auth/reducer";
 import { UserProvider } from "../auth/userReducer";
-import Layout from "../components/Layout";
-
+import "../styles/App.css";
+import { TotalUserProvider } from "../auth/dashboardData";
+import { DeviceProvider } from "../auth/devicesReducer";
 // Client-side cache, shared for the whole session of the user in the browser.
 const clientSideEmotionCache = createEmotionCache();
 
 export default function MyApp(props) {
   const { Component, emotionCache = clientSideEmotionCache, pageProps } = props;
   const userRole = "admin";
-  const getLayout = Component.getLayout || ((page) => page)
-  
+  const getLayout = Component.getLayout || ((page) => page);
+
   return (
     <CacheProvider value={emotionCache}>
       <ThemeProvider theme={theme}>
@@ -31,11 +32,14 @@ export default function MyApp(props) {
         <AuthProvider>
           <StateProvider>
             <UserProvider>
-
-            {/* <Layout userRole={userRole}> */}
-              {getLayout(<Component {...pageProps} />)}
-              {/* <Component {...pageProps} /> */}
-            {/* </Layout> */}
+              <TotalUserProvider>
+                <DeviceProvider>
+                  {/* <Layout userRole={userRole}> */}
+                  {getLayout(<Component {...pageProps} />)}
+                  {/* <Component {...pageProps} /> */}
+                  {/* </Layout> */}
+                </DeviceProvider>
+              </TotalUserProvider>
             </UserProvider>
           </StateProvider>
         </AuthProvider>
