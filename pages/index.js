@@ -26,7 +26,6 @@ const Index = () => {
   };
 
   useEffect(() => {
-    console.log(currentUser);
     if (!currentUser) {
       Router.push("/login");
       // setLoading(false);

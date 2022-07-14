@@ -50,7 +50,7 @@ const WithMaterialUI = () => {
           // console.log(userData);
           
           if (currentUser) {
-            Router.push('/home')
+            Router.push('/')
         }
           
         })
