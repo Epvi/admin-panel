@@ -4,30 +4,30 @@ import { collection, getDocs } from "firebase/firestore";
 
 const colRef = collection(database, "customerComplaint");
 const CountContext = React.createContext();
-function userReducer(state, action) {
+function userReducer(complaintState, action) {
   switch (action.type) {
     case "GETTING":
-      return { state };
+      return { complaintState };
     case "SUCCESS":
       return { complaint: action.payload };
   }
 }
-function getData(dispatch, complaint) {
+function getData(complaintDispatch, complaint) {
   complaint = [];
-  dispatch({ type: "GETTING", payload: [] });
+  complaintDispatch({ type: "GETTING", payload: [] });
   getDocs(colRef).then((snapshot) => {
     snapshot.docs.forEach((doc) => {
       complaint.push({ ...doc.data(), id: doc.id });
     });
-    dispatch({ type: "SUCCESS", payload: complaint });
+    complaintDispatch({ type: "SUCCESS", payload: complaint });
   });
 }
-function StateProvider({ children }) {
-  const initialState = [];
-  const [state, dispatch] = React.useReducer(userReducer, initialState);
+function ComplaintStateProvider({ children }) {
+  const initialcomplaintState = [];
+  const [complaintState, complaintDispatch] = React.useReducer(userReducer, initialcomplaintState);
   // NOTE: you *might* need to memoize this value
   // Learn more in http://kcd.im/optimize-context
-  const value = { state, dispatch };
+  const value = { complaintState, complaintDispatch };
   return (
     <CountContext.Provider value={value}>{children}</CountContext.Provider>
   );
@@ -41,4 +41,4 @@ function useComplaint() {
   return context;
 }
 
-export { StateProvider, useComplaint, getData };
+export { ComplaintStateProvider, useComplaint, getData };

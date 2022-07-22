@@ -8,11 +8,12 @@ import createEmotionCache from "../src/createEmotionCache";
 import Head from "next/head";
 import "../styles/globals.css";
 import { AuthProvider } from "../auth/AuthContext";
-import { StateProvider } from "../auth/reducer";
+import { ComplaintStateProvider } from "../auth/complaintReducer";
 import { UserProvider } from "../auth/userReducer";
 import "../styles/App.css";
 import { TotalUserProvider } from "../auth/dashboardData";
 import { DeviceProvider } from "../auth/devicesReducer";
+import { RoomPinsProvider } from "../auth/roomPinsReducer";
 // Client-side cache, shared for the whole session of the user in the browser.
 const clientSideEmotionCache = createEmotionCache();
 
@@ -30,18 +31,20 @@ export default function MyApp(props) {
           <title>EPVI - Managing Electricity wisely</title>
         </Head>
         <AuthProvider>
-          <StateProvider>
+          <ComplaintStateProvider>
             <UserProvider>
               <TotalUserProvider>
                 <DeviceProvider>
+                  <RoomPinsProvider>
                   {/* <Layout userRole={userRole}> */}
                   {getLayout(<Component {...pageProps} />)}
                   {/* <Component {...pageProps} /> */}
                   {/* </Layout> */}
+                  </RoomPinsProvider>
                 </DeviceProvider>
               </TotalUserProvider>
             </UserProvider>
-          </StateProvider>
+          </ComplaintStateProvider>
         </AuthProvider>
       </ThemeProvider>
     </CacheProvider>

@@ -181,7 +181,7 @@ function NavBar() {
               },
             }}
           >
-            <TextField
+            {/* <TextField
               sx={{
                 fontFamily: "Poppins",
                 width: "25vw",
@@ -192,8 +192,8 @@ function NavBar() {
               id="outlined-basic"
               label="Search"
               variant="outlined"
-            />
-            <SearchIcon
+            /> */}
+            {/* <SearchIcon
               sx={{
                 cursor: "pointer",
                 marginLeft: "10px",
@@ -202,7 +202,7 @@ function NavBar() {
                   margin: "10px",
                 },
               }}
-            />
+            /> */}
           </Toolbar>
         </Toolbar>
         <Toolbar>

@@ -4,30 +4,30 @@ import { collection, getDocs } from "firebase/firestore";
 
 const colRef = collection(database, "Smifis");
 const Context = React.createContext();
-function userReducer(state, action) {
+function userReducer(deviceState, action) {
   switch (action.type) {
     case "GETTING":
-      return { state };
+      return { deviceState };
     case "SUCCESS":
       return { deviceArray: action.payload };
   }
 }
-function getData(dispatch, deviceArray) {
+function getData(deviceDispatch, deviceArray) {
   deviceArray = [];
-  dispatch({ type: "GETTING", payload: [] });
+  deviceDispatch({ type: "GETTING", payload: [] });
   getDocs(colRef).then((snapshot) => {
     snapshot.docs.forEach((doc) => {
       deviceArray.push({ ...doc.data(), id: doc.id });
     });
-    dispatch({ type: "SUCCESS", payload: deviceArray });
+    deviceDispatch({ type: "SUCCESS", payload: deviceArray });
   });
 }
 function DeviceProvider({ children }) {
-  const initialState = [];
-  const [state, dispatch] = React.useReducer(userReducer, initialState);
+  const initialdeviceState = [];
+  const [deviceState, deviceDispatch] = React.useReducer(userReducer, initialdeviceState);
   // NOTE: you *might* need to memoize this value
   // Learn more in http://kcd.im/optimize-context
-  const value = { state, dispatch };
+  const value = { deviceState, deviceDispatch };
   return <Context.Provider value={value}>{children}</Context.Provider>;
 }
 

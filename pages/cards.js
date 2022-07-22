@@ -5,15 +5,13 @@ import { getData, useDashboard } from "../auth/dashboardData";
 import { Typography } from "@mui/material";
 
 export default function DashboardData() {
-  const { state, dispatch } = useDashboard();
+  const { dashboardState, dashboardDispatch } = useDashboard();
   const totalData = {};
   useEffect(() => {
-    getData(dispatch, totalData);
+    getData(dashboardDispatch, totalData);
   }, []);
 
-  const handleChange = () => {
-    dispatch({ type: "ONE", payload: i.deviceID });
-  };
+ 
   return (
     <>
       <Box
@@ -38,7 +36,7 @@ export default function DashboardData() {
         >
           <Typography sx={{ fontSize: "18px" }}>Total Users</Typography>
           <Typography sx={{ fontSize: "50px" }}>
-            {state.totalData?.totalUsers}
+            {dashboardState.totalData?.totalUsers}
           </Typography>
         </Box>
         <Box
@@ -52,7 +50,7 @@ export default function DashboardData() {
         >
           <Typography sx={{ fontSize: "18px" }}>Total Devices</Typography>
           <Typography sx={{ fontSize: "50px" }}>
-            {state.totalData?.totalDevices}
+            {dashboardState.totalData?.totalDevices}
           </Typography>
         </Box>
 
@@ -67,7 +65,7 @@ export default function DashboardData() {
         >
           <Typography sx={{ fontSize: "18px" }}>Average Devices</Typography>
           <Typography sx={{ fontSize: "50px" }}>
-            {state.totalData?.averageDevices}
+            {dashboardState.totalData?.averageDevices}
           </Typography>
         </Box>
         <Box
@@ -81,7 +79,7 @@ export default function DashboardData() {
         >
           <Typography sx={{ fontSize: "18px" }}>Device ID</Typography>
           <Typography sx={{ fontSize: "50px" }}>
-            {state.totalData?.deviceID}
+            {dashboardState.totalData?.deviceID}
           </Typography>
         </Box>
       </Box>

@@ -4,33 +4,32 @@ import { collection, getDocs } from "firebase/firestore";
 
 const colRef = collection(database, "CurrentSmifiDevice");
 const Context = React.createContext();
-function userReducer(state, action) {
+function userReducer(dashboardState, action) {
   switch (action.type) {
     case "GETTING":
-      return { state };
+      return { dashboardState };
     case "SUCCESS":
       return { totalData: action.payload };
-      case "ONE":
-      return {state, payload};
+      
   }
 }
-function getData(dispatch, totalData) {
+function getData(dashboardDispatch, totalData) {
   totalData = {};
-  dispatch({ type: "GETTING", payload: [] });
+  dashboardDispatch({ type: "GETTING", payload: [] });
   getDocs(colRef).then((snapshot) => {
     snapshot.docs.forEach((doc) => {
       totalData = { ...doc.data(), id: doc.id };
     });
-    dispatch({ type: "SUCCESS", payload: totalData });
+    dashboardDispatch({ type: "SUCCESS", payload: totalData });
     // console.log(totalData);
   });
 }
 function TotalUserProvider({ children }) {
-  const initialState = [];
-  const [state, dispatch] = React.useReducer(userReducer, initialState);
+  const initialdashboardState = [];
+  const [dashboardState, dashboardDispatch] = React.useReducer(userReducer, initialdashboardState);
   // NOTE: you *might* need to memoize this value
   // Learn more in http://kcd.im/optimize-context
-  const value = { state, dispatch };
+  const value = { dashboardState, dashboardDispatch };
   return (
     <Context.Provider value={value}>{children}</Context.Provider>
   );

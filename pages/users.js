@@ -10,7 +10,7 @@ import Paper from "@mui/material/Paper";
 import { getData, useUser } from "../auth/userReducer";
 import { useEffect } from "react";
 import Layout from "../components/Layout";
-import { useState } from "react";
+import { useState } from "react"; 
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
@@ -33,11 +33,11 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
 }));
 
 export default function UsersData() {
-  const { state, dispatch } = useUser();
+  const { userState, userDispatch } = useUser();
 
   const userArray = [];
   useEffect(() => {
-    getData(dispatch, userArray);
+    getData(userDispatch, userArray);
   }, []);
   const [value, setValue] = useState("Choose");
 
@@ -71,7 +71,7 @@ export default function UsersData() {
               </TableRow>
             </TableHead>
             <TableBody>
-              {state.userArray?.map((row, index) => (
+              {userState.userArray?.map((row, index) => (
                 <StyledTableRow key={row.id}>
                   <StyledTableCell align="center" component="th" scope="row">
                     {index}

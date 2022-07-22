@@ -7,7 +7,7 @@ import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
-import {getData,useComplaint} from '../auth/reducer'
+import {getData,useComplaint} from '../auth/complaintReducer'
 import { useEffect} from 'react';
 import Layout from '../components/Layout';
 const userRole = "admin";
@@ -33,11 +33,11 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
 }));
 
 export default function CustomizedTables() {
-  const { state, dispatch } = useComplaint();
+  const { complaintState, complaintDispatch } = useComplaint();
 
   const complaint = [];
   useEffect(()=>{
-    getData(dispatch,complaint);
+    getData(complaintDispatch,complaint);
        // eslint-disable-next-line react-hooks/exhaustive-deps
    },[])
   return (
@@ -71,7 +71,7 @@ export default function CustomizedTables() {
               </TableRow>
             </TableHead>
             <TableBody>
-              {state.complaint?.map((row, index) => (
+              {complaintState.complaint?.map((row, index) => (
                 <StyledTableRow key={row.id}>
                   <StyledTableCell align="center" component="th" scope="row">
                     {index}
