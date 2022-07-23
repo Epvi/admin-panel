@@ -36,6 +36,8 @@ import IntegrationInstructionsIcon from "@mui/icons-material/IntegrationInstruct
 import LogoutIcon from "@mui/icons-material/Logout";
 import { useAuth } from "../auth/AuthContext";
 import DashboardIcon from '@mui/icons-material/Dashboard';
+import { useRouter } from "next/router";
+
 
 const drawerWidth = 240;
 
@@ -105,7 +107,7 @@ const Drawer = styled(MuiDrawer, {
 }));
 
 export default function Layout({ userRole, children }) {
-  // const state = useCount();
+    
 
   return (
     <>
@@ -259,6 +261,8 @@ function SideDrawer({ userRole }) {
     Router.push("/login");
     return <p>Logging out...</p>;
   };
+  const { asPath, pathname } = useRouter();
+  // console.log(pathname)
   const handleClickOne = (index) => {
     if (index === 0) Router.push("/");
     if(index===1) Router.push("/customercomplaint");
@@ -267,7 +271,10 @@ function SideDrawer({ userRole }) {
   const handleClickTwo = (index) => {
     if (index === 0) Router.push("/users");
   };
-
+const styling = {
+  color:"#556cd6"
+}
+// console.log(window.location.href)
   return (
     <>
       <Drawer variant="permanent" open={open}>
@@ -330,11 +337,11 @@ function SideDrawer({ userRole }) {
                       justifyContent: "center",
                     }}
                   >
-                    {index === 0 ? <DashboardIcon /> : null}
-                    {index === 1 ? <InboxIcon /> : null}
-                    {index === 2 ? <DevicesIcon /> : null}
+                    {index === 0 ? <DashboardIcon sx={pathname==="/"?styling:null}/> : null}
+                    {index === 1 ? <InboxIcon sx={pathname==="/customercomplaint"?styling:null}/> : null}
+                    {index === 2 ? <DevicesIcon sx={pathname==="/devices"?styling:null}/> : null}
                   </ListItemIcon>
-                  <ListItemText primary={text} sx={{ opacity: open ? 1 : 0 }} />
+                  <ListItemText primary={text} sx={{ opacity: open ? 1 : 0}} />
                 </ListItemButton>
               </ListItem>
             ) : null
@@ -389,7 +396,7 @@ function SideDrawer({ userRole }) {
                         justifyContent: "center",
                       }}
                     >
-                      {index === 0 ?  <ContactPageIcon />: null}
+                      {index === 0 ?  <ContactPageIcon sx={pathname==="/users"?styling:null}/>: null}
                       {/* {index === 1 ? <SettingsApplicationsIcon /> : null}
                       {index === 2 ? <AdminPanelSettingsIcon /> : null}
                       {index === 3 ? <IntegrationInstructionsIcon /> : null} */}
