@@ -92,7 +92,7 @@ const SetupPin = () => {
     marginTop: "20px",
     cursor: "pointer",
   };
-
+// console.log(pinState.selectedDevice)
   const normalStyle = {
     marginLeft: "42%",
     marginTop: "20px",

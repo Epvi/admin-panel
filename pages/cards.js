@@ -3,6 +3,7 @@ import Box from "@mui/material/Box";
 import { useEffect } from "react";
 import { getData, useDashboard } from "../auth/dashboardData";
 import { Typography } from "@mui/material";
+import CircularProgress from "@mui/material/CircularProgress";
 
 export default function DashboardData() {
   const { dashboardState, dashboardDispatch } = useDashboard();
@@ -14,7 +15,7 @@ export default function DashboardData() {
  
   return (
     <>
-      <Box
+      {dashboardState.totalData?(<Box
         sx={{
           display: "flex",
           flexDirection: "row",
@@ -36,7 +37,7 @@ export default function DashboardData() {
         >
           <Typography sx={{ fontSize: "18px" }}>Total Users</Typography>
           <Typography sx={{ fontSize: "50px" }}>
-            {dashboardState.totalData?.totalUsers}
+            {dashboardState.totalData.totalUsers}
           </Typography>
         </Box>
         <Box
@@ -50,7 +51,7 @@ export default function DashboardData() {
         >
           <Typography sx={{ fontSize: "18px" }}>Total Devices</Typography>
           <Typography sx={{ fontSize: "50px" }}>
-            {dashboardState.totalData?.totalDevices}
+            {dashboardState.totalData.totalDevices}
           </Typography>
         </Box>
 
@@ -65,7 +66,7 @@ export default function DashboardData() {
         >
           <Typography sx={{ fontSize: "18px" }}>Average Devices</Typography>
           <Typography sx={{ fontSize: "50px" }}>
-            {dashboardState.totalData?.averageDevices}
+            {dashboardState.totalData.averageDevices}
           </Typography>
         </Box>
         <Box
@@ -79,10 +80,10 @@ export default function DashboardData() {
         >
           <Typography sx={{ fontSize: "18px" }}>Device ID</Typography>
           <Typography sx={{ fontSize: "50px" }}>
-            {dashboardState.totalData?.deviceID}
+            {dashboardState.totalData.deviceID}
           </Typography>
         </Box>
-      </Box>
+      </Box>):(<CircularProgress sx={{marginLeft:"45%",marginTop:"20px"}}/>)}
     </>
   );
 }

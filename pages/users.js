@@ -1,36 +1,10 @@
 import * as React from "react";
-import { styled } from "@mui/material/styles";
-import Table from "@mui/material/Table";
-import TableBody from "@mui/material/TableBody";
-import TableCell, { tableCellClasses } from "@mui/material/TableCell";
-import TableContainer from "@mui/material/TableContainer";
-import TableHead from "@mui/material/TableHead";
-import TableRow from "@mui/material/TableRow";
-import Paper from "@mui/material/Paper";
+import CircularProgress from "@mui/material/CircularProgress";
+import { DataGrid } from "@mui/x-data-grid";
 import { getData, useUser } from "../auth/userReducer";
 import { useEffect } from "react";
 import Layout from "../components/Layout";
-import { useState } from "react"; 
-
-const StyledTableCell = styled(TableCell)(({ theme }) => ({
-  [`&.${tableCellClasses.head}`]: {
-    backgroundColor: theme.palette.common.black,
-    color: theme.palette.common.white,
-  },
-  [`&.${tableCellClasses.body}`]: {
-    fontSize: 14,
-  },
-}));
-
-const StyledTableRow = styled(TableRow)(({ theme }) => ({
-  "&:nth-of-type(odd)": {
-    backgroundColor: theme.palette.action.hover,
-  },
-  // hide last border
-  "&:last-child td, &:last-child th": {
-    border: 0,
-  },
-}));
+import { useState } from "react";
 
 export default function UsersData() {
   const { userState, userDispatch } = useUser();
@@ -41,14 +15,51 @@ export default function UsersData() {
   }, []);
   const [value, setValue] = useState("Choose");
 
-  const handleChange = (event) => {
-    setValue(event.target.value);
-  };
+  const columns = [
+    { field: "id", headerName: "Sr", flex: 0.3 },
+    { field: "name", headerName: "Name", flex: 1 },
+    { field: "email", headerName: "Email", flex: 1 },
+    {
+      field: "smifis",
+      headerName: "Smifis",
+      flex:1,
+      // renderCell: (cellValues) => {
+      //   return (
+      //     <Dropdown label={cellValues} value={value} onChange={handleChange} />
+      //   );
+      // },
+    },
+    {
+      field: "subscribed",
+      headerName: "Subscribed",
+      flex: 1,
+    },
+  ];
+  // const handleChange = (event) => {
+  //   setValue(event.target.value);
+  // };
   return (
     <>
-      <div style={{ marginRight: "15px" }}>
-        <h1 style={{ textAlign: "center", marginTop: "20px" }}>Users</h1>
-        <TableContainer component={Paper}>
+      <div style={{ marginRight: "15px", marginTop: "15px",height: "85vh",width: "100%", }}>
+      {userState.userArray? (
+          <DataGrid
+            getRowId={(row) => row.id}
+            getRowHeight={() => 'auto'}
+            rows={userState.userArray.map((row, index) => ({
+              id: index,
+              name:row.name,
+              email:row.email,
+              smifis:row.smifis + " ",           
+              subscribed:row.subscribed ? "True" : "False",
+            }))}
+            columns={columns}
+            pageSize={10}
+            rowsPerPageOptions={[10]}
+            checkboxSelection />
+        ) : (
+          <CircularProgress sx={{ marginLeft: "45%",marginTop:"15px" }} />
+        )}
+        {/* <TableContainer component={Paper}>
           <Table aria-label="customized table">
             <TableHead>
               <TableRow>
@@ -92,22 +103,22 @@ export default function UsersData() {
               ))}
             </TableBody>
           </Table>
-        </TableContainer>
+        </TableContainer> */}
       </div>
     </>
   );
 }
-const Dropdown = ({ label, value, onChange }) => {
-  return (
-    <select value={value} onChange={onChange}>
-      {label.map((option, i) => (
-        <option key={i} value={option}>
-          {option}
-        </option>
-      ))}
-    </select>
-  );
-};
+// const Dropdown = ({ label, value, onChange }) => {
+//   return (
+//     <select value={value} onChange={onChange}>
+//       {label?.map((option, i) => (
+//         <option key={i} value={option}>
+//           {option}
+//         </option>
+//       ))}
+//     </select>
+//   );
+// };
 const userRole = "admin";
 UsersData.getLayout = function getLayout(page) {
   return <Layout userRole={userRole}>{page}</Layout>;

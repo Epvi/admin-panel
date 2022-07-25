@@ -1,11 +1,6 @@
 import * as React from "react";
-import Table from "@mui/material/Table";
-import TableBody from "@mui/material/TableBody";
-import TableCell from "@mui/material/TableCell";
-import TableContainer from "@mui/material/TableContainer";
-import TableHead from "@mui/material/TableHead";
-import TableRow from "@mui/material/TableRow";
-import Paper from "@mui/material/Paper";
+import CircularProgress from "@mui/material/CircularProgress";
+import { DataGrid } from "@mui/x-data-grid";
 import { getData, useComplaint } from "../auth/complaintReducer";
 import { useEffect } from "react";
 import Layout from "../components/Layout";
@@ -20,6 +15,31 @@ export default function ComplaintTables() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  const columns = [
+    { field: "id", headerName: "Sr",flex :0.3 },
+    { field: "userid", headerName: "userID",flex :1},
+    { field: "phone", headerName: "Phone",flex :1 },
+    {
+      field: "date",
+      headerName: "Date",
+      flex :1
+    },
+    {
+      field: "text",
+      headerName: "Complaint Text",
+      description:"Cannot be sorted",
+      sortable: false,
+      // width: 160,
+      height:2000,
+      flex :5
+     
+    },
+    {
+      field: "status",
+      headerName: "Status",
+      flex :1
+    },
+  ];
   return (
     <>
       <div
@@ -31,52 +51,26 @@ export default function ComplaintTables() {
         }}
       >
         
-        <TableContainer component={Paper}>
-          <Table aria-label="simple table">
-            <TableHead >
-              <TableRow>
-                <TableCell sx={{ width: "5vw" }} align="center">
-                  Sr.
-                </TableCell>
-                <TableCell sx={{ width: "15vw" }} align="center">
-                  userID
-                </TableCell>
-                <TableCell sx={{ width: "15vw" }} align="center">
-                  Phone no.
-                </TableCell>
-                <TableCell sx={{ width: "15vw" }} align="center">
-                  Date
-                </TableCell>
-                <TableCell sx={{ width: "35vw" }} align="center">
-                  Complaint Text
-                </TableCell>
-                <TableCell sx={{ width: "15vw" }} align="center">
-                  Status
-                </TableCell>
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {complaintState.complaint?.map((row, index) => (
-                <TableRow key={row.id}>
-                  <TableCell align="center" component="th" scope="row">
-                    {index}
-                  </TableCell>
-                  <TableCell align="center">{row.userID}</TableCell>
-                  <TableCell align="center">
-                    {row.phoneNo}
-                  </TableCell>
-                  <TableCell align="center">
-                    {row.time.toDate().toString().slice(4, 15)}
-                  </TableCell>
-                  <TableCell align="center">
-                    {row.complaintText}
-                  </TableCell>
-                  <TableCell align="center">{row.status}</TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-        </TableContainer>
+        {complaintState.complaint ? (
+          <DataGrid
+            getRowId={(row) => row.id}
+            getRowHeight={() => 'auto'}
+            rows={complaintState.complaint.map((row, index) => ({
+              id: index,
+              userid: row.userID,
+              phone: row.phoneNo,
+              date:row.time.toDate().toString().slice(4, 15),
+              text:row.complaintText,
+              status:row.status
+            }))}
+            columns={columns}
+            pageSize={10}
+            rowsPerPageOptions={[10]}
+            checkboxSelection
+          />
+        ) : (
+          <CircularProgress sx={{ marginLeft: "45%",marginTop:"15px" }} />
+        )}
       </div>
     </>
   );
