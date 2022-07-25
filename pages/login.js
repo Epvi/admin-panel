@@ -6,7 +6,6 @@ import Button from "@material-ui/core/Button";
 import TextField from "@material-ui/core/TextField";
 import "../firebaseConfig";
 import { auth } from "../firebaseConfig";
-// import { useCount } from "../src/reducer";
 import { signInWithEmailAndPassword } from "firebase/auth";
 import { useAuth } from '../auth/AuthContext';
 
@@ -50,7 +49,7 @@ const WithMaterialUI = () => {
           // console.log(userData);
           
           if (currentUser) {
-            Router.push('/home')
+            Router.push('/')
         }
           
         })
