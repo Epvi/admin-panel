@@ -5,9 +5,44 @@ import { getData, useUser } from "../auth/userReducer";
 import { useEffect } from "react";
 import Layout from "../components/Layout";
 import { useState } from "react";
+import { autocompleteClasses, colors } from "@mui/material";
+import { height, padding } from "@mui/system";
+import { blue } from "@mui/material/colors";
+import { TextField } from "@material-ui/core";
 
 export default function UsersData() {
   const { userState, userDispatch } = useUser();
+  const [title, setTitle] = useState();
+  const [body, setBody] = useState();
+  const [index, setIndex] = useState();
+  const [pop, setPop] = useState(false);
+
+  function popUp(id) {
+    setPop((pValue) => {
+      return !pValue;
+    });
+    setIndex(id);
+  }
+
+  function changeTitle(e) {
+    const title = e.target.value;
+    setTitle(title);
+  }
+
+  function changeBody(e) {
+    const body = e.target.value;
+    setBody(body);
+  }
+
+  function handleClick(e, id) {
+    e.preventDefault();
+    const token = userState.userArray[index].tokens;
+    const name = userState.userArray[index].name;
+    console.log(title);
+    console.log(body);
+    console.log(token[token.length - 1]);
+    console.log(name);
+  }
 
   const userArray = [];
   useEffect(() => {
@@ -22,7 +57,7 @@ export default function UsersData() {
     {
       field: "smifis",
       headerName: "Smifis",
-      flex:1,
+      flex: 1,
       // renderCell: (cellValues) => {
       //   return (
       //     <Dropdown label={cellValues} value={value} onChange={handleChange} />
@@ -38,26 +73,139 @@ export default function UsersData() {
   // const handleChange = (event) => {
   //   setValue(event.target.value);
   // };
+
   return (
     <>
-      <div style={{ marginRight: "15px", marginTop: "15px",height: "85vh",width: "100%", }}>
-      {userState.userArray? (
+      {pop && (
+        <>
+          <div
+            onClick={popUp}
+            style={{
+              backgroundColor: "rgba(0,0,0,0.4)",
+              zIndex: "1",
+              display: "flex",
+              position: "absolute",
+              top: "0",
+              left: "0",
+              justifyContent: "center",
+              alignItems: "center",
+              height: "100vh",
+              width: "100vw",
+            }}
+          ></div>
+          <div
+            style={{
+              display: "flex",
+              position: "absolute",
+              top: "0",
+              left: "0",
+              justifyContent: "center",
+              alignItems: "center",
+              height: "100vh",
+              width: "100vw",
+            }}
+          >
+            <div
+              style={{
+                display:"flex",
+                flexDirection: "column",
+                justifyContent: "center",
+                alignItems: "center",
+                position: "absolute",
+                zIndex: "2",
+                marginTop: "30px",
+                marginRight: "50px",
+                height: "200px",
+                border: "none",
+                boxSizing: "border-box",
+                display:"flex",
+                flexDirection:"column",
+                width: "400px",
+                borderRadius: "10px",
+                backgroundColor: "white",
+                Transition: "all 4s ease-out",
+                TransitionProperty: "color,background-color",
+
+              }}
+            >
+              <form>
+                <TextField
+                  type="text"
+                  label="Title"
+                  onChange={changeTitle}
+                  style={{
+                    display:"block",
+                    margin:"auto"
+
+                  }}
+                />
+                <TextField
+                  type="text"
+                  onChange={changeBody}
+                  label="Body"
+                  style={{
+                    display:"block",
+                    margin:"auto"
+                  }}
+                />
+                <button
+                  onClick={handleClick}
+                  style={{
+                    cursor: "pointer",
+                    borderRadius: "4px",
+                    marginTop: "5px",
+                    marginLeft: "10px",
+                    border:"none",
+                    boxShadow:"2px 2px 2px 2px rgba(0,0,0,0.2)", 
+                    alignItems:"center",
+                    marginLeft:"auto",
+                    marginRight:"auto",
+                    marginTop:"20px",
+                    backgroundColor:"#556cd6",
+                    height:"25px",
+                    width:"70px",
+                    display:"block",
+                    color:"white"
+                    
+                    
+                  
+                  }}
+                >
+                  Submit
+                </button>
+              </form>
+            </div>
+          </div>
+        </>
+      )}
+
+      <div
+        style={{
+          marginRight: "15px",
+          marginTop: "15px",
+          height: "85vh",
+          width: "100%",
+        }}
+      >
+        {userState.userArray ? (
           <DataGrid
             getRowId={(row) => row.id}
-            getRowHeight={() => 'auto'}
+            getRowHeight={() => "auto"}
             rows={userState.userArray.map((row, index) => ({
               id: index,
-              name:row.name,
-              email:row.email,
-              smifis:row.smifis + " ",           
-              subscribed:row.subscribed ? "True" : "False",
+              name: row.name,
+              email: row.email,
+              smifis: row.smifis + " ",
+              subscribed: row.subscribed ? "True" : "False",
             }))}
+            onRowClick={(rowData) => popUp(rowData.id)}
             columns={columns}
             pageSize={10}
             rowsPerPageOptions={[10]}
-            checkboxSelection />
+            //checkboxSelection
+          />
         ) : (
-          <CircularProgress sx={{ marginLeft: "45%",marginTop:"15px" }} />
+          <CircularProgress sx={{ marginLeft: "45%", marginTop: "15px" }} />
         )}
         {/* <TableContainer component={Paper}>
           <Table aria-label="customized table">
