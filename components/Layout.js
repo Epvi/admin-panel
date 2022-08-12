@@ -267,6 +267,7 @@ function SideDrawer({ userRole }) {
     if (index === 0) Router.push("/");
     if(index===1) Router.push("/customercomplaint");
     if(index===2) Router.push("/devices");
+    if(index===3) Router.push("/serviceRequests");
   };
   const handleClickTwo = (index) => {
     if (index === 0) Router.push("/users");
@@ -315,7 +316,7 @@ const styling = {
         </DrawerHeader>
         <Divider />
         <List sx={{ backgroundColor: "white" }}>
-          {["Dashboard","Customer Complaint", "Devices"].map((text, index) =>
+          {["Dashboard","Customer Complaint", "Devices","Service Requests"].map((text, index) =>
             userRole === "admin" || userRole === "support" ? (
               <ListItem
                 onClick={() => handleClickOne(index)}
@@ -340,6 +341,8 @@ const styling = {
                     {index === 0 ? <DashboardIcon sx={pathname==="/"?styling:null}/> : null}
                     {index === 1 ? <InboxIcon sx={pathname==="/customercomplaint"?styling:null}/> : null}
                     {index === 2 ? <DevicesIcon sx={pathname==="/devices"?styling:null}/> : null}
+                    {index === 3 ? <InboxIcon sx={pathname==="/serviceRequests"?styling:null}/> : null}
+
                   </ListItemIcon>
                   <ListItemText primary={text} sx={{ opacity: open ? 1 : 0}} />
                 </ListItemButton>

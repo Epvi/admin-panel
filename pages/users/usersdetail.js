@@ -125,6 +125,7 @@ function Usersdetail(props) {
                     marginLeft: "10px",
                     border: "none",
                     boxShadow: "1px 3px 9px 5px rgba(0,0,0.2,0.2)",
+
                     alignItems: "center",
                     marginLeft: "auto",
                     marginRight: "auto",

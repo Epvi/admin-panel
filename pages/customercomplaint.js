@@ -79,3 +79,4 @@ export default function ComplaintTables() {
 ComplaintTables.getLayout = function getLayout(page) {
   return <Layout userRole={userRole}>{page}</Layout>;
 };
+
