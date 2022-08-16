@@ -5,9 +5,31 @@ import { getData, useUser } from "../auth/userReducer";
 import { useEffect } from "react";
 import Layout from "../components/Layout";
 import { useState } from "react";
+import { autocompleteClasses, colors, Link } from "@mui/material";
+import { height, padding } from "@mui/system";
+import { blue } from "@mui/material/colors";
+import { TextField } from "@material-ui/core";
+import userdetails from "./users/usersdetail";
+import Router from "next/router";
+
 
 export default function UsersData() {
   const { userState, userDispatch } = useUser();
+  function userDetails(index) {
+    
+    Router.push({
+      pathname: '/users/usersdetail',
+      query: {
+        name: userState.userArray[index].name,
+        email: userState.userArray[index].email,
+        smifis: userState.userArray[index].smifis,
+        subscribed: userState.userArray[index].subscribed,
+        token:userState.userArray[index].tokens
+      }
+  }, '/users/usersdetail')
+  }
+
+  
 
   const userArray = [];
   useEffect(() => {
@@ -22,7 +44,7 @@ export default function UsersData() {
     {
       field: "smifis",
       headerName: "Smifis",
-      flex:1,
+      flex: 1,
       // renderCell: (cellValues) => {
       //   return (
       //     <Dropdown label={cellValues} value={value} onChange={handleChange} />
@@ -38,26 +60,45 @@ export default function UsersData() {
   // const handleChange = (event) => {
   //   setValue(event.target.value);
   // };
+
   return (
     <>
-      <div style={{ marginRight: "15px", marginTop: "15px",height: "85vh",width: "100%", }}>
-      {userState.userArray? (
+      
+      
+
+      <div
+        style={{
+          marginRight: "15px",
+          marginTop: "15px",
+          height: "85vh",
+          width: "100%",
+        }}
+      >
+        {userState.userArray ? (
           <DataGrid
             getRowId={(row) => row.id}
-            getRowHeight={() => 'auto'}
+            getRowHeight={() => "auto"}
             rows={userState.userArray.map((row, index) => ({
               id: index,
-              name:row.name,
-              email:row.email,
-              smifis:row.smifis + " ",           
-              subscribed:row.subscribed ? "True" : "False",
+              name: row.name,
+              email: row.email,
+              smifis: row.smifis + " ",
+              subscribed: row.subscribed ? "True" : "False",
             }))}
+ 
+
+          
+
+            onRowClick={(rowData) => userDetails(rowData.id)}
+
+
             columns={columns}
             pageSize={10}
             rowsPerPageOptions={[10]}
-            checkboxSelection />
+            //checkboxSelection
+          />
         ) : (
-          <CircularProgress sx={{ marginLeft: "45%",marginTop:"15px" }} />
+          <CircularProgress sx={{ marginLeft: "45%", marginTop: "15px" }} />
         )}
         {/* <TableContainer component={Paper}>
           <Table aria-label="customized table">
@@ -104,6 +145,7 @@ export default function UsersData() {
             </TableBody>
           </Table>
         </TableContainer> */}
+
       </div>
     </>
   );

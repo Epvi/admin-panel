@@ -1,5 +1,28 @@
 @import '~antd/dist/antd.css';
 
+
+
+
+.shadow {
+  display: flex;
+  box-sizing: border-box;
+
+  margin: auto;
+  box-shadow: rgba(233, 240, 239, 0.12) 0px 2px 4px 2px, rgba(96, 105, 110, 0.32) 0px 2px 22px 2px;
+  /* box-shadow: 0 9px 8px -3px rgb(64 60 67 / 24%), 8px 0 8px -7px rgb(64 60 67 / 24%), -8px 0 8px -7px rgb(64 60 67 / 24%); */
+  margin-top: 80px;
+
+  border-radius: 4px;
+  height: 280px;
+  margin-bottom: 20px;
+  width: 96%;
+box-sizing: box;
+
+  
+
+}
+
+
 .App {
   background-color: #282c34;
   min-height: 100vh;
