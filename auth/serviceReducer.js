@@ -1,7 +1,7 @@
 import * as React from "react";
 import { database } from "../firebaseConfig";
 import { collection, getDocs } from "firebase/firestore";
-import { doc, deleteDoc } from "firebase/firestore";
+import { doc, deleteDoc, addDoc, setDoc } from "firebase/firestore";
 import { gridColumnsTotalWidthSelector } from "@mui/x-data-grid";
 
 const colRef = collection(database, "ServiceRequests");
@@ -12,6 +12,8 @@ function userReducer(serviceState, action) {
         return { serviceState };
       case "SUCCESS":
         return { service: action.payload };
+    
+        
     }
 }
 function getData(serviceDispatch) {
@@ -26,15 +28,25 @@ function getData(serviceDispatch) {
   });
 }
 
-
+//In line 32 serviceDispatch is a parameter
 async function deleteServiceRequest(serviceDispatch,docId) {
-
-
-
     const docRef = doc(database, "ServiceRequests",docId);
     await deleteDoc(docRef);
 }
 
+async function addServiceRequests(date, premise) {
+  await addDoc(collection(database, "ServiceRequests"), {
+    date: date,
+    premise: premise
+  });
+}
+
+async function updateServiceRequests(date, premise, docId) {
+  await setDoc(doc(database, "ServiceRequests", docId), {
+    date: date,
+    premise: premise
+  });
+}
 
 function ServiceStateProvider({ children }) {
     const initialserviceState = [];
@@ -55,6 +67,6 @@ function ServiceStateProvider({ children }) {
     return context;
   }
   
-  export { ServiceStateProvider, useservice, getData , deleteServiceRequest};
+  export { updateServiceRequests, addServiceRequests, ServiceStateProvider, useservice, getData, deleteServiceRequest };
   
 
