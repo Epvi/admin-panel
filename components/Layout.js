@@ -270,6 +270,8 @@ function SideDrawer({ userRole }) {
   };
   const handleClickTwo = (index) => {
     if (index === 0) Router.push("/users");
+    if (index === 1) Router.push("/sub");
+
   };
 const styling = {
   color:"#556cd6"
@@ -373,7 +375,7 @@ const styling = {
               </ListItem>
             ) : null */}
           {/* )} */}
-          {[ "Users"].map(
+          {[ "Users","MqttData"].map(
             (text, index) =>
               userRole === "admin" || userRole === "developer" ? (
                 <ListItem
@@ -397,9 +399,9 @@ const styling = {
                       }}
                     >
                       {index === 0 ?  <ContactPageIcon sx={pathname==="/users"?styling:null}/>: null}
-                      {/* {index === 1 ? <SettingsApplicationsIcon /> : null}
-                      {index === 2 ? <AdminPanelSettingsIcon /> : null}
-                      {index === 3 ? <IntegrationInstructionsIcon /> : null} */}
+                      {index === 1 ? <SettingsApplicationsIcon sx={pathname==="/sub"?styling:null} /> : null}
+                      {/* {index === 2 ? <AdminPanelSettingsIcon /> : null} */}
+                      {/* {index === 3 ? <IntegrationInstructionsIcon /> : null} */}
                     </ListItemIcon>
                     <ListItemText
                       primary={text}

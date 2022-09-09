@@ -14,6 +14,7 @@ import "../styles/App.css";
 import { TotalUserProvider } from "../auth/dashboardData";
 import { DeviceProvider } from "../auth/devicesReducer";
 import { RoomPinsProvider } from "../auth/roomPinsReducer";
+import { SubStateProvider } from "../auth/subReducer";
 // Client-side cache, shared for the whole session of the user in the browser.
 const clientSideEmotionCache = createEmotionCache();
 
@@ -36,10 +37,12 @@ export default function MyApp(props) {
               <TotalUserProvider>
                 <DeviceProvider>
                   <RoomPinsProvider>
+                    <SubStateProvider>
                   {/* <Layout userRole={userRole}> */}
                   {getLayout(<Component {...pageProps} />)}
                   {/* <Component {...pageProps} /> */}
                   {/* </Layout> */}
+                  </SubStateProvider>
                   </RoomPinsProvider>
                 </DeviceProvider>
               </TotalUserProvider>
