@@ -38,7 +38,7 @@ const WithMaterialUI = () => {
         .then((userCredential) => {
           // Signed in
           const user = userCredential.user;
-          Router.push("/home");
+          Router.push("/");
         })
         .catch((error) => {
           const errorCode = error.code;

@@ -87,11 +87,21 @@ const Sub = () => {
       });
     });
   }
+  const handleClickTwo = () =>{
+
+const options = {method: 'GET', url: 'https://adminpanelbackendepvi.herokuapp.com/unsubscribe'};
+
+axios.request(options).then(function (response) {
+  console.log(response.data);
+}).catch(function (error) {
+  console.error(error);
+});
+  }
   return (
     <div style={{margin: "auto", marginTop: "40px" }}>
       <form onSubmit={formik.handleSubmit}>
         <TextField
-          style={{ width: "80%", margin: "10px" }}
+          style={{ width: "60%", marginTop: "10px",marginBottom:"10px",marginRight:"10px" }}
           id="outlined"
           variant="outlined"
           name="outlined"
@@ -117,16 +127,24 @@ const Sub = () => {
         >
           Clear Data
         </Button>
+      <Button
+          sx={{ top: "18px" ,marginLeft:"10px"}}
+          variant="contained"
+          color="primary"
+          onClick={handleClickTwo}
+        >
+          Unsubscribe
+        </Button>
       </form>
-      {/* <div style={{height:"700px",overflow:"scroll"}}id="scroll"> */}
+      <div style={{marginRight:"10px"}}>
       {subState.sub ? (
         <TableContainer component={Paper}>
               <Table sx={{ minWidth: 700 }} aria-label="customized table">
                 <TableHead>
                   <TableRow>
                     <StyledTableCell sx={{width:"5vw"}} align="center">Sr. No</StyledTableCell>
-                    <StyledTableCell sx={{width:"15vw"}}align="center">Smifi</StyledTableCell>
-                    <StyledTableCell sx={{width:"6vw"}}align="center">Wifi</StyledTableCell>
+                    <StyledTableCell sx={{width:"10vw"}}align="center">Smifi</StyledTableCell>
+                    <StyledTableCell sx={{width:"3vw"}}align="center">Wifi</StyledTableCell>
                     <StyledTableCell sx={{width:"12vw"}}align="center">Pin 1</StyledTableCell>
                     <StyledTableCell sx={{width:"12vw"}}align="center">Pin 2</StyledTableCell>
                     <StyledTableCell sx={{width:"12vw"}}align="center">Pin 4</StyledTableCell>
@@ -162,7 +180,7 @@ const Sub = () => {
       ) : (
         <CircularProgress sx={{ marginLeft: "45%", marginTop: "15px" }} />
         )}
-        {/* </div> */}
+        </div>
     </div>
   );
 };
