@@ -19,7 +19,6 @@ const AuthContext = React.createContext()
         let unsubscribe = auth.onAuthStateChanged(user => {
             setCurrentUser(user)
         })
-
         return unsubscribe
     }, [])
     const value = {

@@ -101,7 +101,7 @@ axios.request(options).then(function (response) {
     <div style={{margin: "auto", marginTop: "40px" }}>
       <form onSubmit={formik.handleSubmit}>
         <TextField
-          style={{ width: "68%", marginTop: "10px",marginBottom:"10px",marginRight:"10px" }}
+          style={{ width: "60%", marginTop: "10px",marginBottom:"10px",marginRight:"10px" }}
           id="outlined"
           variant="outlined"
           name="outlined"
