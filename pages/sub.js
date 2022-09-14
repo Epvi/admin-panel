@@ -44,7 +44,8 @@ const validationSchema = yup.object({
 });
 const Sub = () => {
   const { subState, subDispatch } = useSub();
-  // const [flag, setFlag] = useState(false);
+  const [subscribeButton, setSubscribeButton] = useState(false);
+  const [subscribeText, setSubscribeText] = useState("Subscribe");
   let device;
   const formik = useFormik({
     initialValues: {
@@ -52,6 +53,8 @@ const Sub = () => {
     },
     validationSchema: validationSchema,
     onSubmit: (values) => {
+      setSubscribeText("Subscribing");
+      setSubscribeButton(true);
       device = values.outlined;
       console.log(device)
       const options = {
@@ -63,6 +66,7 @@ const Sub = () => {
         .request(options)
         .then(function (response) {
           console.log(response.data)
+          setSubscribeText("Subscribed");
           // console.log(payloadData);
           // setFlag(true);
         })
@@ -88,15 +92,17 @@ const Sub = () => {
     });
   }
   const handleClickTwo = () =>{
-
 const options = {method: 'GET', url: 'https://adminpanelbackendepvi.herokuapp.com/unsubscribe'};
 
 axios.request(options).then(function (response) {
+  setSubscribeText("Subscribe");
+  setSubscribeButton(false);
   console.log(response.data);
 }).catch(function (error) {
   console.error(error);
 });
   }
+  subState.sub?subState.sub.sort((a,b) =>  a.sortingindex-b.sortingindex ):null
   return (
     <div style={{margin: "auto", marginTop: "40px" }}>
       <form onSubmit={formik.handleSubmit}>
@@ -116,8 +122,9 @@ axios.request(options).then(function (response) {
           variant="contained"
           color="primary"
           type="submit"
+          disabled={subscribeButton}
         >
-          Subscribe
+          {subscribeText}
         </Button>
       <Button
           sx={{ top: "18px" ,marginLeft:"10px"}}
@@ -156,9 +163,9 @@ axios.request(options).then(function (response) {
                 <TableBody>
                   {subState.sub.map((row,index) => (
                     obj = JSON.parse(row.data),
-                    <StyledTableRow key={row.dataNumber}>
+                    <StyledTableRow key={index}>
                       <StyledTableCell component="th" scope="row"align="center">
-                        {index}
+                        {index+1}
                       </StyledTableCell>
                       <StyledTableCell align="center">
                         {row.smifi}
