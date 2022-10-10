@@ -18,7 +18,7 @@ import ListItemIcon from "@mui/material/ListItemIcon";
 import ListItemText from "@mui/material/ListItemText";
 import InboxIcon from "@mui/icons-material/MoveToInbox";
 import Router from "next/router";
-import DevicesIcon from '@mui/icons-material/Devices';
+import DevicesIcon from "@mui/icons-material/Devices";
 import TextField from "@mui/material/TextField";
 import Avatar from "@mui/material/Avatar";
 import NotificationsIcon from "@mui/icons-material/Notifications";
@@ -35,9 +35,8 @@ import AdminPanelSettingsIcon from "@mui/icons-material/AdminPanelSettings";
 import IntegrationInstructionsIcon from "@mui/icons-material/IntegrationInstructions";
 import LogoutIcon from "@mui/icons-material/Logout";
 import { useAuth } from "../auth/AuthContext";
-import DashboardIcon from '@mui/icons-material/Dashboard';
+import DashboardIcon from "@mui/icons-material/Dashboard";
 import { useRouter } from "next/router";
-
 
 const drawerWidth = 240;
 
@@ -81,7 +80,7 @@ const AppBar = styled(MuiAppBar, {
   }),
   ...(open && {
     marginLeft: "20px",
-    // width: `calc(100% - ${drawerWidth}px)`,// To overlap header
+    // width: `calc(100% - ${drawerWidth}px)`,// To overlap headerS
     transition: theme.transitions.create(["width", "margin"], {
       easing: theme.transitions.easing.sharp,
       duration: theme.transitions.duration.enteringScreen,
@@ -107,14 +106,14 @@ const Drawer = styled(MuiDrawer, {
 }));
 
 export default function Layout({ userRole, children }) {
-    
-
   return (
     <>
-      <Box sx={{ display: "flex", backgroundColor: "white" }}>
+      {/* <Box sx={{ display: "flex", backgroundColor: "white" }}> */}
+      <div style={{marginLeft:"80px",backgroundColor: "white",marginRight:"none"}}>
+
         <CssBaseline />
-        <NavBar userRole={userRole}/>
-        <SideDrawer userRole={userRole}/>
+        <NavBar userRole={userRole} />
+        <SideDrawer userRole={userRole} />
         <Box
           sx={{
             width: "98%",
@@ -125,7 +124,8 @@ export default function Layout({ userRole, children }) {
         >
           {children}
         </Box>
-      </Box>
+            </div>
+      {/* </Box> */}
     </>
   );
 }
@@ -136,7 +136,7 @@ function NavBar() {
     <>
       <AppBar
         sx={{
-          boxShadow: "3px 4px 5px 3px #888888",
+          boxShadow: "1px 4px 5px 3px #888888",
           backgroundColor: "#556cd6",
           color: "white",
           display: "flex",
@@ -265,18 +265,18 @@ function SideDrawer({ userRole }) {
   // console.log(pathname)
   const handleClickOne = (index) => {
     if (index === 0) Router.push("/");
-    if(index===1) Router.push("/customercomplaint");
-    if(index===2) Router.push("/devices");
+    if (index === 1) Router.push("/customercomplaint");
+    if (index === 2) Router.push("/devices");
   };
   const handleClickTwo = (index) => {
     if (index === 0) Router.push("/users");
     if (index === 1) Router.push("/sub");
-
+    if (index === 2) Router.push("/customerdata/information");
   };
-const styling = {
-  color:"#556cd6"
-}
-// console.log(window.location.href)
+  const styling = {
+    color: "#556cd6",
+  };
+  // console.log(window.location.href)
   return (
     <>
       <Drawer variant="permanent" open={open}>
@@ -288,6 +288,7 @@ const styling = {
             },
           }}
         >
+
           <IconButton
             color="inherit"
             aria-label="open drawer"
@@ -317,7 +318,7 @@ const styling = {
         </DrawerHeader>
         <Divider />
         <List sx={{ backgroundColor: "white" }}>
-          {["Dashboard","Customer Complaint", "Devices"].map((text, index) =>
+          {["Dashboard", "Customer Complaint", "Devices"].map((text, index) =>
             userRole === "admin" || userRole === "support" ? (
               <ListItem
                 onClick={() => handleClickOne(index)}
@@ -339,11 +340,21 @@ const styling = {
                       justifyContent: "center",
                     }}
                   >
-                    {index === 0 ? <DashboardIcon sx={pathname==="/"?styling:null}/> : null}
-                    {index === 1 ? <InboxIcon sx={pathname==="/customercomplaint"?styling:null}/> : null}
-                    {index === 2 ? <DevicesIcon sx={pathname==="/devices"?styling:null}/> : null}
+                    {index === 0 ? (
+                      <DashboardIcon sx={pathname === "/" ? styling : null} />
+                    ) : null}
+                    {index === 1 ? (
+                      <InboxIcon
+                        sx={pathname === "/customercomplaint" ? styling : null}
+                      />
+                    ) : null}
+                    {index === 2 ? (
+                      <DevicesIcon
+                        sx={pathname === "/devices" ? styling : null}
+                      />
+                    ) : null}
                   </ListItemIcon>
-                  <ListItemText primary={text} sx={{ opacity: open ? 1 : 0}} />
+                  <ListItemText primary={text} sx={{ opacity: open ? 1 : 0 }} />
                 </ListItemButton>
               </ListItem>
             ) : null
@@ -358,7 +369,7 @@ const styling = {
                     px: 2.5,
                   }}
                 >
-                  <ListItemIcon
+                <ListItemIcon
                     sx={{
                       minWidth: 0,
                       mr: open ? 3 : "auto",
@@ -375,41 +386,57 @@ const styling = {
               </ListItem>
             ) : null */}
           {/* )} */}
-          {[ "Users","MqttData"].map(
-            (text, index) =>
-              userRole === "admin" || userRole === "developer" ? (
-                <ListItem
-                  onClick={() => handleClickTwo(index)}
-                  key={text}
-                  disablePadding
-                  sx={{ display: "block" }}
+          {["Users", "MqttData", "Customer Data"].map((text, index) =>
+            userRole === "admin" || userRole === "developer" ? (
+              <ListItem
+                onClick={() => handleClickTwo(index)}
+                key={text}
+                disablePadding
+                sx={{ display: "block" }}
                 >
-                  <ListItemButton
+                <ListItemButton
+                  sx={{
+                    minHeight: 48,
+                    justifyContent: open ? "initial" : "center",
+                    px: 2.5,
+                  }}
+                >
+                  <ListItemIcon
                     sx={{
-                      minHeight: 48,
-                      justifyContent: open ? "initial" : "center",
-                      px: 2.5,
+                      minWidth: 0,
+                      mr: open ? 3 : "auto",
+                      justifyContent: "center",
                     }}
                   >
-                    <ListItemIcon
-                      sx={{
-                        minWidth: 0,
-                        mr: open ? 3 : "auto",
-                        justifyContent: "center",
-                      }}
-                    >
-                      {index === 0 ?  <ContactPageIcon sx={pathname==="/users"?styling:null}/>: null}
-                      {index === 1 ? <SettingsApplicationsIcon sx={pathname==="/sub"?styling:null} /> : null}
-                      {/* {index === 2 ? <AdminPanelSettingsIcon /> : null} */}
-                      {/* {index === 3 ? <IntegrationInstructionsIcon /> : null} */}
-                    </ListItemIcon>
-                    <ListItemText
-                      primary={text}
-                      sx={{ opacity: open ? 1 : 0 }}
-                    />
-                  </ListItemButton>
-                </ListItem>
-              ) : null
+                    {index === 0 ? (
+                      <ContactPageIcon
+                        sx={pathname === "/users" ? styling : null}
+                      />
+                    ) : null}
+                    {index === 1 ? (
+                      <SettingsApplicationsIcon
+                        sx={pathname === "/sub" ? styling : null}
+                      />
+                    ) : null}
+                    {index === 2 ? (
+                      <IntegrationInstructionsIcon
+                        sx={
+                          pathname === "/customerdata/information" ||
+                          pathname === "/customerdata/premise" ||
+                          pathname === "/customerdata/raiseticket" ||
+                          pathname === "/customerdata/service" ||
+                          pathname === "/customerdata/tracking"
+                            ? styling
+                            : null
+                          }
+                      />
+                    ) : null}
+                    {/* {index === 3 ? <AdminPanelSettingsIcon /> : null} */}
+                  </ListItemIcon>
+                  <ListItemText primary={text} sx={{ opacity: open ? 1 : 0 }} />
+                </ListItemButton>
+              </ListItem>
+            ) : null
           )}
           {["Logout"].map((text, index) => (
             <ListItem
@@ -417,7 +444,7 @@ const styling = {
               key={text}
               disablePadding
               sx={{ display: "block" }}
-            >
+              >
               <ListItemButton
                 sx={{
                   minHeight: 48,
@@ -441,6 +468,7 @@ const styling = {
         </List>
       </Drawer>
       <DrawerHeader />
+       
     </>
   );
 }
