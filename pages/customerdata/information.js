@@ -37,9 +37,9 @@ const Information = () => {
     <div
       style={{
         marginRight: "15px",
-        marginTop: "20px",
-        height: "85vh",
+        marginTop: "15px",
         width: "100%",
+        marginBottom:"20px"
       }}
     >
       <div style={{ display: "flex", alignItems: "center" }}>
@@ -79,7 +79,7 @@ const Information = () => {
       `}</style>
       <div
         style={{
-          marginTop: "50px",
+          marginTop: "30px",
           display: "flex",
           justifyContent: "space-evenly",
           alignItems: "center",
