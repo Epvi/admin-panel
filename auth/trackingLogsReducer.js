@@ -1,6 +1,6 @@
 import * as React from "react";
 import { database } from "../firebaseConfig";
-import { collection, query, where, onSnapshot } from "firebase/firestore";
+import { collection, query, where, getDocs } from "firebase/firestore";
 
 const trackingLogsContext = React.createContext();
 function trackingLogsReducer(trackingLogsState, action) {
@@ -14,11 +14,10 @@ function trackingLogsReducer(trackingLogsState, action) {
 async function getLogsData(
   trackingLogsDispatch,
   trackingLogsData,
-  smifis,
+  smifi,
   counter
 ) {
   let d;
-  console.log(smifis);
   if (counter == 1) {
     d = new Date();
     d.setUTCHours(0, 0, 0, 0);
@@ -34,18 +33,18 @@ async function getLogsData(
 
   const q = query(
     collection(database, "DeviceLogs"),
-    where("id", "==", "bmg1"),
+    where("id", "==", smifi),
     where("timestamp", ">=", d)
   );
 
   trackingLogsDispatch({ type: "GETTING", payload: [] });
-  const trackingLogsFunction = onSnapshot(q, (querySnapshot) => {
-    trackingLogsData = [];
-    querySnapshot.forEach((doc) => {
-      trackingLogsData.push(doc.data());
-    });
-    trackingLogsDispatch({ type: "SUCCESS", payload: trackingLogsData });
+  trackingLogsData = [];
+  const querySnapshot = await getDocs(q);
+   querySnapshot.forEach((doc) => {
+    trackingLogsData.push(doc.data());
   });
+  trackingLogsDispatch({ type: "SUCCESS", payload: trackingLogsData });
+
 }
 function TrackingLogsStateProvider({ children }) {
   const initialtrackingLogsState = [];

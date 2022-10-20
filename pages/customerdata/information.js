@@ -9,7 +9,7 @@ import Button from "@mui/material/Button";
 
 const Information = () => {
     const { userInformationState, userInformationDispatch } = useUserInformation();
-    const [userName, setUserName] = useState("Rishabh Saini")
+    const [userName, setUserName] = useState("")
 
   const { asPath, pathname } = useRouter();
   let phoneNo;
@@ -125,7 +125,7 @@ const Information = () => {
           Raise Ticket
         </div>
       </div>
-      <div style={{display:"flex",justifyContent:"space-around"}}>
+      {/* <div style={{display:"flex",justifyContent:"space-around"}}>
       <div style={{display:"flex"}}>
        <p>User Name :&nbsp;</p>
        <p>Rishabh Saini</p>
@@ -138,7 +138,7 @@ const Information = () => {
           Search
         </Button>
       </div>
-      </div>
+      </div> */}
     </div>
   );
 };
