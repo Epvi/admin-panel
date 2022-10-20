@@ -1,0 +1,572 @@
+import React from "react";
+import { useState, useEffect } from "react";
+import { useRouter } from "next/router";
+import Router from "next/router";
+import Layout from "../../components/Layout";
+import { TextField } from "@mui/material";
+import Button from "@mui/material/Button";
+import EditIcon from "@mui/icons-material/Edit";
+import AddIcon from "@mui/icons-material/Add";
+import Box from "@mui/material/Box";
+import RefreshIcon from "@mui/icons-material/Refresh";
+import { getUserData, usePremiseUser } from "../../auth/premiseUserReducer";
+import { getLogsData, useTrackingLogs } from "../../auth/trackingLogsReducer";
+import InputLabel from "@mui/material/InputLabel";
+import MenuItem from "@mui/material/MenuItem";
+import FormControl from "@mui/material/FormControl";
+import Select, { SelectChangeEvent } from "@mui/material/Select";
+import { database } from "../../firebaseConfig";
+import CircularProgress from "@mui/material/CircularProgress";
+import axios from "axios";
+import {
+  doc,
+  setDoc,
+  updateDoc,
+  arrayUnion,
+  arrayRemove,
+  deleteField,
+  getDoc,
+} from "firebase/firestore";
+import {
+  LineChart,
+  Line,
+  XAxis,
+  YAxis,
+  Tooltip,
+  CartesianGrid,
+} from "recharts";
+import { LteMobiledata } from "@mui/icons-material";
+
+const styling = {
+  backgroundColor: "#556cd6",
+  color: "white",
+};
+
+const Tracking = () => {
+  const [phoneNo, setPhoneNo] = useState(true);
+  const { premiseUserState, premiseUserDispatch } = usePremiseUser();
+  const { trackingLogsState, trackingLogsDispatch } = useTrackingLogs();
+  // const [graph, setGraph] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [count, setCount] = useState(0);
+  const [deviceStatus, setDeviceStatus] = useState([]);
+  const [unit, setUnit] = useState("Power");
+  const [time, setTime] = useState("Today");
+  const { asPath, pathname } = useRouter();
+  const handleClick = (index) => {
+    if (index == 1) Router.push("/customerdata/information");
+    if (index == 2) Router.push("/customerdata/premise");
+    if (index == 3) Router.push("/customerdata/tracking");
+    if (index == 4) Router.push("/customerdata/service");
+    if (index == 5) Router.push("/customerdata/raiseticket");
+  };
+
+  const handleUnitChange = (e) => {
+    setUnit(e.target.value);
+  };
+  const handleTimeChange = (e) => {
+    setTime(e.target.value);
+  };
+  let premiseUserData = [];
+  let trackingLogsData = [];
+  const search = async (e) => {
+    e.preventDefault();
+    console.log(phoneNo);
+    if (phoneNo.length == 10) {
+      getUserData(premiseUserDispatch, premiseUserData, phoneNo);
+      // setGraph(true);
+    } else {
+      alert("Enter Valid Phone No");
+    }
+  };
+  let arr = [];
+  useEffect(() => {
+    if (premiseUserState.premiseUserData) {
+      getLogsData(
+        trackingLogsDispatch,
+        trackingLogsData,
+        premiseUserState.premiseUserData.smifis,
+        1
+      );
+      setTimeout(() => {
+        setLoading(true);
+      }, premiseUserState.premiseUserData.smifis.length * 3500);
+      premiseUserState.premiseUserData.smifis.map(async (val) => {
+        const options = {
+          method: "GET",
+          url: "https://adminpanelbackendepvi.herokuapp.com/trackingcheck",
+          headers: { devices: val },
+        };
+
+        await axios
+          .request(options)
+          .then(function (response) {
+            arr.push(response.data);
+            if (!response.data) {
+              setCount(count + 1);
+            }
+            setDeviceStatus(arr);
+            // console.log(deviceStatus);
+          })
+          .catch(function (error) {
+            console.error(error);
+          });
+      });
+    }
+  }, [premiseUserState.premiseUserData]);
+  let uid = premiseUserState.premiseUserData
+    ? premiseUserState.premiseUserData.uid
+    : null;
+  let nRooms = premiseUserState.premiseUserData
+    ? premiseUserState.premiseUserData.nRooms
+    : null;
+  let data = [],
+    current,
+    power,
+    timeStamp,
+    limit = 0;
+  if (trackingLogsState.trackingLogsData) {
+    limit = 0;
+    if (unit == "Power") {
+      trackingLogsState.trackingLogsData.map((val, count) => {
+        current =
+          val.curr1 + val.curr2 + val.curr3 + val.curr4 + val.curr5 + val.curr6;
+        current = current.toFixed(2);
+        current = parseFloat(current);
+        power = current * val.volt;
+        power = power.toFixed(2);
+        power = parseFloat(power);
+        limit = limit < power ? power : limit;
+        timeStamp = new Date(
+            val.timestamp * 10000
+        ).toString().slice(3, 25)
+        // console.log(typeof power, power);
+        //  powerArr.push(power)
+        data.push({ name: timeStamp, value: power });
+      });
+    }
+    if (unit == "Current") {
+      trackingLogsState.trackingLogsData.map((val, count) => {
+        current =
+          val.curr1 + val.curr2 + val.curr3 + val.curr4 + val.curr5 + val.curr6;
+        current = current.toFixed(2);
+        current = parseFloat(current);
+        power = current * val.volt;
+        power = power.toFixed(2);
+        power = parseFloat(power);
+        if (limit <= current) {
+          limit = current;
+        }
+        timeStamp = new Date(
+          val.timestamp * 10000
+      ).toString().slice(3, 25)
+        data.push({ name: timeStamp, value: current });
+      });
+    }
+    if (unit == "Voltage") {
+      trackingLogsState.trackingLogsData.map((val, count) => {
+        current =
+          val.curr1 + val.curr2 + val.curr3 + val.curr4 + val.curr5 + val.curr6;
+        current = current.toFixed(2);
+        current = parseFloat(current);
+
+        power = current * val.volt;
+        power = power.toFixed(2);
+        power = parseFloat(power);
+
+        if (limit <= val.volt) {
+          limit = val.volt;
+        }
+        timeStamp = new Date(
+          val.timestamp * 10000
+      ).toString().slice(3, 25)
+        data.push({ name: timeStamp, value: val.volt });
+      });
+    }
+  }
+  const timeClick = (timeCount) => {
+    getLogsData(
+      trackingLogsDispatch,
+      trackingLogsData,
+      premiseUserState.premiseUserData.smifis,
+      timeCount
+    );
+    setLoading(false);
+    setTimeout(() => {
+      setLoading(true);
+    }, 1500);
+  };
+  const refreshDevice = () => {
+    setLoading(false);
+    setTimeout(() => {
+      setLoading(true);
+    }, premiseUserState.premiseUserData.smifis.length * 3500);
+    premiseUserState.premiseUserData.smifis.map(async (val) => {
+      const options = {
+        method: "GET",
+        url: "https://adminpanelbackendepvi.herokuapp.com/trackingcheck",
+        headers: { devices: val },
+      };
+
+      await axios
+        .request(options)
+        .then(function (response) {
+          arr.push(response.data);
+          if (!response.data) {
+            setCount(count + 1);
+          }
+          setDeviceStatus(arr);
+          // console.log(deviceStatus);
+        })
+        .catch(function (error) {
+          console.error(error);
+        });
+    });
+  };
+  return (
+    <div
+      style={{
+        marginRight: "15px",
+        marginTop: "10px",
+        width: "100%",
+        marginBottom: "20px",
+      }}
+    >
+      <div style={{ display: "flex", alignItems: "center" }}>
+        <h2 style={{ marginLeft: "20px", color: "#556CD6" }}>
+          Welcome &nbsp;&nbsp;{" "}
+          {premiseUserState.premiseUserData
+            ? premiseUserState.premiseUserData.name
+            : null}
+        </h2>
+        <h3 style={{ marginLeft: "10vw" }}>Enter Customer Phone Number : </h3>
+
+        <TextField
+          style={{
+            width: "20vw",
+            marginLeft: "10px",
+          }}
+          type="number"
+          id="outlined"
+          variant="outlined"
+          name="outlined"
+          label="Phone"
+          required
+          onChange={(e) => setPhoneNo(e.target.value)}
+        />
+        <Button
+          sx={{ marginLeft: "5px", padding: "13px", width: "7vw" }}
+          variant="contained"
+          type="submit"
+          onClick={search}
+        >
+          Search
+        </Button>
+      </div>
+      <style jsx>{`
+        .nav {
+          background-color: #d9d9d9;
+          width: 19%;
+          display: flex;
+          justify-content: center;
+          padding-top: 15px;
+          padding-bottom: 15px;
+          cursor: pointer;
+        }
+      `}</style>
+      <div
+        style={{
+          marginTop: "30px",
+          display: "flex",
+          justifyContent: "space-evenly",
+          alignItems: "center",
+          fontWeight: "bold",
+          letterSpacing: "0.5px",
+          fontSize: "17px",
+        }}
+      >
+        <div
+          className="nav"
+          onClick={() => {
+            handleClick(1);
+          }}
+          style={pathname === "/customerdata/information" ? styling : null}
+        >
+          Information
+        </div>
+        <div
+          className="nav"
+          onClick={() => {
+            handleClick(2);
+          }}
+          style={pathname === "/customerdata/premise" ? styling : null}
+        >
+          Premise
+        </div>
+        <div
+          className="nav"
+          onClick={() => {
+            handleClick(3);
+          }}
+          style={pathname === "/customerdata/tracking" ? styling : null}
+        >
+          Tracking
+        </div>
+        <div
+          className="nav"
+          onClick={() => {
+            handleClick(4);
+          }}
+          style={pathname === "/customerdata/service" ? styling : null}
+        >
+          Service
+        </div>
+        <div
+          className="nav"
+          onClick={() => {
+            handleClick(5);
+          }}
+          style={pathname === "/customerdata/raiseticket" ? styling : null}
+        >
+          Raise Ticket
+        </div>
+      </div>
+
+      {premiseUserState.premiseUserData &&
+      trackingLogsState.trackingLogsData ? (
+        loading ? (
+          <>
+            <div
+              style={{
+                marginLeft: "12px",
+                marginRight: "12px",
+                marginTop: "30px",
+                display: "flex",
+                justifyContent: "space-between",
+                alignItems: "center",
+              }}
+            >
+              <div
+                style={{
+                  marginLeft: "20px",
+                  display: "flex",
+                  flexDirection: "column",
+                  alignItems: "center",
+                }}
+              >
+                <h2 style={{ fontWeight: "bolder" }}>
+                  {premiseUserState.premiseUserData.smifis.length} Smi-Fi
+                  Installed
+                </h2>
+                <p>{count} Smi-Fi not live</p>
+              </div>
+              <div
+                style={{
+                  display: "flex",
+                  fontWeight: "bolder",
+                  fontSize: "22px",
+                  letterSpacing: "1px",
+                  alignItems: "center",
+                }}
+              >
+                {premiseUserState.premiseUserData.smifis.map((val, count) => (
+                  <div
+                    key={val}
+                    style={{
+                      marginLeft: "10px",
+                      backgroundColor: "#D9D9D9",
+                      display: "flex",
+                      alignItems: "center",
+                      padding: "15px",
+                    }}
+                  >
+                    {val} &nbsp;{" "}
+                    {deviceStatus[count] ? (
+                      <span style={{ color: "#45ff4b" }}>● &nbsp; Live</span>
+                    ) : (
+                      <span style={{ color: "red" }}>● &nbsp; Not Live</span>
+                    )}
+                  </div>
+                ))}
+                <RefreshIcon
+                  onClick={refreshDevice}
+                  sx={{ fontSize: "40px", cursor: "pointer" }}
+                />
+              </div>
+            </div>
+            <div
+              style={{
+                display: "flex",
+                justifyContent: "space-between",
+                marginTop: "30px",
+                marginRight: "80px",
+                alignItems: "center",
+              }}
+            >
+              <div style={{ marginLeft: "40vw" }}>
+                Last updated on{" "}
+                {trackingLogsState.trackingLogsData[
+                  trackingLogsState.trackingLogsData.length - 1
+                ]
+                  ? new Date(
+                      trackingLogsState.trackingLogsData[
+                        trackingLogsState.trackingLogsData.length - 1
+                      ].timestamp * 10000
+                    )
+                      .toString()
+                      .slice(0, 28)
+                  : null}
+              </div>
+              <div style={{ display: "flex" }}>
+                <Box sx={{ minWidth: 120 }}>
+                  <FormControl fullWidth>
+                    <Select
+                      labelId="demo-simple-select-label"
+                      id="demo-simple-select"
+                      value={unit}
+                      // label="Age"
+                      onChange={handleUnitChange}
+                    >
+                      <MenuItem value="Power">Power</MenuItem>
+                      <MenuItem value="Current">Current</MenuItem>
+                      <MenuItem value="Voltage">Voltage</MenuItem>
+                    </Select>
+                  </FormControl>
+                </Box>
+                <Box sx={{ minWidth: 120, marginLeft: "20px" }}>
+                  <FormControl fullWidth>
+                    <Select
+                      labelId="demo-simple-select-label"
+                      id="demo-simple-select"
+                      value={time}
+                      // label="Age"
+                      onChange={handleTimeChange}
+                    >
+                      <MenuItem
+                        value="Today"
+                        onClick={() => {
+                          timeClick(1);
+                        }}
+                      >
+                        Today
+                      </MenuItem>
+                      <MenuItem
+                        value="Monthly"
+                        onClick={() => {
+                          timeClick(2);
+                        }}
+                      >
+                        Weekly
+                      </MenuItem>
+                      <MenuItem
+                        value="Weekly"
+                        onClick={() => {
+                          timeClick(3);
+                        }}
+                      >
+                        Monthly
+                      </MenuItem>
+                    </Select>
+                  </FormControl>
+                </Box>
+              </div>
+            </div>
+            <div
+              style={{
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "space-around",
+              }}
+            >
+              <div>
+                <div style={{ fontSize: "20px", fontWeight: "bold" }}>
+                  {current}
+                </div>
+                <div style={{ fontSize: "16px", fontWeight: "bold" }}>
+                  Live Current
+                </div>
+                <div
+                  style={{
+                    fontSize: "20px",
+                    fontWeight: "bold",
+                    marginTop: "40px",
+                  }}
+                >
+                  {trackingLogsState.trackingLogsData[
+                    trackingLogsState.trackingLogsData.length - 1
+                  ] ? (
+                    trackingLogsState.trackingLogsData[
+                      trackingLogsState.trackingLogsData.length - 1
+                    ].volt
+                  ) : (
+                    <p>Nil</p>
+                  )}
+                </div>
+                <div style={{ fontSize: "16px", fontWeight: "bold" }}>
+                  Live Voltage
+                </div>
+                <div
+                  style={{
+                    fontSize: "20px",
+                    fontWeight: "bold",
+                    marginTop: "40px",
+                  }}
+                >
+                  {power}
+                </div>
+                <div style={{ fontSize: "16px", fontWeight: "bold" }}>
+                  Live Power/Load
+                </div>
+              </div>
+              <div>
+                <div
+                  style={{
+                    transform: `translateY(150px)`,
+                    fontSize: "18px",
+                    fontWeight: "bold",
+                    marginLeft: "-50px",
+                  }}
+                >
+                  {unit}
+                </div>
+                <LineChart
+                  width={1100}
+                  height={500}
+                  data={data}
+                  margin={{ top: 5, right: 20, bottom: 5, left: 0 }}
+                >
+                  <Line
+                    dot={false}
+                    type="monotone"
+                    dataKey="value"
+                    stroke="#8884d8"
+                  />
+                  {/* <CartesianGrid stroke="#ccc" strokeDasharray="5 5" /> */}
+                  <XAxis minTickGap={50} dataKey="name" />
+                  <YAxis datakey="value" domain={[0, limit]} />
+                  <Tooltip />
+                </LineChart>
+                <div
+                  style={{
+                    fontSize: "18px",
+                    fontWeight: "bold",
+                    marginLeft: "500px",
+                  }}
+                >
+                  Time
+                </div>
+              </div>
+            </div>
+          </>
+        ) : (
+          <CircularProgress sx={{ margin: "45vw", marginTop: "20px" }} />
+        )
+      ) : null}
+    </div>
+  );
+};
+const userRole = "admin";
+export default Tracking;
+Tracking.getLayout = function getLayout(page) {
+  return <Layout userRole={userRole}>{page}</Layout>;
+};
