@@ -7,6 +7,8 @@ import {
   onSnapshot,
 
 } from "firebase/firestore";
+import { getLogsData, useTrackingLogs } from "../auth/trackingLogsReducer";
+
 
 const premiseUserContext = React.createContext();
 function premiseUserReducer(premiseUserState, action) {
@@ -29,7 +31,7 @@ async function getUserData(premiseUserDispatch,premiseUserData,phoneNo){
       //   premiseUser.push(doc.data());
       });
       premiseUserDispatch({ type: "SUCCESS", payload: premiseUserData });
-    });
+    })
 }
 function PremiseUserStateProvider({ children }) {
   const initialpremiseUserState = {};
