@@ -83,6 +83,10 @@ const Information = () => {
           display: "flex",
           justifyContent: "space-evenly",
           alignItems: "center",
+          fontWeight:"bold",
+          letterSpacing:"0.5px",
+          fontSize:"17px"
+
         }}
       >
         <div

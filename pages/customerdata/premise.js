@@ -20,14 +20,12 @@ import {
   deleteField,
   getDoc
 } from "firebase/firestore";
-import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import CircularProgress from "@mui/material/CircularProgress";
 import Backdrop from "@mui/material/Backdrop";
 import Box from "@mui/material/Box";
 import Modal from "@mui/material/Modal";
 import Fade from "@mui/material/Fade";
 import DeleteIcon from "@mui/icons-material/Delete";
-import Divider from "@mui/material/Divider";
 
 const style = {
   position: "absolute",
@@ -63,9 +61,6 @@ const Premise = () => {
   const [oldSmifi, setOldSmifi] = useState();
   const [oldPin, setOldPin] = useState();
   const [oldAppName, setOldAppName] = useState();
-  const [d, setd] = useState("")
-  let userName
-  // let phoneNo=9999999999;
   const styling = {
     backgroundColor: "#556cd6",
     color: "white",
@@ -91,7 +86,6 @@ const Premise = () => {
       alert("Enter Valid Phone No")
     }
   };
-  // console.log(premiseRoomsState.premiseRoomsData[0].uid)
   let uid = premiseUserState.premiseUserData
     ? premiseUserState.premiseUserData.uid
     : null;
@@ -297,6 +291,10 @@ const Premise = () => {
           display: "flex",
           justifyContent: "space-evenly",
           alignItems: "center",
+          fontWeight:"bold",
+          letterSpacing:"0.5px",
+          fontSize:"17px"
+
         }}
       >
         <div
