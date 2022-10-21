@@ -15,11 +15,17 @@ import {
   doc,
   setDoc,
   updateDoc,
+  deleteDoc,
   arrayUnion,
   arrayRemove,
   deleteField,
   getDoc
 } from "firebase/firestore";
+import Dialog from '@mui/material/Dialog';
+import DialogActions from '@mui/material/DialogActions';
+import DialogContent from '@mui/material/DialogContent';
+import DialogContentText from '@mui/material/DialogContentText';
+import DialogTitle from '@mui/material/DialogTitle';
 import CircularProgress from "@mui/material/CircularProgress";
 import Backdrop from "@mui/material/Backdrop";
 import Box from "@mui/material/Box";
@@ -50,6 +56,7 @@ const Premise = () => {
   const [oldRoom, setOldRoom] = useState("");
   const [roomCount, setRoomCount] = useState();
   const [open, setOpen] = useState(false);
+  const [openDialog, setOpenDialog] = useState(false);
   const [pinOpen, setPinOpen] = useState(false);
   const [roomNo, setRoomNo] = useState(0);
   const { asPath, pathname } = useRouter();
@@ -73,6 +80,14 @@ const Premise = () => {
     if (index == 3) Router.push("/customerdata/tracking");
     if (index == 4) Router.push("/customerdata/service");
     if (index == 5) Router.push("/customerdata/raiseticket");
+  };
+  const handleDialogOpen = (c) => {
+    setRoomCount(c)
+    setOpenDialog(true);
+  };
+
+  const handleDialogClose = () => {
+    setOpenDialog(false);
   };
 
   const search = async (e) => {
@@ -233,6 +248,13 @@ const Premise = () => {
     }
   }
 
+}
+const deleteRoom = async () => {
+  await deleteDoc(doc(database, "Rooms", uid + "_" + roomCount))
+  await updateDoc(doc(database, "Users", uid), {
+    nRooms: nRooms - 1,
+    // smifi:premiseUserDispatch.premiseUserData
+  });
 }
   let pinNo, applianceName;
   return (
@@ -517,7 +539,7 @@ const Premise = () => {
                 flexDirection: "column",
                 // justifyContent: "space-around",
                 alignItems: "center",
-                marginLeft: "9vw",
+                marginLeft: "6vw",
               }}
             >
               {premiseRoomsState.premiseRoomsData?.map((roomName, count) => (
@@ -553,6 +575,19 @@ const Premise = () => {
                     }}
                     sx={{
                       marginLeft: "6px",
+                      padding: "3px",
+                      cursor: "pointer",
+                      backgroundColor: "black",
+                      color: "white",
+                      cursor: "pointer",
+                    }}
+                  />
+                  <DeleteIcon
+                    onClick={() => {
+                      handleDialogOpen(count + 1);
+                    }}
+                    sx={{
+                      marginLeft: "5px",
                       padding: "3px",
                       cursor: "pointer",
                       backgroundColor: "black",
@@ -870,6 +905,27 @@ const Premise = () => {
           </Box>
         </Fade>
       </Modal>
+      <Dialog
+        open={openDialog}
+        onClose={handleDialogClose}
+        aria-labelledby="alert-dialog-title"
+        aria-describedby="alert-dialog-description"
+      >
+        <DialogContent>
+          <DialogContentText id="alert-dialog-description">
+           Are you sure you want to delete this item
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={()=>{
+           deleteRoom();
+           handleDialogClose();
+          }} autoFocus>
+            Agree
+          </Button>
+          <Button onClick={handleDialogClose}>Disagree</Button>
+        </DialogActions>
+      </Dialog>
     </div>
   );
 };

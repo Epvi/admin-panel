@@ -49,10 +49,15 @@ const Tracking = () => {
   // const [graph, setGraph] = useState(false);
   const [loading, setLoading] = useState(false);
   const [count, setCount] = useState(0);
+  const [smifiState, setSmifiState] = useState();
   const [deviceStatus, setDeviceStatus] = useState([]);
   const [unit, setUnit] = useState("Power");
   const [time, setTime] = useState("Today");
   const { asPath, pathname } = useRouter();
+  const bgStyle = {
+    backgroundColor: "#556cd6",
+    color: "white",
+  };
   const handleClick = (index) => {
     if (index == 1) Router.push("/customerdata/information");
     if (index == 2) Router.push("/customerdata/premise");
@@ -69,6 +74,14 @@ const Tracking = () => {
   };
   let premiseUserData = [];
   let trackingLogsData = [];
+  let arr = [];
+  let currSmifi;
+  
+   let data = [],
+     current,
+     power,
+     timeStamp,
+     limit = 0;
   const search = async (e) => {
     e.preventDefault();
     console.log(phoneNo);
@@ -79,13 +92,14 @@ const Tracking = () => {
       alert("Enter Valid Phone No");
     }
   };
-  let arr = [];
   useEffect(() => {
     if (premiseUserState.premiseUserData) {
+      currSmifi = premiseUserState.premiseUserData.smifis[0],
+      setSmifiState(currSmifi)
       getLogsData(
         trackingLogsDispatch,
         trackingLogsData,
-        premiseUserState.premiseUserData.smifis,
+        currSmifi,
         1
       );
       setTimeout(() => {
@@ -106,7 +120,6 @@ const Tracking = () => {
               setCount(count + 1);
             }
             setDeviceStatus(arr);
-            // console.log(deviceStatus);
           })
           .catch(function (error) {
             console.error(error);
@@ -114,21 +127,10 @@ const Tracking = () => {
       });
     }
   }, [premiseUserState.premiseUserData]);
-  let uid = premiseUserState.premiseUserData
-    ? premiseUserState.premiseUserData.uid
-    : null;
-  let nRooms = premiseUserState.premiseUserData
-    ? premiseUserState.premiseUserData.nRooms
-    : null;
-  let data = [],
-    current,
-    power,
-    timeStamp,
-    limit = 0;
   if (trackingLogsState.trackingLogsData) {
     limit = 0;
     if (unit == "Power") {
-      trackingLogsState.trackingLogsData.map((val, count) => {
+      trackingLogsState.trackingLogsData.map((val) => {
         current =
           val.curr1 + val.curr2 + val.curr3 + val.curr4 + val.curr5 + val.curr6;
         current = current.toFixed(2);
@@ -140,13 +142,11 @@ const Tracking = () => {
         timeStamp = new Date(
             val.timestamp * 10000
         ).toString().slice(3, 25)
-        // console.log(typeof power, power);
-        //  powerArr.push(power)
         data.push({ name: timeStamp, value: power });
       });
     }
     if (unit == "Current") {
-      trackingLogsState.trackingLogsData.map((val, count) => {
+      trackingLogsState.trackingLogsData.map((val) => {
         current =
           val.curr1 + val.curr2 + val.curr3 + val.curr4 + val.curr5 + val.curr6;
         current = current.toFixed(2);
@@ -164,7 +164,7 @@ const Tracking = () => {
       });
     }
     if (unit == "Voltage") {
-      trackingLogsState.trackingLogsData.map((val, count) => {
+      trackingLogsState.trackingLogsData.map((val) => {
         current =
           val.curr1 + val.curr2 + val.curr3 + val.curr4 + val.curr5 + val.curr6;
         current = current.toFixed(2);
@@ -185,10 +185,11 @@ const Tracking = () => {
     }
   }
   const timeClick = (timeCount) => {
+    console.log(smifiState)
     getLogsData(
       trackingLogsDispatch,
       trackingLogsData,
-      premiseUserState.premiseUserData.smifis,
+      smifiState,
       timeCount
     );
     setLoading(false);
@@ -216,13 +217,30 @@ const Tracking = () => {
             setCount(count + 1);
           }
           setDeviceStatus(arr);
-          // console.log(deviceStatus);
         })
         .catch(function (error) {
           console.error(error);
         });
     });
   };
+  if(trackingLogsState.trackingLogsData)
+  console.log(trackingLogsState.trackingLogsData.length)
+  const changeSmifiGraph = (smifi) => {
+    currSmifi = smifi;
+    setSmifiState(currSmifi)
+    setLoading(false);
+
+    getLogsData(
+      trackingLogsDispatch,
+      trackingLogsData,
+      currSmifi,
+      1
+    );
+    setTime("Today")
+    setTimeout(()=>{
+     setLoading(true);
+    },1500)
+  }
   return (
     <div
       style={{
@@ -369,19 +387,24 @@ const Tracking = () => {
                   alignItems: "center",
                 }}
               >
-                {premiseUserState.premiseUserData.smifis.map((val, count) => (
+                {premiseUserState.premiseUserData.smifis.map((val, c) => (
                   <div
+                  onClick={()=>{
+                    changeSmifiGraph(val)
+                  }}
                     key={val}
                     style={{
                       marginLeft: "10px",
-                      backgroundColor: "#D9D9D9",
+                      backgroundColor: smifiState==val?"#D9D9D9":"#f7f5f5",
                       display: "flex",
                       alignItems: "center",
                       padding: "15px",
+                      cursor:"pointer"
                     }}
                   >
                     {val} &nbsp;{" "}
-                    {deviceStatus[count] ? (
+                    {deviceStatus[c]==true ? (
+                    console.log(deviceStatus[c],c),
                       <span style={{ color: "#45ff4b" }}>● &nbsp; Live</span>
                     ) : (
                       <span style={{ color: "red" }}>● &nbsp; Not Live</span>
@@ -395,169 +418,158 @@ const Tracking = () => {
               </div>
             </div>
             <div
-              style={{
-                display: "flex",
-                justifyContent: "space-between",
-                marginTop: "30px",
-                marginRight: "80px",
-                alignItems: "center",
-              }}
-            >
-              <div style={{ marginLeft: "40vw" }}>
-                Last updated on{" "}
-                {trackingLogsState.trackingLogsData[
-                  trackingLogsState.trackingLogsData.length - 1
-                ]
-                  ? new Date(
-                      trackingLogsState.trackingLogsData[
-                        trackingLogsState.trackingLogsData.length - 1
-                      ].timestamp * 10000
-                    )
-                      .toString()
-                      .slice(0, 28)
-                  : null}
-              </div>
-              <div style={{ display: "flex" }}>
-                <Box sx={{ minWidth: 120 }}>
-                  <FormControl fullWidth>
-                    <Select
-                      labelId="demo-simple-select-label"
-                      id="demo-simple-select"
-                      value={unit}
-                      // label="Age"
-                      onChange={handleUnitChange}
-                    >
-                      <MenuItem value="Power">Power</MenuItem>
-                      <MenuItem value="Current">Current</MenuItem>
-                      <MenuItem value="Voltage">Voltage</MenuItem>
-                    </Select>
-                  </FormControl>
-                </Box>
-                <Box sx={{ minWidth: 120, marginLeft: "20px" }}>
-                  <FormControl fullWidth>
-                    <Select
-                      labelId="demo-simple-select-label"
-                      id="demo-simple-select"
-                      value={time}
-                      // label="Age"
-                      onChange={handleTimeChange}
-                    >
-                      <MenuItem
-                        value="Today"
-                        onClick={() => {
-                          timeClick(1);
+                  style={{
+                    display: "flex",
+                    justifyContent: "space-between",
+                    marginTop: "30px",
+                    marginRight: "80px",
+                    alignItems: "center",
+                  }}
+                >
+                  <div style={{ marginLeft: "40vw" }}>
+                    Last updated on{" "}
+                    {trackingLogsState.trackingLogsData[trackingLogsState.trackingLogsData.length - 1]
+                      ? new Date(
+                        trackingLogsState.trackingLogsData[trackingLogsState.trackingLogsData.length - 1].timestamp * 10000
+                      )
+                        .toString()
+                        .slice(0, 25)
+                      : null}
+                  </div>
+                  <div style={{ display: "flex" }}>
+                    <Box sx={{ minWidth: 120 }}>
+                      <FormControl fullWidth>
+                        <Select
+                          labelId="demo-simple-select-label"
+                          id="demo-simple-select"
+                          value={unit}
+                          // label="Age"
+                          onChange={handleUnitChange}
+                        >
+                          <MenuItem value="Power">Power</MenuItem>
+                          <MenuItem value="Current">Current</MenuItem>
+                          <MenuItem value="Voltage">Voltage</MenuItem>
+                        </Select>
+                      </FormControl>
+                    </Box>
+                    <Box sx={{ minWidth: 120, marginLeft: "20px" }}>
+                      <FormControl fullWidth>
+                        <Select
+                          labelId="demo-simple-select-label"
+                          id="demo-simple-select"
+                          value={time}
+                          // label="Age"
+                          onChange={handleTimeChange}
+                        >
+                          <MenuItem
+                            value="Today"
+                            onClick={() => {
+                              timeClick(1);
+                            } }
+                          >
+                            Today
+                          </MenuItem>
+                          <MenuItem
+                            value="Monthly"
+                            onClick={() => {
+                              timeClick(2);
+                            } }
+                          >
+                            Weekly
+                          </MenuItem>
+                          <MenuItem
+                            value="Weekly"
+                            onClick={() => {
+                              timeClick(3);
+                            } }
+                          >
+                            Monthly
+                          </MenuItem>
+                        </Select>
+                      </FormControl>
+                    </Box>
+                  </div>
+                </div><div
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "space-around",
+                  }}
+                >
+                    <div>
+                      <div style={{ fontSize: "20px", fontWeight: "bold" }}>
+                        {current}
+                      </div>
+                      <div style={{ fontSize: "16px", fontWeight: "bold" }}>
+                        Live Current
+                      </div>
+                      <div
+                        style={{
+                          fontSize: "20px",
+                          fontWeight: "bold",
+                          marginTop: "40px",
                         }}
                       >
-                        Today
-                      </MenuItem>
-                      <MenuItem
-                        value="Monthly"
-                        onClick={() => {
-                          timeClick(2);
+                        {trackingLogsState.trackingLogsData[trackingLogsState.trackingLogsData.length - 1] ? (
+                          trackingLogsState.trackingLogsData[trackingLogsState.trackingLogsData.length - 1].volt
+                        ) : (
+                          <p>Nil</p>
+                        )}
+                      </div>
+                      <div style={{ fontSize: "16px", fontWeight: "bold" }}>
+                        Live Voltage
+                      </div>
+                      <div
+                        style={{
+                          fontSize: "20px",
+                          fontWeight: "bold",
+                          marginTop: "40px",
                         }}
                       >
-                        Weekly
-                      </MenuItem>
-                      <MenuItem
-                        value="Weekly"
-                        onClick={() => {
-                          timeClick(3);
+                        {power}
+                      </div>
+                      <div style={{ fontSize: "16px", fontWeight: "bold" }}>
+                        Live Power/Load
+                      </div>
+                    </div>
+                    <div>
+                      <div
+                        style={{
+                          transform: `translateY(150px)`,
+                          fontSize: "18px",
+                          fontWeight: "bold",
+                          marginLeft: "-50px",
                         }}
                       >
-                        Monthly
-                      </MenuItem>
-                    </Select>
-                  </FormControl>
-                </Box>
-              </div>
-            </div>
-            <div
-              style={{
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "space-around",
-              }}
-            >
-              <div>
-                <div style={{ fontSize: "20px", fontWeight: "bold" }}>
-                  {current}
-                </div>
-                <div style={{ fontSize: "16px", fontWeight: "bold" }}>
-                  Live Current
-                </div>
-                <div
-                  style={{
-                    fontSize: "20px",
-                    fontWeight: "bold",
-                    marginTop: "40px",
-                  }}
-                >
-                  {trackingLogsState.trackingLogsData[
-                    trackingLogsState.trackingLogsData.length - 1
-                  ] ? (
-                    trackingLogsState.trackingLogsData[
-                      trackingLogsState.trackingLogsData.length - 1
-                    ].volt
-                  ) : (
-                    <p>Nil</p>
-                  )}
-                </div>
-                <div style={{ fontSize: "16px", fontWeight: "bold" }}>
-                  Live Voltage
-                </div>
-                <div
-                  style={{
-                    fontSize: "20px",
-                    fontWeight: "bold",
-                    marginTop: "40px",
-                  }}
-                >
-                  {power}
-                </div>
-                <div style={{ fontSize: "16px", fontWeight: "bold" }}>
-                  Live Power/Load
-                </div>
-              </div>
-              <div>
-                <div
-                  style={{
-                    transform: `translateY(150px)`,
-                    fontSize: "18px",
-                    fontWeight: "bold",
-                    marginLeft: "-50px",
-                  }}
-                >
-                  {unit}
-                </div>
-                <LineChart
-                  width={1100}
-                  height={500}
-                  data={data}
-                  margin={{ top: 5, right: 20, bottom: 5, left: 0 }}
-                >
-                  <Line
-                    dot={false}
-                    type="monotone"
-                    dataKey="value"
-                    stroke="#8884d8"
-                  />
-                  {/* <CartesianGrid stroke="#ccc" strokeDasharray="5 5" /> */}
-                  <XAxis minTickGap={50} dataKey="name" />
-                  <YAxis datakey="value" domain={[0, limit]} />
-                  <Tooltip />
-                </LineChart>
-                <div
-                  style={{
-                    fontSize: "18px",
-                    fontWeight: "bold",
-                    marginLeft: "500px",
-                  }}
-                >
-                  Time
-                </div>
-              </div>
-            </div>
-          </>
+                        {unit}
+                      </div>
+                      <LineChart
+                        width={1100}
+                        height={500}
+                        data={data}
+                        margin={{ top: 5, right: 20, bottom: 5, left: 0 }}
+                      >
+                        <Line
+                          dot={false}
+                          type="monotone"
+                          dataKey="value"
+                          stroke="#8884d8" />
+                        {/* <CartesianGrid stroke="#ccc" strokeDasharray="5 5" /> */}
+                        <XAxis minTickGap={50} dataKey="name" />
+                        <YAxis datakey="value" domain={[0, limit]} />
+                        <Tooltip />
+                      </LineChart>
+                      <div
+                        style={{
+                          fontSize: "18px",
+                          fontWeight: "bold",
+                          marginLeft: "500px",
+                        }}
+                      >
+                        Time
+                      </div>
+                    </div>
+                  </div></>
         ) : (
           <CircularProgress sx={{ margin: "45vw", marginTop: "20px" }} />
         )
