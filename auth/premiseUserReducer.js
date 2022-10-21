@@ -20,7 +20,7 @@ function premiseUserReducer(premiseUserState, action) {
   }
 }
 async function getUserData(premiseUserDispatch,premiseUserData,phoneNo){
-    phoneNo = parseInt(phoneNo)
+      console.log(phoneNo)
     const q = query(collection(database, "Users"),where("phone","==",phoneNo));
   
     premiseUserDispatch({ type: "GETTING", payload: {} });

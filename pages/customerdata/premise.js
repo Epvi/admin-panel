@@ -1,5 +1,5 @@
 import React from "react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/router";
 import Router from "next/router";
 import Layout from "../../components/Layout";
@@ -19,13 +19,13 @@ import {
   arrayUnion,
   arrayRemove,
   deleteField,
-  getDoc
+  getDoc,
 } from "firebase/firestore";
-import Dialog from '@mui/material/Dialog';
-import DialogActions from '@mui/material/DialogActions';
-import DialogContent from '@mui/material/DialogContent';
-import DialogContentText from '@mui/material/DialogContentText';
-import DialogTitle from '@mui/material/DialogTitle';
+import Dialog from "@mui/material/Dialog";
+import DialogActions from "@mui/material/DialogActions";
+import DialogContent from "@mui/material/DialogContent";
+import DialogContentText from "@mui/material/DialogContentText";
+import DialogTitle from "@mui/material/DialogTitle";
 import CircularProgress from "@mui/material/CircularProgress";
 import Backdrop from "@mui/material/Backdrop";
 import Box from "@mui/material/Box";
@@ -55,6 +55,7 @@ const Premise = () => {
   const [newRoom, setNewRoom] = useState("");
   const [oldRoom, setOldRoom] = useState("");
   const [roomCount, setRoomCount] = useState();
+  const [domainName, setDomainName] = useState("");
   const [open, setOpen] = useState(false);
   const [openDialog, setOpenDialog] = useState(false);
   const [pinOpen, setPinOpen] = useState(false);
@@ -78,11 +79,11 @@ const Premise = () => {
     if (index == 1) Router.push("/customerdata/information");
     if (index == 2) Router.push("/customerdata/premise");
     if (index == 3) Router.push("/customerdata/tracking");
-    if (index == 4) Router.push("/customerdata/service");
+    if (index == 4) Router.push("/customerdata/automation");
     if (index == 5) Router.push("/customerdata/raiseticket");
   };
   const handleDialogOpen = (c) => {
-    setRoomCount(c)
+    setRoomCount(c);
     setOpenDialog(true);
   };
 
@@ -92,13 +93,13 @@ const Premise = () => {
 
   const search = async (e) => {
     e.preventDefault();
-    console.log(phoneNo)
-    if(phoneNo.length==10){
-      
-    getUserData(premiseUserDispatch, premiseUserData, phoneNo);
-    getRoomsData(premiseRoomsDispatch, premiseRoomsData, phoneNo);
-    }else{
-      alert("Enter Valid Phone No")
+    if (phoneNo.length == 10) {
+      phoneNo = "+91" + phoneNo;
+      console.log(phoneNo);
+      getUserData(premiseUserDispatch, premiseUserData, phoneNo);
+      getRoomsData(premiseRoomsDispatch, premiseRoomsData, phoneNo);
+    } else {
+      alert("Enter Valid Phone No");
     }
   };
   let uid = premiseUserState.premiseUserData
@@ -107,7 +108,12 @@ const Premise = () => {
   let nRooms = premiseUserState.premiseUserData
     ? premiseUserState.premiseUserData.nRooms
     : null;
-  
+
+  useEffect(() => {
+    if (premiseRoomsState.premiseRoomsData) {
+      setDomainName(premiseRoomsState.premiseRoomsData[0].name);
+    }
+  }, [premiseRoomsState.premiseRoomsData]);
 
   const handleSmifiChange = () => {
     setNewSmifi(document.getElementById("smifiId").value);
@@ -181,82 +187,99 @@ const Premise = () => {
   const createNewRoom = async () => {
     let smifiVal = selectedSmifi["anchorKey"];
     let pinVal = parseInt(selectedPin["anchorKey"]);
-    // console.log(changeRoomFlag,oldSmifi,oldPin,oldAppName);
+    console.log(changeRoomFlag, oldSmifi, oldPin, oldAppName);
     if (changeRoomFlag == 0) {
-    if (smifiVal != undefined && pinVal != undefined&&appId&&appNo) {
-        
+      if (smifiVal != undefined && pinVal != oldPin && pinVal>=1&&pinVal<=6 && appId && appNo) {
         await updateDoc(doc(database, "Rooms", uid + "_" + (roomNo + 1)), {
           smifi: arrayUnion(smifiVal),
           [smifiVal]: arrayUnion(pinVal),
           [smifiVal + "_" + pinVal]: arrayUnion(appId + " - " + appNo),
         });
-    }
       }
-      if (changeRoomFlag == 1) {
-        let currentRoom = premiseRoomsState.premiseRoomsData[roomNo];
-        // console.log(currentRoom[oldSmifi+'_'+oldPin])
-        if(pinVal!=oldPin){
-        let data = currentRoom[oldSmifi+'_'+oldPin]
-        await setDoc(doc(database, "Rooms", uid + "_" + (roomNo + 1)), {
-          [oldSmifi]:arrayUnion(pinVal),
-          [oldSmifi + "_" + pinVal]: data,
-        },{ merge: true });
+    }
+    if (changeRoomFlag == 1) {
+      let currentRoom = premiseRoomsState.premiseRoomsData[roomNo];
+      // console.log(currentRoom[oldSmifi+'_'+oldPin])
+      if (pinVal != oldPin && pinVal>=1&&pinVal<=6) {
+     
+        let data = currentRoom[oldSmifi + "_" + oldPin];
+        await setDoc(
+          doc(database, "Rooms", uid + "_" + (roomNo + 1)),
+          {
+            [oldSmifi]: arrayUnion(pinVal),
+            [oldSmifi + "_" + pinVal]: data,
+          },
+          { merge: true }
+        );
         await updateDoc(doc(database, "Rooms", uid + "_" + (roomNo + 1)), {
-          [oldSmifi]:arrayRemove(oldPin),
+          [oldSmifi]: arrayRemove(oldPin),
           [oldSmifi + "_" + oldPin]: deleteField(),
         });
       }
     }
-    if(changeRoomFlag==2){
-        if (appId && appNo) {
-          await updateDoc(doc(database, "Rooms", uid + "_" + (roomNo + 1)), {
-            [oldSmifi + "_" + oldPin]: arrayUnion(appId + " - " + appNo),
-          });
-          await updateDoc(doc(database, "Rooms", uid + "_" + (roomNo + 1)), {
-            [oldSmifi + "_" + oldPin]: arrayRemove(oldAppName),
-          }); 
-        }
+    if (changeRoomFlag == 2) {
+      if (appId) {
+        let qty = oldAppName.split('-')[1].trim()
+        await updateDoc(doc(database, "Rooms", uid + "_" + (roomNo + 1)), {
+          [oldSmifi + "_" + oldPin]: arrayUnion(appId + " - " + qty),
+        });
+        await updateDoc(doc(database, "Rooms", uid + "_" + (roomNo + 1)), {
+          [oldSmifi + "_" + oldPin]: arrayRemove(oldAppName),
+        });
       }
-    
+    }
+    if (changeRoomFlag == 3) {
+      if (appNo) {
+        let name = oldAppName.split('-')[0].trim()
+        await updateDoc(doc(database, "Rooms", uid + "_" + (roomNo + 1)), {
+          [oldSmifi + "_" + oldPin]: arrayUnion(name + " - " + appNo),
+        });
+        await updateDoc(doc(database, "Rooms", uid + "_" + (roomNo + 1)), {
+          [oldSmifi + "_" + oldPin]: arrayRemove(oldAppName),
+        });
+      }
+    }
+
     setPinOpen(false);
     setSelectedPin("Pin");
     setSelectedSmifi("Smifi");
     setAppId("");
     setAppNo("");
   };
-  const handleDeleteRow = async (device,pin,applName) =>{
-    const delRef = doc(database,"Rooms",uid+'_'+(roomNo+1));
+  const handleDeleteRow = async (device, pin, applName) => {
+    const delRef = doc(database, "Rooms", uid + "_" + (roomNo + 1));
     await updateDoc(delRef, {
-      [device+'_'+pin]: arrayRemove(applName)
-  });
-  let docSnap = await getDoc(delRef);
-  if (docSnap.exists()) {
-    if(docSnap.data()[device+'_'+pin].length==0){
-      await updateDoc(delRef, {
-        [device+'_'+pin]: deleteField(),
-        [device]:arrayRemove(pin)
+      [device + "_" + pin]: arrayRemove(applName),
     });
+    let docSnap = await getDoc(delRef);
+    if (docSnap.exists()) {
+      if (docSnap.data()[device + "_" + pin].length == 0) {
+        await updateDoc(delRef, {
+          [device + "_" + pin]: deleteField(),
+          [device]: arrayRemove(pin),
+        });
+      }
     }
-  } 
-  docSnap = await getDoc(delRef);
-  if (docSnap.exists()) {
-    if(docSnap.data()[device].length==0){
-      await updateDoc(delRef, {
-        [device]: deleteField(),
-        smifi:arrayRemove(device)
+    docSnap = await getDoc(delRef);
+    if (docSnap.exists()) {
+      if (docSnap.data()[device].length == 0) {
+        await updateDoc(delRef, {
+          [device]: deleteField(),
+          smifi: arrayRemove(device),
+        });
+      }
+    }
+  };
+  const deleteRoom = async () => {
+    await deleteDoc(doc(database, "Rooms", uid + "_" + roomCount));
+    await updateDoc(doc(database, "Users", uid), {
+      nRooms: nRooms - 1,
+      // smifi:premiseUserDispatch.premiseUserData
     });
-    }
-  }
-
-}
-const deleteRoom = async () => {
-  await deleteDoc(doc(database, "Rooms", uid + "_" + roomCount))
-  await updateDoc(doc(database, "Users", uid), {
-    nRooms: nRooms - 1,
-    // smifi:premiseUserDispatch.premiseUserData
-  });
-}
-  let pinNo, applianceName;
+  };
+  let pinNo,
+    applianceName,
+    i = 0;
   return (
     <div
       style={{
@@ -267,10 +290,11 @@ const deleteRoom = async () => {
       }}
     >
       <div style={{ display: "flex", alignItems: "center" }}>
-       
         <h2 style={{ marginLeft: "20px", color: "#556CD6" }}>
-          Welcome &nbsp;&nbsp; {premiseUserState.premiseUserData?(premiseUserState.premiseUserData.name):null}
-
+          Welcome &nbsp;&nbsp;{" "}
+          {premiseUserState.premiseUserData
+            ? premiseUserState.premiseUserData.name
+            : null}
         </h2>
         <h3 style={{ marginLeft: "10vw" }}>Enter Customer Phone Number : </h3>
 
@@ -285,7 +309,7 @@ const deleteRoom = async () => {
           name="outlined"
           label="Phone"
           required
-          onChange={e=>setPhoneNo(e.target.value)}
+          onChange={(e) => setPhoneNo(e.target.value)}
         />
         <Button
           sx={{ marginLeft: "5px", padding: "13px", width: "7vw" }}
@@ -313,10 +337,9 @@ const deleteRoom = async () => {
           display: "flex",
           justifyContent: "space-evenly",
           alignItems: "center",
-          fontWeight:"bold",
-          letterSpacing:"0.5px",
-          fontSize:"17px"
-
+          fontWeight: "bold",
+          letterSpacing: "0.5px",
+          fontSize: "17px",
         }}
       >
         <div
@@ -351,9 +374,9 @@ const deleteRoom = async () => {
           onClick={() => {
             handleClick(4);
           }}
-          style={pathname === "/customerdata/service" ? styling : null}
+          style={pathname === "/customerdata/automation" ? styling : null}
         >
-          Service
+          Automation
         </div>
         <div
           className="nav"
@@ -426,7 +449,9 @@ const deleteRoom = async () => {
                 fontWeight: "bold",
               }}
             >
-              <div>Domain Information Room 1 - Domain Name</div>
+              <div style={{ marginRight: "9vw" }}>
+                Domain Information - {domainName}
+              </div>
               <div
                 style={{
                   display: "flex",
@@ -555,6 +580,7 @@ const deleteRoom = async () => {
                   <input
                     onClick={() => {
                       setRoomNo(count);
+                      setDomainName(roomName.name);
                     }}
                     type="text"
                     value={`${roomName.name}`}
@@ -653,7 +679,7 @@ const deleteRoom = async () => {
                     id="roomId"
                     onChange={handleRoomChange}
                     style={{
-                      // marginLeft: "1vw",
+                      marginLeft: "-29px",
                       width: "15vw",
                       border: "none",
                       padding: "15px",
@@ -662,7 +688,7 @@ const deleteRoom = async () => {
                     }}
                   />
                   <Button
-                    sx={{ marginTop: "5px" }}
+                    sx={{ marginTop: "5px", marginLeft: "-29px" }}
                     onClick={handleRoomSubmit}
                     variant="contained"
                   >
@@ -680,10 +706,30 @@ const deleteRoom = async () => {
                 // marginRight:"20px"
               }}
             >
+              <div
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "space-between",
+                  fontSize: "15px",
+                  padding: "15px",
+                  marginLeft: "10px",
+                  // marginRight:"100px",
+                  width: "41.5vw",
+                }}
+              >
+                <div>Smifi</div>
+                <div>Pin</div>
+                <div>Appliance</div>
+                <div>Qty </div>
+                <div style={{ marginRight: "10px" }}>Power</div>
+              </div>
               {premiseRoomsState.premiseRoomsData
                 ? premiseUserState.premiseUserData?.smifis.map(
                     (device, counter) => (
-                      (pinNo = premiseRoomsState.premiseRoomsData[roomNo]?premiseRoomsState.premiseRoomsData[roomNo][device]:null),
+                      (pinNo = premiseRoomsState.premiseRoomsData[roomNo]
+                        ? premiseRoomsState.premiseRoomsData[roomNo][device]
+                        : null),
                       pinNo
                         ? pinNo.map((pin) =>
                             pin
@@ -696,61 +742,103 @@ const deleteRoom = async () => {
                                       applName ? (
                                         <div
                                           key={Math.random()}
-                                          style={{
-                                            display: "flex",
-                                            alignItems: "center",
-                                            justifyContent: "space-between",
-                                            fontSize: "17px",
-                                            background: "#D9D9D9",
-                                            padding: "15px",
-                                            marginTop: "20px",
-                                            width: "41.5vw",
-                                          }}
+                                          style={{ display: "flex" }}
                                         >
-                                          <div>{device}</div>
-                                          <div style={{display:"flex",justifyContent:"center"}}>Pin {pin}
-                                          
-                                          <EditIcon
+                                          <div
+                                            key={Math.random()}
+                                            style={{
+                                              display: "flex",
+                                              alignItems: "center",
+                                              justifyContent: "space-between",
+                                              fontSize: "17px",
+                                              background: "#D9D9D9",
+                                              padding: "15px",
+                                              marginBottom: "20px",
+                                              width: "41.5vw",
+                                            }}
+                                          >
+                                            <div>{device}</div>
+                                            <div
                                               style={{
-                                                cursor: "pointer",
-                                                marginLeft:"15px"
+                                                display: "flex",
+                                                justifyContent: "center",
                                               }}
-                                              onClick={() => {
-                                                setChangeRoomFlag(1);
-                                                setOldSmifi(device);
-                                                setOldPin(pin)
-                                                setOldAppName(applName)
-                                                openPinModal();
+                                            >
+                                              Pin {pin}
+                                              <EditIcon
+                                                style={{
+                                                  cursor: "pointer",
+                                                  marginLeft: "15px",
+                                                }}
+                                                onClick={() => {
+                                                  setChangeRoomFlag(1);
+                                                  setOldSmifi(device);
+                                                  setOldPin(pin);
+                                                  setOldAppName(applName);
+                                                  openPinModal();
+                                                }}
+                                              />
+                                            </div>
+                                            <div
+                                              style={{
+                                                display: "flex",
+                                                justifyContent: "center",
                                               }}
-                                            />
+                                            >
+                                              {applName.split("-")[0].trim()}
 
-                                                </div>
-                                          <div style={{display:"flex",justifyContent:"center"}}>{applName}
-                                          
-                                          <EditIcon
+                                              <EditIcon
+                                                style={{
+                                                  cursor: "pointer",
+                                                  marginLeft: "15px",
+                                                }}
+                                                onClick={() => {
+                                                  setChangeRoomFlag(2);
+                                                  setOldSmifi(device);
+                                                  setOldPin(pin);
+                                                  setOldAppName(applName);
+                                                  openPinModal();
+                                                }}
+                                              />
+                                            </div>
+                                            <div
                                               style={{
-                                                cursor: "pointer",
-                                                marginLeft:"15px"
+                                                display: "flex",
+                                                justifyContent: "center",
                                               }}
-                                              onClick={() => {
-                                                setChangeRoomFlag(2);
-                                                setOldSmifi(device);
-                                                setOldPin(pin)
-                                                setOldAppName(applName)
-                                                openPinModal();
-                                              }}
-                                            />
-                                                </div>
-                                          <div>100 W</div>
-                                           
-                                            <DeleteIcon
-                                              style={{
-                                                cursor: "pointer",
-                                              }}
-                                              onClick={()=>{
-                                                handleDeleteRow(device,pin,applName)
-                                              }}
-                                            />
+                                            >
+                                              {applName.split("-")[1].trim()}
+
+                                              <EditIcon
+                                                style={{
+                                                  cursor: "pointer",
+                                                  marginLeft: "15px",
+                                                }}
+                                                onClick={() => {
+                                                  setChangeRoomFlag(3);
+                                                  setOldSmifi(device);
+                                                  setOldPin(pin);
+                                                  setOldAppName(applName);
+                                                  openPinModal();
+                                                }}
+                                              />
+                                            </div>
+
+                                            <div>100 W</div>
+                                          </div>
+                                          <DeleteIcon
+                                            style={{
+                                              cursor: "pointer",
+                                              marginTop: "15px",
+                                            }}
+                                            onClick={() => {
+                                              handleDeleteRow(
+                                                device,
+                                                pin,
+                                                applName
+                                              );
+                                            }}
+                                          />
                                         </div>
                                       ) : null
                                     )
@@ -792,14 +880,14 @@ const deleteRoom = async () => {
               p: 4,
             }}
           >
-            {changeRoomFlag==0?(
-            <Dropdown>
+            {changeRoomFlag == 0 ? (
+              <Dropdown>
                 <Dropdown.Button
                   flat
                   color="light"
                   css={{
                     fontSize: "$lg",
-                    marginTop:"$11"
+                    marginTop: "$11",
                   }}
                 >
                   {selectedSmifi}
@@ -821,87 +909,94 @@ const deleteRoom = async () => {
                   ))}
                 </Dropdown.Menu>
               </Dropdown>
-              ):null}
-              {changeRoomFlag==1||changeRoomFlag==0?(
+            ) : null}
+            {changeRoomFlag == 1 || changeRoomFlag == 0 ? (
               <Dropdown>
-                  <Dropdown.Button
-                    flat
-                    color="light"
-                    css={{
-                      fontSize: "$lg",
-                      marginTop: "$10",
-                    }}
-                  >
-                    {selectedPin}
-                  </Dropdown.Button>
-                  <Dropdown.Menu
-                    aria-label="Single selection actions"
-                    color="primary"
-                    disallowEmptySelection
-                    selectionMode="single"
-                    selectedKeys={selectedPin}
-                    onSelectionChange={setSelectedPin}
-                    css={{
-                      fontSize: "$lg",
-                    }}
-                  >
-                    <Dropdown.Item key="Pin">Pin</Dropdown.Item>
-                    <Dropdown.Item key="1">1</Dropdown.Item>
-                    <Dropdown.Item key="2">2</Dropdown.Item>
-                    <Dropdown.Item key="3">3</Dropdown.Item>
-                    <Dropdown.Item key="4">4</Dropdown.Item>
-                    <Dropdown.Item key="5">5</Dropdown.Item>
-                    <Dropdown.Item key="6">6</Dropdown.Item>
-                  </Dropdown.Menu>
-                </Dropdown>
-                ):null}
-                {changeRoomFlag==0||changeRoomFlag==2?
-                (<>
-                <input
-                  type="text"
-                  // value="Living Room Lights"
-                  id="appId"
-                  onChange={(e) => setAppId(e.target.value)}
-                  placeholder="Enter Appliance Name"
-                  // onChange={handleApplianceChange}
-                  style={{
-                    // marginLeft: "1vw",
-                    marginTop: "28px",
-                    fontSize: "16px",
-                    width: "100%",
-                    border: "none",
-                    borderRadius: "14px",
-                    padding: "15px",
-                    paddingLeft: "20px",
-                    backgroundColor: "#F0F0F0",
-                  }} /><input
-                  type="number"
-                  // value="Living Room Lights"
-                  id="appNo"
-                  onChange={(e) => setAppNo(e.target.value)}
-                  placeholder="Enter Appliance Number"
-                  // onChange={handleApplianceChange}
-                  // readOnly={inputEdit}
-                  style={{
-                    // marginLeft: "1vw",
-                    marginTop: "28px",
-                    fontSize: "16px",
-                    width: "100%",
-                    border: "none",
-                    borderRadius: "14px",
-                    padding: "15px",
-                    paddingLeft: "20px",
-                    backgroundColor: "#F0F0F0",
-                  }} />
-                  </>
-                  ):null}
-                  <Button
-                    variant="contained"
-                    sx={{ borderRadius: "10px", marginTop: "28px",marginBottom:"30px" }}
-                    onClick={() => createNewRoom()}
-                    >
-                  Submit
-                </Button>
+                <Dropdown.Button
+                  flat
+                  color="light"
+                  css={{
+                    fontSize: "$lg",
+                    marginTop: "$10",
+                  }}
+                >
+                  {selectedPin}
+                </Dropdown.Button>
+                <Dropdown.Menu
+                  aria-label="Single selection actions"
+                  color="primary"
+                  disallowEmptySelection
+                  selectionMode="single"
+                  selectedKeys={selectedPin}
+                  onSelectionChange={setSelectedPin}
+                  css={{
+                    fontSize: "$lg",
+                  }}
+                >
+                  <Dropdown.Item key="Pin">Pin</Dropdown.Item>
+                  <Dropdown.Item key="1">1</Dropdown.Item>
+                  <Dropdown.Item key="2">2</Dropdown.Item>
+                  <Dropdown.Item key="3">3</Dropdown.Item>
+                  <Dropdown.Item key="4">4</Dropdown.Item>
+                  <Dropdown.Item key="5">5</Dropdown.Item>
+                  <Dropdown.Item key="6">6</Dropdown.Item>
+                </Dropdown.Menu>
+              </Dropdown>
+            ) : null}
+            {changeRoomFlag == 0 || changeRoomFlag == 2 ? (
+              <input
+                type="text"
+                // value="Living Room Lights"
+                id="appId"
+                onChange={(e) => setAppId(e.target.value)}
+                placeholder="Enter Appliance Name"
+                // onChange={handleApplianceChange}
+                style={{
+                  // marginLeft: "1vw",
+                  marginTop: "28px",
+                  fontSize: "16px",
+                  width: "100%",
+                  border: "none",
+                  borderRadius: "14px",
+                  padding: "15px",
+                  paddingLeft: "20px",
+                  backgroundColor: "#F0F0F0",
+                }}
+              />
+            ) : null}
+            {changeRoomFlag == 0 || changeRoomFlag == 3 ? (
+              <input
+                type="number"
+                // value="Living Room Lights"
+                id="appNo"
+                onChange={(e) => setAppNo(e.target.value)}
+                placeholder="Enter Appliance Number"
+                // onChange={handleApplianceChange}
+                // readOnly={inputEdit}
+                style={{
+                  // marginLeft: "1vw",
+                  marginTop: "28px",
+                  fontSize: "16px",
+                  width: "100%",
+                  border: "none",
+                  borderRadius: "14px",
+                  padding: "15px",
+                  paddingLeft: "20px",
+                  backgroundColor: "#F0F0F0",
+                }}
+              />
+            ) : null}
+            <Button
+              variant="contained"
+              sx={{
+                borderRadius: "10px",
+                marginTop: "28px",
+                marginBottom: "30px",
+              }}
+              onClick={() => createNewRoom()}
+            >
+              Submit
+            </Button>
           </Box>
         </Fade>
       </Modal>
@@ -913,14 +1008,17 @@ const deleteRoom = async () => {
       >
         <DialogContent>
           <DialogContentText id="alert-dialog-description">
-           Are you sure you want to delete this item
+            Are you sure you want to delete this item
           </DialogContentText>
         </DialogContent>
         <DialogActions>
-          <Button onClick={()=>{
-           deleteRoom();
-           handleDialogClose();
-          }} autoFocus>
+          <Button
+            onClick={() => {
+              deleteRoom();
+              handleDialogClose();
+            }}
+            autoFocus
+          >
             Agree
           </Button>
           <Button onClick={handleDialogClose}>Disagree</Button>

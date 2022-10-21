@@ -23,7 +23,7 @@ const Information = () => {
       if(index==1) Router.push("/customerdata/information")
       if(index==2) Router.push("/customerdata/premise")
       if(index==3) Router.push("/customerdata/tracking")
-      if(index==4) Router.push("/customerdata/service")
+      if(index==4) Router.push("/customerdata/automation")
       if(index==5) Router.push("/customerdata/raiseticket")
     }
     const change = () =>{
@@ -113,9 +113,9 @@ const Information = () => {
         <div
           className="nav"
           onClick={()=>{handleClick(4)}}
-          style={pathname === "/customerdata/service" ? styling : null}
+          style={pathname === "/customerdata/automation" ? styling : null}
         >
-          Service
+          Automation
         </div>
         <div
           className="nav"
