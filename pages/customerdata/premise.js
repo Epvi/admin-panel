@@ -125,7 +125,7 @@ const Premise = () => {
     setSmifiFlag(false);
   };
   const deleteSmifi = async (count) => {
-    const ref = doc(database, "Users", "CAEH1Hs8OQRMy3o1SCxhNLljMP42");
+    const ref = doc(database, "Users", uid);
     let deletedSmifi = document.getElementById(`smifi_${count}`).value;
 
     await updateDoc(ref, {
