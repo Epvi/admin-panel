@@ -5,37 +5,22 @@ import Router from "next/router";
 import Layout from "../../components/Layout";
 import { TextField } from "@mui/material";
 import Button from "@mui/material/Button";
-import EditIcon from "@mui/icons-material/Edit";
-import AddIcon from "@mui/icons-material/Add";
 import Box from "@mui/material/Box";
 import RefreshIcon from "@mui/icons-material/Refresh";
 import { getUserData, usePremiseUser } from "../../auth/premiseUserReducer";
 import { getLogsData, useTrackingLogs } from "../../auth/trackingLogsReducer";
-import InputLabel from "@mui/material/InputLabel";
 import MenuItem from "@mui/material/MenuItem";
 import FormControl from "@mui/material/FormControl";
-import Select, { SelectChangeEvent } from "@mui/material/Select";
-import { database } from "../../firebaseConfig";
+import Select from "@mui/material/Select";
 import CircularProgress from "@mui/material/CircularProgress";
 import axios from "axios";
-import {
-  doc,
-  setDoc,
-  updateDoc,
-  arrayUnion,
-  arrayRemove,
-  deleteField,
-  getDoc,
-} from "firebase/firestore";
 import {
   LineChart,
   Line,
   XAxis,
   YAxis,
   Tooltip,
-  CartesianGrid,
 } from "recharts";
-import { LteMobiledata } from "@mui/icons-material";
 
 const styling = {
   backgroundColor: "#556cd6",
