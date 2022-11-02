@@ -19,7 +19,6 @@ function premiseRoomsReducer(premiseRoomsState, action) {
 }
 async function getRoomsData(premiseRoomsDispatch,premiseRoomsData,phoneNo){
     let uid, nRooms;
-    phoneNo = parseInt(phoneNo)
     const q = query(collection(database, "Users"),where("phone","==",phoneNo));
     const querySnapshot = await getDocs(q);
     querySnapshot.forEach((doc) => {

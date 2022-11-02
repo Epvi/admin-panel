@@ -424,7 +424,7 @@ function SideDrawer({ userRole }) {
                           pathname === "/customerdata/information" ||
                           pathname === "/customerdata/premise" ||
                           pathname === "/customerdata/raiseticket" ||
-                          pathname === "/customerdata/service" ||
+                          pathname === "/customerdata/automation" ||
                           pathname === "/customerdata/tracking"
                             ? styling
                             : null

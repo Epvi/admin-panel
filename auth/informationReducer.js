@@ -12,7 +12,7 @@ function userInformationReducer(userInformationState, action) {
   }
 }
 async function getData(userInformationDispatch, userInformation,phoneNo) {
-    
+    phoneNo = "+91"+phoneNo
     phoneNo = parseInt(phoneNo)
   const q = query(collection(database, "Users"),where("phone","==",phoneNo));
 
