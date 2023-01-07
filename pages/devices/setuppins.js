@@ -10,7 +10,7 @@ import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
 import { database } from "../../firebaseConfig";
-import { setDoc, doc,updateDoc } from "firebase/firestore";
+import { setDoc, doc, updateDoc } from "firebase/firestore";
 import { useFormik } from "formik";
 import * as yup from "yup";
 import TextField from "@material-ui/core/TextField";
@@ -21,6 +21,7 @@ import Modal from "@mui/material/Modal";
 import Fade from "@mui/material/Fade";
 import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
+import { withProtected } from "../../src/hooks/routes";
 
 const style = {
   position: "absolute",
@@ -92,7 +93,7 @@ const SetupPin = () => {
     marginTop: "20px",
     cursor: "pointer",
   };
-// console.log(pinState.selectedDevice)
+  // console.log(pinState.selectedDevice)
   const normalStyle = {
     marginLeft: "42%",
     marginTop: "20px",
@@ -131,11 +132,11 @@ const SetupPin = () => {
   const handleEditPin = async (e) => {
     e.preventDefault();
     console.log(name);
-   await updateDoc(doc(database, "Rooms/CAEH1Hs8OQRMy3o1SCxhNLljMP42_1"), {
-    epvi001:[name]
-  });
-   setOpen(false);
-  }
+    await updateDoc(doc(database, "Rooms/CAEH1Hs8OQRMy3o1SCxhNLljMP42_1"), {
+      epvi001: [name],
+    });
+    setOpen(false);
+  };
   // const handleAddPin = (e) => {
   //   e.preventDefault();
   //   console.log(name);
@@ -145,7 +146,7 @@ const SetupPin = () => {
   //  setOpen(false);
   // }
   return (
-    <>
+    <Layout userRole={"admin"}>
       <div style={{ width: "50%", margin: "auto", marginTop: "40px" }}>
         <h2 style={{ marginLeft: "34%" }}>Please select a pin</h2>
         <div style={{ display: "flex", justifyContent: "space-between" }}>
@@ -262,27 +263,29 @@ const SetupPin = () => {
                 Edit Pin
               </Typography>
               <form onSubmit={handleEditPin}>
-              <TextField
-            style={{ marginTop: "10px" }}
-            type="number"
-            fullWidth
-            id="editpin"
-            name="editpin"
-            label="Pin"
-            value={name}
-            onChange={e => setName(e.target.value)}
-            />
-          <button style={{marginTop:"20px"}} type="submit">Submit</button>
+                <TextField
+                  style={{ marginTop: "10px" }}
+                  type="number"
+                  fullWidth
+                  id="editpin"
+                  name="editpin"
+                  label="Pin"
+                  value={name}
+                  onChange={(e) => setName(e.target.value)}
+                />
+                <button style={{ marginTop: "20px" }} type="submit">
+                  Submit
+                </button>
               </form>
             </Box>
           </Fade>
         </Modal>
       </div>
-    </>
+    </Layout>
   );
 };
 
-export default SetupPin;
+export default withProtected(SetupPin);
 const userRole = "admin";
 SetupPin.getLayout = function getLayout(page) {
   return <Layout userRole={userRole}>{page}</Layout>;

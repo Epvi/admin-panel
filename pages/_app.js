@@ -25,7 +25,7 @@ const clientSideEmotionCache = createEmotionCache();
 export default function MyApp(props) {
   const { Component, emotionCache = clientSideEmotionCache, pageProps } = props;
   const userRole = "admin";
-  const getLayout = Component.getLayout || ((page) => page);
+  // const getLayout = Component.getLayout || ((page) => page);
 
   return (
     <CacheProvider value={emotionCache}>
@@ -48,9 +48,9 @@ export default function MyApp(props) {
                             <TrackingLogsStateProvider>
 
                   {/* <Layout userRole={userRole}> */}
-                  {getLayout(<Component {...pageProps} />)}
-                  {/* <Component {...pageProps} /> */}
-                  {/* </Layout> */}
+                  {/* {getLayout(<Component {...pageProps} />)} */}
+                  <Component {...pageProps} />
+              
                             </TrackingLogsStateProvider>
                           </PremiseRoomsStateProvider>
                         </PremiseUserStateProvider>

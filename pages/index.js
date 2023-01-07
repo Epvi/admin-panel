@@ -8,6 +8,7 @@ import { useAuth } from "../auth/AuthContext";
 import DashboardData from "./cards";
 
 const Index = () => {
+  // console.log("Index called");
   const { currentUser } = useAuth();
   const [usersArray, setUsersArray] = useState([]);
   const dbInstance = collection(database, "Users");
@@ -36,21 +37,20 @@ const Index = () => {
   }, []);
 
   return (
-    <>
+    <Layout userRole={"admin"}>
       <Head>
         <title>EPVI - Managing Electricity wisely</title>
       </Head>
-    </>
-  );
-};
-const userRole = "admin";
-
-Index.getLayout = function getLayout(page) {
-  return (
-    <Layout userRole={userRole}>
-      <DashboardData />
     </Layout>
   );
 };
+// Index.getLayout = function getLayout(page) {
+//   // const { currentUser } = useAuth();
+//   return (
+//     <Layout userRole={userRole}>
+//       <DashboardData />
+//     </Layout>
+//   );
+// };
 
 export default Index;

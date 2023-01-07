@@ -3,6 +3,7 @@ import { useState } from "react";
 import Layout from "../../components/Layout";
 import Button from "@mui/material/Button";
 import Switch from "@mui/material/Switch";
+import { withProtected } from "../../src/hooks/routes";
 // const axios = require("axios").default;
 
 const ControlDevices = () => {
@@ -38,11 +39,12 @@ const ControlDevices = () => {
   //     })
   //   }
   return (
-    <><div style={{ marginRight: "15px" }}>
-      <h1 style={{ textAlign: "center", marginTop: "20px" }}>
-        Control Devices
-      </h1>
-      {/* <div
+    <Layout userRole={"admin"}>
+      <div style={{ marginRight: "15px" }}>
+        <h1 style={{ textAlign: "center", marginTop: "20px" }}>
+          Control Devices
+        </h1>
+        {/* <div
         style={{ display: "flex", justifyContent: "center", marginTop: "50px" }}
       >
         <h3 style={{ marginTop: "5px" }}>
@@ -55,16 +57,14 @@ const ControlDevices = () => {
         Disconnect
       </Button>
     </div><div style={{ display: "flex", justifyContent: "center", marginTop: "15px", marginRight: "65px" }}> */}
-        <h3 style={{ marginTop: "5px" }}>
-          Switch : &nbsp;
-        </h3>
+        <h3 style={{ marginTop: "5px" }}>Switch : &nbsp;</h3>
         <Switch />
       </div>
-      </>
+    </Layout>
   );
 };
 
-export default ControlDevices;
+export default withProtected(ControlDevices);
 const userRole = "admin";
 ControlDevices.getLayout = function getLayout(page) {
   return <Layout userRole={userRole}>{page}</Layout>;
