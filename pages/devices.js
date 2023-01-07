@@ -7,9 +7,10 @@ import { useEffect } from "react";
 import Button from "@mui/material/Button";
 import Layout from "../components/Layout";
 import { useRoomPins } from "../auth/roomPinsReducer";
+import { withProtected } from "../src/hooks/routes";
 const userRole = "admin";
 
-export default function Devices() {
+function Devices() {
   const { deviceState, deviceDispatch } = useDevices();
   const { pinState, pinDispatch } = useRoomPins();
   const deviceArray = [];
@@ -51,18 +52,17 @@ export default function Devices() {
       headerName: "Pin 6",
       // description: "Cannot be sorted",
       // sortable: false,
-      Flex:1
+      Flex: 1,
     },
     {
       field: "details",
-      headerName:"Details",
-      width:130,
+      headerName: "Details",
+      width: 130,
       renderCell: (cellValues) => {
         return (
           <Button
             variant="contained"
             color="primary"
-            
             onClick={() => {
               handleClick(cellValues.row.device);
             }}
@@ -70,18 +70,24 @@ export default function Devices() {
             Setup Pin
           </Button>
         );
-      }
-    }
+      },
+    },
   ];
 
-
   return (
-    <>
-      <div style={{ marginRight: "15px", marginTop: "15px",height: "85vh",width: "100%",}}>
-      {deviceState.deviceArray? (
+    <Layout userRole={"admin"}>
+      <div
+        style={{
+          marginRight: "15px",
+          marginTop: "15px",
+          height: "85vh",
+          width: "100%",
+        }}
+      >
+        {deviceState.deviceArray ? (
           <DataGrid
             getRowId={(row) => row.id}
-            getRowHeight={() => 'auto'}
+            getRowHeight={() => "auto"}
             rows={deviceState.deviceArray.map((row, index) => ({
               id: index,
               device: row.id,
@@ -91,21 +97,22 @@ export default function Devices() {
               pin4: row["Pin 4"],
               pin5: row["Pin 5"],
               pin6: row["Pin 6"],
-              
             }))}
             columns={columns}
             pageSize={10}
             rowsPerPageOptions={[10]}
             checkboxSelection
-             />
+          />
         ) : (
-          <CircularProgress sx={{ marginLeft: "45%",marginTop:"15px" }} />
+          <CircularProgress sx={{ marginLeft: "45%", marginTop: "15px" }} />
         )}
       </div>
-    </>
+    </Layout>
   );
 }
 
 Devices.getLayout = function getLayout(page) {
   return <Layout userRole={userRole}>{page}</Layout>;
 };
+
+export default withProtected(Devices);

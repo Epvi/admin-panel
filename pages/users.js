@@ -5,8 +5,9 @@ import { getData, useUser } from "../auth/userReducer";
 import { useEffect } from "react";
 import Layout from "../components/Layout";
 import { useState } from "react";
+import { withProtected } from "../src/hooks/routes";
 
-export default function UsersData() {
+function UsersData() {
   const { userState, userDispatch } = useUser();
 
   const userArray = [];
@@ -22,7 +23,7 @@ export default function UsersData() {
     {
       field: "smifis",
       headerName: "Smifis",
-      flex:1,
+      flex: 1,
       // renderCell: (cellValues) => {
       //   return (
       //     <Dropdown label={cellValues} value={value} onChange={handleChange} />
@@ -39,25 +40,33 @@ export default function UsersData() {
   //   setValue(event.target.value);
   // };
   return (
-    <>
-      <div style={{ marginRight: "15px", marginTop: "15px",height: "85vh",width: "100%", }}>
-      {userState.userArray? (
+    <Layout userRole={"admin"}>
+      <div
+        style={{
+          marginRight: "15px",
+          marginTop: "15px",
+          height: "85vh",
+          width: "100%",
+        }}
+      >
+        {userState.userArray ? (
           <DataGrid
             getRowId={(row) => row.id}
-            getRowHeight={() => 'auto'}
+            getRowHeight={() => "auto"}
             rows={userState.userArray.map((row, index) => ({
               id: index,
-              name:row.name,
-              email:row.email,
-              smifis:row.smifis + " ",           
-              subscribed:row.subscribed ? "True" : "False",
+              name: row.name,
+              email: row.email,
+              smifis: row.smifis + " ",
+              subscribed: row.subscribed ? "True" : "False",
             }))}
             columns={columns}
             pageSize={10}
             rowsPerPageOptions={[10]}
-            checkboxSelection />
+            checkboxSelection
+          />
         ) : (
-          <CircularProgress sx={{ marginLeft: "45%",marginTop:"15px" }} />
+          <CircularProgress sx={{ marginLeft: "45%", marginTop: "15px" }} />
         )}
         {/* <TableContainer component={Paper}>
           <Table aria-label="customized table">
@@ -105,7 +114,7 @@ export default function UsersData() {
           </Table>
         </TableContainer> */}
       </div>
-    </>
+    </Layout>
   );
 }
 // const Dropdown = ({ label, value, onChange }) => {
@@ -123,3 +132,5 @@ const userRole = "admin";
 UsersData.getLayout = function getLayout(page) {
   return <Layout userRole={userRole}>{page}</Layout>;
 };
+
+export default withProtected(UsersData);

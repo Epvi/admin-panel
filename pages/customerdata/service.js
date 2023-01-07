@@ -1,11 +1,13 @@
-import React from 'react'
+import React from "react";
+import Layout from "../../components/Layout";
+import { withProtected } from "../../src/hooks/routes";
 
 const Service = () => {
   return (
-    <div>
-      Service
-    </div>
-  )
-}
+    <Layout userRole={"admin"}>
+      <div>Service</div>
+    </Layout>
+  );
+};
 
-export default Service
+export default withProtected(Service);

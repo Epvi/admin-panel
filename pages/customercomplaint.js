@@ -4,9 +4,10 @@ import { DataGrid } from "@mui/x-data-grid";
 import { getData, useComplaint } from "../auth/complaintReducer";
 import { useEffect } from "react";
 import Layout from "../components/Layout";
+import { withProtected } from "../src/hooks/routes";
 const userRole = "admin";
 
-export default function ComplaintTables() {
+function ComplaintTables() {
   const { complaintState, complaintDispatch } = useComplaint();
 
   const complaint = [];
@@ -16,32 +17,31 @@ export default function ComplaintTables() {
   }, []);
 
   const columns = [
-    { field: "id", headerName: "Sr",flex :0.3 },
-    { field: "userid", headerName: "userID",flex :1},
-    { field: "phone", headerName: "Phone",flex :1 },
+    { field: "id", headerName: "Sr", flex: 0.3 },
+    { field: "userid", headerName: "userID", flex: 1 },
+    { field: "phone", headerName: "Phone", flex: 1 },
     {
       field: "date",
       headerName: "Date",
-      flex :1
+      flex: 1,
     },
     {
       field: "text",
       headerName: "Complaint Text",
-      description:"Cannot be sorted",
+      description: "Cannot be sorted",
       sortable: false,
       // width: 160,
-      height:2000,
-      flex :5
-     
+      height: 2000,
+      flex: 5,
     },
     {
       field: "status",
       headerName: "Status",
-      flex :1
+      flex: 1,
     },
   ];
   return (
-    <>
+    <Layout userRole={"admin"}>
       <div
         style={{
           marginRight: "15px",
@@ -50,18 +50,17 @@ export default function ComplaintTables() {
           width: "100%",
         }}
       >
-        
         {complaintState.complaint ? (
           <DataGrid
             getRowId={(row) => row.id}
-            getRowHeight={() => 'auto'}
+            getRowHeight={() => "auto"}
             rows={complaintState.complaint.map((row, index) => ({
               id: index,
               userid: row.userID,
               phone: row.phoneNo,
-              date:row.time.toDate().toString().slice(4, 15),
-              text:row.complaintText,
-              status:row.status
+              date: row.time.toDate().toString().slice(4, 15),
+              text: row.complaintText,
+              status: row.status,
             }))}
             columns={columns}
             pageSize={10}
@@ -69,13 +68,15 @@ export default function ComplaintTables() {
             checkboxSelection
           />
         ) : (
-          <CircularProgress sx={{ marginLeft: "45%",marginTop:"15px" }} />
+          <CircularProgress sx={{ marginLeft: "45%", marginTop: "15px" }} />
         )}
       </div>
-    </>
+    </Layout>
   );
 }
 
 ComplaintTables.getLayout = function getLayout(page) {
   return <Layout userRole={userRole}>{page}</Layout>;
 };
+
+export default withProtected(ComplaintTables);

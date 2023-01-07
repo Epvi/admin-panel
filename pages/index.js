@@ -6,8 +6,10 @@ import { collection, addDoc, getDocs } from "firebase/firestore";
 import Layout from "../components/Layout";
 import { useAuth } from "../auth/AuthContext";
 import DashboardData from "./cards";
+import { withProtected } from "../src/hooks/routes";
 
 const Index = () => {
+  // console.log("Index called");
   const { currentUser } = useAuth();
   const [usersArray, setUsersArray] = useState([]);
   const dbInstance = collection(database, "Users");
@@ -27,7 +29,8 @@ const Index = () => {
 
   useEffect(() => {
     if (!currentUser) {
-      Router.push("/login");
+      console.log("No user!");
+      // Router.push("/login");
       // setLoading(false);
     } else {
       getUsers();
@@ -36,21 +39,20 @@ const Index = () => {
   }, []);
 
   return (
-    <>
+    <Layout userRole={"admin"}>
       <Head>
         <title>EPVI - Managing Electricity wisely</title>
       </Head>
-    </>
-  );
-};
-const userRole = "admin";
-
-Index.getLayout = function getLayout(page) {
-  return (
-    <Layout userRole={userRole}>
-      <DashboardData />
     </Layout>
   );
 };
+// Index.getLayout = function getLayout(page) {
+//   // const { currentUser } = useAuth();
+//   return (
+//     <Layout userRole={userRole}>
+//       <DashboardData />
+//     </Layout>
+//   );
+// };
 
-export default Index;
+export default withProtected(Index);

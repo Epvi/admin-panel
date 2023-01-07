@@ -36,6 +36,7 @@ import {
   CartesianGrid,
 } from "recharts";
 import { LteMobiledata } from "@mui/icons-material";
+import { withProtected } from "../../src/hooks/routes";
 
 const styling = {
   backgroundColor: "#556cd6",
@@ -76,12 +77,12 @@ const Tracking = () => {
   let trackingLogsData = [];
   let arr = [];
   let currSmifi;
-  
-   let data = [],
-     current,
-     power,
-     timeStamp,
-     limit = 0;
+
+  let data = [],
+    current,
+    power,
+    timeStamp,
+    limit = 0;
   const search = async (e) => {
     e.preventDefault();
     console.log(phoneNo);
@@ -94,14 +95,9 @@ const Tracking = () => {
   };
   useEffect(() => {
     if (premiseUserState.premiseUserData) {
-      currSmifi = premiseUserState.premiseUserData.smifis[0],
-      setSmifiState(currSmifi)
-      getLogsData(
-        trackingLogsDispatch,
-        trackingLogsData,
-        currSmifi,
-        1
-      );
+      (currSmifi = premiseUserState.premiseUserData.smifis[0]),
+        setSmifiState(currSmifi);
+      getLogsData(trackingLogsDispatch, trackingLogsData, currSmifi, 1);
       setTimeout(() => {
         setLoading(true);
       }, premiseUserState.premiseUserData.smifis.length * 3500);
@@ -139,9 +135,7 @@ const Tracking = () => {
         power = power.toFixed(2);
         power = parseFloat(power);
         limit = limit < power ? power : limit;
-        timeStamp = new Date(
-            val.timestamp * 10000
-        ).toString().slice(3, 25)
+        timeStamp = new Date(val.timestamp * 10000).toString().slice(3, 25);
         data.push({ name: timeStamp, value: power });
       });
     }
@@ -157,9 +151,7 @@ const Tracking = () => {
         if (limit <= current) {
           limit = current;
         }
-        timeStamp = new Date(
-          val.timestamp * 10000
-      ).toString().slice(3, 25)
+        timeStamp = new Date(val.timestamp * 10000).toString().slice(3, 25);
         data.push({ name: timeStamp, value: current });
       });
     }
@@ -177,21 +169,14 @@ const Tracking = () => {
         if (limit <= val.volt) {
           limit = val.volt;
         }
-        timeStamp = new Date(
-          val.timestamp * 10000
-      ).toString().slice(3, 25)
+        timeStamp = new Date(val.timestamp * 10000).toString().slice(3, 25);
         data.push({ name: timeStamp, value: val.volt });
       });
     }
   }
   const timeClick = (timeCount) => {
-    console.log(smifiState)
-    getLogsData(
-      trackingLogsDispatch,
-      trackingLogsData,
-      smifiState,
-      timeCount
-    );
+    console.log(smifiState);
+    getLogsData(trackingLogsDispatch, trackingLogsData, smifiState, timeCount);
     setLoading(false);
     setTimeout(() => {
       setLoading(true);
@@ -223,362 +208,375 @@ const Tracking = () => {
         });
     });
   };
-  if(trackingLogsState.trackingLogsData)
-  console.log(trackingLogsState.trackingLogsData.length)
+  if (trackingLogsState.trackingLogsData)
+    console.log(trackingLogsState.trackingLogsData.length);
   const changeSmifiGraph = (smifi) => {
     currSmifi = smifi;
-    setSmifiState(currSmifi)
+    setSmifiState(currSmifi);
     setLoading(false);
 
-    getLogsData(
-      trackingLogsDispatch,
-      trackingLogsData,
-      currSmifi,
-      1
-    );
-    setTime("Today")
-    setTimeout(()=>{
-     setLoading(true);
-    },1500)
-  }
+    getLogsData(trackingLogsDispatch, trackingLogsData, currSmifi, 1);
+    setTime("Today");
+    setTimeout(() => {
+      setLoading(true);
+    }, 1500);
+  };
   return (
-    <div
-      style={{
-        marginRight: "15px",
-        marginTop: "10px",
-        width: "100%",
-        marginBottom: "20px",
-      }}
-    >
-      <div style={{ display: "flex", alignItems: "center" }}>
-        <h2 style={{ marginLeft: "20px", color: "#556CD6" }}>
-          Welcome &nbsp;&nbsp;{" "}
-          {premiseUserState.premiseUserData
-            ? premiseUserState.premiseUserData.name
-            : null}
-        </h2>
-        <h3 style={{ marginLeft: "10vw" }}>Enter Customer Phone Number : </h3>
-
-        <TextField
-          style={{
-            width: "20vw",
-            marginLeft: "10px",
-          }}
-          type="number"
-          id="outlined"
-          variant="outlined"
-          name="outlined"
-          label="Phone"
-          required
-          onChange={(e) => setPhoneNo(e.target.value)}
-        />
-        <Button
-          sx={{ marginLeft: "5px", padding: "13px", width: "7vw" }}
-          variant="contained"
-          type="submit"
-          onClick={search}
-        >
-          Search
-        </Button>
-      </div>
-      <style jsx>{`
-        .nav {
-          background-color: #d9d9d9;
-          width: 19%;
-          display: flex;
-          justify-content: center;
-          padding-top: 15px;
-          padding-bottom: 15px;
-          cursor: pointer;
-        }
-      `}</style>
+    <Layout userRole={"admin"}>
       <div
         style={{
-          marginTop: "30px",
-          display: "flex",
-          justifyContent: "space-evenly",
-          alignItems: "center",
-          fontWeight: "bold",
-          letterSpacing: "0.5px",
-          fontSize: "17px",
+          marginRight: "15px",
+          marginTop: "10px",
+          width: "100%",
+          marginBottom: "20px",
         }}
       >
-        <div
-          className="nav"
-          onClick={() => {
-            handleClick(1);
-          }}
-          style={pathname === "/customerdata/information" ? styling : null}
-        >
-          Information
-        </div>
-        <div
-          className="nav"
-          onClick={() => {
-            handleClick(2);
-          }}
-          style={pathname === "/customerdata/premise" ? styling : null}
-        >
-          Premise
-        </div>
-        <div
-          className="nav"
-          onClick={() => {
-            handleClick(3);
-          }}
-          style={pathname === "/customerdata/tracking" ? styling : null}
-        >
-          Tracking
-        </div>
-        <div
-          className="nav"
-          onClick={() => {
-            handleClick(4);
-          }}
-          style={pathname === "/customerdata/service" ? styling : null}
-        >
-          Service
-        </div>
-        <div
-          className="nav"
-          onClick={() => {
-            handleClick(5);
-          }}
-          style={pathname === "/customerdata/raiseticket" ? styling : null}
-        >
-          Raise Ticket
-        </div>
-      </div>
+        <div style={{ display: "flex", alignItems: "center" }}>
+          <h2 style={{ marginLeft: "20px", color: "#556CD6" }}>
+            Welcome &nbsp;&nbsp;{" "}
+            {premiseUserState.premiseUserData
+              ? premiseUserState.premiseUserData.name
+              : null}
+          </h2>
+          <h3 style={{ marginLeft: "10vw" }}>Enter Customer Phone Number : </h3>
 
-      {premiseUserState.premiseUserData &&
-      trackingLogsState.trackingLogsData ? (
-        loading ? (
-          <>
-            <div
-              style={{
-                marginLeft: "12px",
-                marginRight: "12px",
-                marginTop: "30px",
-                display: "flex",
-                justifyContent: "space-between",
-                alignItems: "center",
-              }}
-            >
+          <TextField
+            style={{
+              width: "20vw",
+              marginLeft: "10px",
+            }}
+            type="number"
+            id="outlined"
+            variant="outlined"
+            name="outlined"
+            label="Phone"
+            required
+            onChange={(e) => setPhoneNo(e.target.value)}
+          />
+          <Button
+            sx={{ marginLeft: "5px", padding: "13px", width: "7vw" }}
+            variant="contained"
+            type="submit"
+            onClick={search}
+          >
+            Search
+          </Button>
+        </div>
+        <style jsx>{`
+          .nav {
+            background-color: #d9d9d9;
+            width: 19%;
+            display: flex;
+            justify-content: center;
+            padding-top: 15px;
+            padding-bottom: 15px;
+            cursor: pointer;
+          }
+        `}</style>
+        <div
+          style={{
+            marginTop: "30px",
+            display: "flex",
+            justifyContent: "space-evenly",
+            alignItems: "center",
+            fontWeight: "bold",
+            letterSpacing: "0.5px",
+            fontSize: "17px",
+          }}
+        >
+          <div
+            className="nav"
+            onClick={() => {
+              handleClick(1);
+            }}
+            style={pathname === "/customerdata/information" ? styling : null}
+          >
+            Information
+          </div>
+          <div
+            className="nav"
+            onClick={() => {
+              handleClick(2);
+            }}
+            style={pathname === "/customerdata/premise" ? styling : null}
+          >
+            Premise
+          </div>
+          <div
+            className="nav"
+            onClick={() => {
+              handleClick(3);
+            }}
+            style={pathname === "/customerdata/tracking" ? styling : null}
+          >
+            Tracking
+          </div>
+          <div
+            className="nav"
+            onClick={() => {
+              handleClick(4);
+            }}
+            style={pathname === "/customerdata/service" ? styling : null}
+          >
+            Service
+          </div>
+          <div
+            className="nav"
+            onClick={() => {
+              handleClick(5);
+            }}
+            style={pathname === "/customerdata/raiseticket" ? styling : null}
+          >
+            Raise Ticket
+          </div>
+        </div>
+
+        {premiseUserState.premiseUserData &&
+        trackingLogsState.trackingLogsData ? (
+          loading ? (
+            <>
               <div
                 style={{
-                  marginLeft: "20px",
+                  marginLeft: "12px",
+                  marginRight: "12px",
+                  marginTop: "30px",
                   display: "flex",
-                  flexDirection: "column",
+                  justifyContent: "space-between",
                   alignItems: "center",
                 }}
               >
-                <h2 style={{ fontWeight: "bolder" }}>
-                  {premiseUserState.premiseUserData.smifis.length} Smi-Fi
-                  Installed
-                </h2>
-                <p>{count} Smi-Fi not live</p>
-              </div>
-              <div
-                style={{
-                  display: "flex",
-                  fontWeight: "bolder",
-                  fontSize: "22px",
-                  letterSpacing: "1px",
-                  alignItems: "center",
-                }}
-              >
-                {premiseUserState.premiseUserData.smifis.map((val, c) => (
-                  <div
-                  onClick={()=>{
-                    changeSmifiGraph(val)
-                  }}
-                    key={val}
-                    style={{
-                      marginLeft: "10px",
-                      backgroundColor: smifiState==val?"#D9D9D9":"#f7f5f5",
-                      display: "flex",
-                      alignItems: "center",
-                      padding: "15px",
-                      cursor:"pointer"
-                    }}
-                  >
-                    {val} &nbsp;{" "}
-                    {deviceStatus[c]==true ? (
-                    console.log(deviceStatus[c],c),
-                      <span style={{ color: "#45ff4b" }}>● &nbsp; Live</span>
-                    ) : (
-                      <span style={{ color: "red" }}>● &nbsp; Not Live</span>
-                    )}
-                  </div>
-                ))}
-                <RefreshIcon
-                  onClick={refreshDevice}
-                  sx={{ fontSize: "40px", cursor: "pointer" }}
-                />
-              </div>
-            </div>
-            <div
+                <div
                   style={{
+                    marginLeft: "20px",
                     display: "flex",
-                    justifyContent: "space-between",
-                    marginTop: "30px",
-                    marginRight: "80px",
+                    flexDirection: "column",
                     alignItems: "center",
                   }}
                 >
-                  <div style={{ marginLeft: "40vw" }}>
-                    Last updated on{" "}
-                    {trackingLogsState.trackingLogsData[trackingLogsState.trackingLogsData.length - 1]
-                      ? new Date(
-                        trackingLogsState.trackingLogsData[trackingLogsState.trackingLogsData.length - 1].timestamp * 10000
+                  <h2 style={{ fontWeight: "bolder" }}>
+                    {premiseUserState.premiseUserData.smifis.length} Smi-Fi
+                    Installed
+                  </h2>
+                  <p>{count} Smi-Fi not live</p>
+                </div>
+                <div
+                  style={{
+                    display: "flex",
+                    fontWeight: "bolder",
+                    fontSize: "22px",
+                    letterSpacing: "1px",
+                    alignItems: "center",
+                  }}
+                >
+                  {premiseUserState.premiseUserData.smifis.map((val, c) => (
+                    <div
+                      onClick={() => {
+                        changeSmifiGraph(val);
+                      }}
+                      key={val}
+                      style={{
+                        marginLeft: "10px",
+                        backgroundColor:
+                          smifiState == val ? "#D9D9D9" : "#f7f5f5",
+                        display: "flex",
+                        alignItems: "center",
+                        padding: "15px",
+                        cursor: "pointer",
+                      }}
+                    >
+                      {val} &nbsp;{" "}
+                      {deviceStatus[c] == true ? (
+                        (console.log(deviceStatus[c], c),
+                        (
+                          <span style={{ color: "#45ff4b" }}>
+                            ● &nbsp; Live
+                          </span>
+                        ))
+                      ) : (
+                        <span style={{ color: "red" }}>● &nbsp; Not Live</span>
+                      )}
+                    </div>
+                  ))}
+                  <RefreshIcon
+                    onClick={refreshDevice}
+                    sx={{ fontSize: "40px", cursor: "pointer" }}
+                  />
+                </div>
+              </div>
+              <div
+                style={{
+                  display: "flex",
+                  justifyContent: "space-between",
+                  marginTop: "30px",
+                  marginRight: "80px",
+                  alignItems: "center",
+                }}
+              >
+                <div style={{ marginLeft: "40vw" }}>
+                  Last updated on{" "}
+                  {trackingLogsState.trackingLogsData[
+                    trackingLogsState.trackingLogsData.length - 1
+                  ]
+                    ? new Date(
+                        trackingLogsState.trackingLogsData[
+                          trackingLogsState.trackingLogsData.length - 1
+                        ].timestamp * 10000
                       )
                         .toString()
                         .slice(0, 25)
-                      : null}
-                  </div>
-                  <div style={{ display: "flex" }}>
-                    <Box sx={{ minWidth: 120 }}>
-                      <FormControl fullWidth>
-                        <Select
-                          labelId="demo-simple-select-label"
-                          id="demo-simple-select"
-                          value={unit}
-                          // label="Age"
-                          onChange={handleUnitChange}
+                    : null}
+                </div>
+                <div style={{ display: "flex" }}>
+                  <Box sx={{ minWidth: 120 }}>
+                    <FormControl fullWidth>
+                      <Select
+                        labelId="demo-simple-select-label"
+                        id="demo-simple-select"
+                        value={unit}
+                        // label="Age"
+                        onChange={handleUnitChange}
+                      >
+                        <MenuItem value="Power">Power</MenuItem>
+                        <MenuItem value="Current">Current</MenuItem>
+                        <MenuItem value="Voltage">Voltage</MenuItem>
+                      </Select>
+                    </FormControl>
+                  </Box>
+                  <Box sx={{ minWidth: 120, marginLeft: "20px" }}>
+                    <FormControl fullWidth>
+                      <Select
+                        labelId="demo-simple-select-label"
+                        id="demo-simple-select"
+                        value={time}
+                        // label="Age"
+                        onChange={handleTimeChange}
+                      >
+                        <MenuItem
+                          value="Today"
+                          onClick={() => {
+                            timeClick(1);
+                          }}
                         >
-                          <MenuItem value="Power">Power</MenuItem>
-                          <MenuItem value="Current">Current</MenuItem>
-                          <MenuItem value="Voltage">Voltage</MenuItem>
-                        </Select>
-                      </FormControl>
-                    </Box>
-                    <Box sx={{ minWidth: 120, marginLeft: "20px" }}>
-                      <FormControl fullWidth>
-                        <Select
-                          labelId="demo-simple-select-label"
-                          id="demo-simple-select"
-                          value={time}
-                          // label="Age"
-                          onChange={handleTimeChange}
+                          Today
+                        </MenuItem>
+                        <MenuItem
+                          value="Monthly"
+                          onClick={() => {
+                            timeClick(2);
+                          }}
                         >
-                          <MenuItem
-                            value="Today"
-                            onClick={() => {
-                              timeClick(1);
-                            } }
-                          >
-                            Today
-                          </MenuItem>
-                          <MenuItem
-                            value="Monthly"
-                            onClick={() => {
-                              timeClick(2);
-                            } }
-                          >
-                            Weekly
-                          </MenuItem>
-                          <MenuItem
-                            value="Weekly"
-                            onClick={() => {
-                              timeClick(3);
-                            } }
-                          >
-                            Monthly
-                          </MenuItem>
-                        </Select>
-                      </FormControl>
-                    </Box>
+                          Weekly
+                        </MenuItem>
+                        <MenuItem
+                          value="Weekly"
+                          onClick={() => {
+                            timeClick(3);
+                          }}
+                        >
+                          Monthly
+                        </MenuItem>
+                      </Select>
+                    </FormControl>
+                  </Box>
+                </div>
+              </div>
+              <div
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "space-around",
+                }}
+              >
+                <div>
+                  <div style={{ fontSize: "20px", fontWeight: "bold" }}>
+                    {current}
                   </div>
-                </div><div
-                  style={{
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "space-around",
-                  }}
-                >
-                    <div>
-                      <div style={{ fontSize: "20px", fontWeight: "bold" }}>
-                        {current}
-                      </div>
-                      <div style={{ fontSize: "16px", fontWeight: "bold" }}>
-                        Live Current
-                      </div>
-                      <div
-                        style={{
-                          fontSize: "20px",
-                          fontWeight: "bold",
-                          marginTop: "40px",
-                        }}
-                      >
-                        {trackingLogsState.trackingLogsData[trackingLogsState.trackingLogsData.length - 1] ? (
-                          trackingLogsState.trackingLogsData[trackingLogsState.trackingLogsData.length - 1].volt
-                        ) : (
-                          <p>Nil</p>
-                        )}
-                      </div>
-                      <div style={{ fontSize: "16px", fontWeight: "bold" }}>
-                        Live Voltage
-                      </div>
-                      <div
-                        style={{
-                          fontSize: "20px",
-                          fontWeight: "bold",
-                          marginTop: "40px",
-                        }}
-                      >
-                        {power}
-                      </div>
-                      <div style={{ fontSize: "16px", fontWeight: "bold" }}>
-                        Live Power/Load
-                      </div>
-                    </div>
-                    <div>
-                      <div
-                        style={{
-                          transform: `translateY(150px)`,
-                          fontSize: "18px",
-                          fontWeight: "bold",
-                          marginLeft: "-50px",
-                        }}
-                      >
-                        {unit}
-                      </div>
-                      <LineChart
-                        width={1100}
-                        height={500}
-                        data={data}
-                        margin={{ top: 5, right: 20, bottom: 5, left: 0 }}
-                      >
-                        <Line
-                          dot={false}
-                          type="monotone"
-                          dataKey="value"
-                          stroke="#8884d8" />
-                        {/* <CartesianGrid stroke="#ccc" strokeDasharray="5 5" /> */}
-                        <XAxis minTickGap={50} dataKey="name" />
-                        <YAxis datakey="value" domain={[0, limit]} />
-                        <Tooltip />
-                      </LineChart>
-                      <div
-                        style={{
-                          fontSize: "18px",
-                          fontWeight: "bold",
-                          marginLeft: "500px",
-                        }}
-                      >
-                        Time
-                      </div>
-                    </div>
-                  </div></>
-        ) : (
-          <CircularProgress sx={{ margin: "45vw", marginTop: "20px" }} />
-        )
-      ) : null}
-    </div>
+                  <div style={{ fontSize: "16px", fontWeight: "bold" }}>
+                    Live Current
+                  </div>
+                  <div
+                    style={{
+                      fontSize: "20px",
+                      fontWeight: "bold",
+                      marginTop: "40px",
+                    }}
+                  >
+                    {trackingLogsState.trackingLogsData[
+                      trackingLogsState.trackingLogsData.length - 1
+                    ] ? (
+                      trackingLogsState.trackingLogsData[
+                        trackingLogsState.trackingLogsData.length - 1
+                      ].volt
+                    ) : (
+                      <p>Nil</p>
+                    )}
+                  </div>
+                  <div style={{ fontSize: "16px", fontWeight: "bold" }}>
+                    Live Voltage
+                  </div>
+                  <div
+                    style={{
+                      fontSize: "20px",
+                      fontWeight: "bold",
+                      marginTop: "40px",
+                    }}
+                  >
+                    {power}
+                  </div>
+                  <div style={{ fontSize: "16px", fontWeight: "bold" }}>
+                    Live Power/Load
+                  </div>
+                </div>
+                <div>
+                  <div
+                    style={{
+                      transform: `translateY(150px)`,
+                      fontSize: "18px",
+                      fontWeight: "bold",
+                      marginLeft: "-50px",
+                    }}
+                  >
+                    {unit}
+                  </div>
+                  <LineChart
+                    width={1100}
+                    height={500}
+                    data={data}
+                    margin={{ top: 5, right: 20, bottom: 5, left: 0 }}
+                  >
+                    <Line
+                      dot={false}
+                      type="monotone"
+                      dataKey="value"
+                      stroke="#8884d8"
+                    />
+                    {/* <CartesianGrid stroke="#ccc" strokeDasharray="5 5" /> */}
+                    <XAxis minTickGap={50} dataKey="name" />
+                    <YAxis datakey="value" domain={[0, limit]} />
+                    <Tooltip />
+                  </LineChart>
+                  <div
+                    style={{
+                      fontSize: "18px",
+                      fontWeight: "bold",
+                      marginLeft: "500px",
+                    }}
+                  >
+                    Time
+                  </div>
+                </div>
+              </div>
+            </>
+          ) : (
+            <CircularProgress sx={{ margin: "45vw", marginTop: "20px" }} />
+          )
+        ) : null}
+      </div>
+    </Layout>
   );
 };
 const userRole = "admin";
-export default Tracking;
+export default withProtected(Tracking);
 Tracking.getLayout = function getLayout(page) {
   return <Layout userRole={userRole}>{page}</Layout>;
 };
