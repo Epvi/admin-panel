@@ -6,6 +6,7 @@ import { collection, addDoc, getDocs } from "firebase/firestore";
 import Layout from "../components/Layout";
 import { useAuth } from "../auth/AuthContext";
 import DashboardData from "./cards";
+import { withProtected } from "../src/hooks/routes";
 
 const Index = () => {
   // console.log("Index called");
@@ -28,7 +29,8 @@ const Index = () => {
 
   useEffect(() => {
     if (!currentUser) {
-      Router.push("/login");
+      console.log("No user!");
+      // Router.push("/login");
       // setLoading(false);
     } else {
       getUsers();
@@ -53,4 +55,4 @@ const Index = () => {
 //   );
 // };
 
-export default Index;
+export default withProtected(Index);
