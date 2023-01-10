@@ -1,5 +1,5 @@
 import React from "react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/router";
 import Router from "next/router";
 import { database } from "../../firebaseConfig";
@@ -16,6 +16,7 @@ import Fade from "@mui/material/Fade";
 import { getData, useUserInformation } from "../../auth/informationReducer";
 import Layout from "../../components/Layout";
 import { withProtected } from "../../src/hooks/routes";
+import { async } from "@firebase/util";
 
 const style = {
   position: "absolute",
@@ -32,10 +33,12 @@ const style = {
 const Information = () => {
   const { userInformationState, userInformationDispatch } =
     useUserInformation();
+  const [foundUser, setFoundUser] = useState(true);
   const [phoneNo, setPhoneNo] = useState(true);
   const [name, setName] = useState("");
   const [address, setAddress] = useState("");
-  const [open, setOpen] = useState(false);
+  const [openName, setOpenName] = useState(false);
+  const [openAddress, setOpenAddress] = useState(false);
   const { asPath, pathname } = useRouter();
   const styling = {
     backgroundColor: "#556cd6",
@@ -63,7 +66,18 @@ const Information = () => {
       alert("Enter Valid Phone No");
     }
   };
-  // console.log(userInformationState.userInformation);
+
+  useEffect(() => {
+    if (JSON.stringify(userInformationState.userInformation) == "{}") {
+      // if (!userInformationState.userInformation) {
+      // console.log("No User Found");
+      setFoundUser(false);
+    } else {
+      setFoundUser(true);
+    }
+  }, [userInformationState.userInformation]);
+
+  // console.log(typeof userInformationState.userInformation);
 
   const handleNameChange = async (e) => {
     e.preventDefault();
@@ -73,7 +87,7 @@ const Information = () => {
         name: name,
       });
     }
-    setOpen(false);
+    setOpenName(false);
   };
 
   const handleAddressChange = async (e) => {
@@ -84,7 +98,7 @@ const Information = () => {
         location: address,
       });
     }
-    setOpen(false);
+    setOpenAddress(false);
   };
 
   return (
@@ -105,27 +119,31 @@ const Information = () => {
               : null}
           </h2>
           <h3 style={{ marginLeft: "10vw" }}>Enter Customer Phone Number : </h3>
-          <TextField
-            style={{
-              width: "20vw",
-              marginLeft: "10px",
-            }}
-            type="number"
-            id="outlined"
-            variant="outlined"
-            name="outlined"
-            label="Phone"
-            required
-            onChange={(e) => setPhoneNo(e.target.value)}
-          />
-          <Button
-            sx={{ marginLeft: "5px", padding: "13px", width: "7vw" }}
-            variant="contained"
-            type="submit"
-            onClick={submit}
-          >
-            Search
-          </Button>
+          <form onSubmit={submit}>
+            <TextField
+              style={{
+                width: "20vw",
+                marginLeft: "10px",
+              }}
+              type="number"
+              id="outlined"
+              variant="outlined"
+              name="outlined"
+              label="Phone"
+              error={!foundUser ? true : false}
+              helperText={!foundUser ? "No User Found" : ""}
+              required
+              onChange={(e) => setPhoneNo(e.target.value)}
+            />
+            <Button
+              sx={{ marginLeft: "5px", padding: "13px", width: "7vw" }}
+              variant="contained"
+              type="submit"
+              onClick={submit}
+            >
+              Search
+            </Button>
+          </form>
         </div>
         <style jsx>{`
           .nav {
@@ -196,340 +214,341 @@ const Information = () => {
           </div>
         </div>
         {/* user information */}
-        {userInformationState.userInformation && (
-          <div
-            style={{
-              display: "flex",
-              justifyContent: "space-around",
-              marginTop: 10,
-            }}
-          >
-            {/* Personal info */}
-            <div style={{ display: "flex", flexDirection: "column" }}>
-              <div
-                style={{
-                  fontSize: "17px",
-                  fontWeight: "bold",
-                  marginBottom: 10,
-                }}
-              >
-                General Information <br />
-              </div>
-              <p>
-                User Name :&nbsp;{" "}
-                <input
-                  type="text"
-                  value={
-                    userInformationState.userInformation
-                      ? userInformationState.userInformation.name
-                      : ""
-                  }
-                  readOnly
+        {userInformationState.userInformation &&
+          JSON.stringify(userInformationState.userInformation) != "{}" && (
+            <div
+              style={{
+                display: "flex",
+                justifyContent: "space-around",
+                marginTop: 10,
+              }}
+            >
+              {/* Personal info */}
+              <div style={{ display: "flex", flexDirection: "column" }}>
+                <div
                   style={{
-                    marginLeft: "1vw",
-                    width: "auto",
-                    border: "none",
-                    padding: "15px",
-                    paddingLeft: "20px",
-                    cursor: "pointer",
-                    backgroundColor: "#D9D9D9",
+                    fontSize: "17px",
+                    fontWeight: "bold",
+                    marginBottom: 10,
                   }}
-                />
-                <EditIcon
-                  onClick={() => {
-                    setOpen(true);
+                >
+                  General Information <br />
+                </div>
+                <p>
+                  User Name :&nbsp;{" "}
+                  <input
+                    type="text"
+                    value={
+                      userInformationState.userInformation
+                        ? userInformationState.userInformation.name
+                        : ""
+                    }
+                    readOnly
+                    style={{
+                      marginLeft: "1vw",
+                      width: "auto",
+                      border: "none",
+                      padding: "15px",
+                      paddingLeft: "20px",
+                      cursor: "pointer",
+                      backgroundColor: "#D9D9D9",
+                    }}
+                  />
+                  <EditIcon
+                    onClick={() => {
+                      setOpenName(true);
+                    }}
+                    sx={{
+                      marginLeft: "6px",
+                      padding: "3px",
+                      cursor: "pointer",
+                      backgroundColor: "black",
+                      color: "white",
+                      cursor: "pointer",
+                    }}
+                  />
+                </p>
+                <Modal
+                  aria-labelledby="transition-modal-title"
+                  aria-describedby="transition-modal-description"
+                  open={openName}
+                  onClose={() => setOpenName(false)}
+                  closeAfterTransition
+                  BackdropComponent={Backdrop}
+                  BackdropProps={{
+                    timeout: 500,
                   }}
-                  sx={{
-                    marginLeft: "6px",
-                    padding: "3px",
-                    cursor: "pointer",
-                    backgroundColor: "black",
-                    color: "white",
-                    cursor: "pointer",
-                  }}
-                />
-              </p>
-              <Modal
-                aria-labelledby="transition-modal-title"
-                aria-describedby="transition-modal-description"
-                open={open}
-                onClose={() => setOpen(false)}
-                closeAfterTransition
-                BackdropComponent={Backdrop}
-                BackdropProps={{
-                  timeout: 500,
-                }}
-              >
-                <Fade in={open}>
-                  <Box sx={style}>
-                    <form onSubmit={handleNameChange}>
-                      <input
-                        id="oldName"
-                        placeholder="Enter new name"
-                        onChange={(e) => setName(e.target.value)}
-                        style={{
-                          // marginLeft: "1vw",
-                          width: "100%",
-                          border: "none",
-                          padding: "15px",
-                          paddingLeft: "20px",
-                          backgroundColor: "#D9D9D9",
-                          fontSize: "17px",
-                        }}
-                      />
+                >
+                  <Fade in={openName}>
+                    <Box sx={style}>
+                      <form onSubmit={handleNameChange}>
+                        <input
+                          id="oldName"
+                          placeholder="Enter new name"
+                          onChange={(e) => setName(e.target.value)}
+                          style={{
+                            // marginLeft: "1vw",
+                            width: "100%",
+                            border: "none",
+                            padding: "15px",
+                            paddingLeft: "20px",
+                            backgroundColor: "#D9D9D9",
+                            fontSize: "17px",
+                          }}
+                        />
 
-                      <Button
-                        variant="contained"
-                        style={{ marginTop: "10px", width: "100%" }}
-                        type="submit"
-                      >
-                        Submit
-                      </Button>
-                    </form>
-                  </Box>
-                </Fade>
-              </Modal>
-              <p>
-                Address :&nbsp;{" "}
-                <input
-                  type="text"
-                  value={
-                    userInformationState.userInformation
-                      ? userInformationState.userInformation.location
-                      : ""
-                  }
-                  readOnly
-                  style={{
-                    marginLeft: "1vw",
-                    width: "auto",
-                    border: "none",
-                    padding: "15px",
-                    paddingLeft: "20px",
-                    cursor: "pointer",
-                    backgroundColor: "#D9D9D9",
+                        <Button
+                          variant="contained"
+                          style={{ marginTop: "10px", width: "100%" }}
+                          type="submit"
+                        >
+                          Submit
+                        </Button>
+                      </form>
+                    </Box>
+                  </Fade>
+                </Modal>
+                <p>
+                  Address :&nbsp;{" "}
+                  <input
+                    type="text"
+                    value={
+                      userInformationState.userInformation
+                        ? userInformationState.userInformation.location
+                        : ""
+                    }
+                    readOnly
+                    style={{
+                      marginLeft: "1vw",
+                      width: "auto",
+                      border: "none",
+                      padding: "15px",
+                      paddingLeft: "20px",
+                      cursor: "pointer",
+                      backgroundColor: "#D9D9D9",
+                    }}
+                  />
+                  <EditIcon
+                    onClick={() => {
+                      setOpenAddress(true);
+                    }}
+                    sx={{
+                      marginLeft: "6px",
+                      padding: "3px",
+                      cursor: "pointer",
+                      backgroundColor: "black",
+                      color: "white",
+                      cursor: "pointer",
+                    }}
+                  />
+                </p>
+                <Modal
+                  aria-labelledby="transition-modal-title"
+                  aria-describedby="transition-modal-description"
+                  open={openAddress}
+                  onClose={() => setOpenAddress(false)}
+                  closeAfterTransition
+                  BackdropComponent={Backdrop}
+                  BackdropProps={{
+                    timeout: 500,
                   }}
-                />
-                <EditIcon
-                  onClick={() => {
-                    setOpen(true);
-                  }}
-                  sx={{
-                    marginLeft: "6px",
-                    padding: "3px",
-                    cursor: "pointer",
-                    backgroundColor: "black",
-                    color: "white",
-                    cursor: "pointer",
-                  }}
-                />
-              </p>
-              <Modal
-                aria-labelledby="transition-modal-title"
-                aria-describedby="transition-modal-description"
-                open={open}
-                onClose={() => setOpen(false)}
-                closeAfterTransition
-                BackdropComponent={Backdrop}
-                BackdropProps={{
-                  timeout: 500,
-                }}
-              >
-                <Fade in={open}>
-                  <Box sx={style}>
-                    <form onSubmit={handleAddressChange}>
-                      <input
-                        id="oldAddress"
-                        placeholder="Enter new Address"
-                        onChange={(e) => setAddress(e.target.value)}
-                        style={{
-                          // marginLeft: "1vw",
-                          width: "100%",
-                          border: "none",
-                          padding: "15px",
-                          paddingLeft: "20px",
-                          backgroundColor: "#D9D9D9",
-                          fontSize: "17px",
-                        }}
-                      />
+                >
+                  <Fade in={openAddress}>
+                    <Box sx={style}>
+                      <form onSubmit={handleAddressChange}>
+                        <input
+                          id="oldAddress"
+                          placeholder="Enter new Address"
+                          onChange={(e) => setAddress(e.target.value)}
+                          style={{
+                            // marginLeft: "1vw",
+                            width: "100%",
+                            border: "none",
+                            padding: "15px",
+                            paddingLeft: "20px",
+                            backgroundColor: "#D9D9D9",
+                            fontSize: "17px",
+                          }}
+                        />
 
-                      <Button
-                        variant="contained"
-                        style={{ marginTop: "10px", width: "100%" }}
-                        type="submit"
-                      >
-                        Submit
-                      </Button>
-                    </form>
-                  </Box>
-                </Fade>
-              </Modal>
-            </div>
-            {/* Purchase info */}
-            <div>
-              <div
-                style={{
-                  fontSize: "17px",
-                  fontWeight: "bold",
-                  marginBottom: 10,
-                }}
-              >
-                Purchase Information <br />
+                        <Button
+                          variant="contained"
+                          style={{ marginTop: "10px", width: "100%" }}
+                          type="submit"
+                        >
+                          Submit
+                        </Button>
+                      </form>
+                    </Box>
+                  </Fade>
+                </Modal>
               </div>
-              <p>
-                Purchase Amount :&nbsp;{" "}
-                <input
-                  type="text"
-                  value={"No Data"}
-                  readOnly
+              {/* Purchase info */}
+              <div>
+                <div
                   style={{
-                    marginLeft: "1vw",
-                    width: "auto",
-                    border: "none",
-                    padding: "15px",
-                    paddingLeft: "20px",
-                    cursor: "pointer",
-                    backgroundColor: "#D9D9D9",
+                    fontSize: "17px",
+                    fontWeight: "bold",
+                    marginBottom: 10,
                   }}
-                />
-              </p>
-              <p>
-                Purchase Date :&nbsp;{" "}
-                <input
-                  type="text"
-                  value={"No Data"}
-                  readOnly
-                  style={{
-                    marginLeft: "1vw",
-                    width: "auto",
-                    border: "none",
-                    padding: "15px",
-                    paddingLeft: "20px",
-                    cursor: "pointer",
-                    backgroundColor: "#D9D9D9",
-                  }}
-                />
-              </p>
-              <p>
-                Membership Starts :&nbsp;{" "}
-                <input
-                  type="text"
-                  value={"No Data"}
-                  readOnly
-                  style={{
-                    marginLeft: "1vw",
-                    width: "auto",
-                    border: "none",
-                    padding: "15px",
-                    paddingLeft: "20px",
-                    cursor: "pointer",
-                    backgroundColor: "#D9D9D9",
-                  }}
-                />
-              </p>
-              <p>
-                Membership Ends :&nbsp;{" "}
-                <input
-                  type="text"
-                  value={"No Data"}
-                  readOnly
-                  style={{
-                    marginLeft: "1vw",
-                    width: "auto",
-                    border: "none",
-                    padding: "15px",
-                    paddingLeft: "20px",
-                    cursor: "pointer",
-                    backgroundColor: "#D9D9D9",
-                  }}
-                />
-              </p>
-              <p>
-                Number of Smifi :&nbsp;{" "}
-                <input
-                  type="text"
-                  value={
-                    userInformationState.userInformation
-                      ? userInformationState.userInformation.smifis.length
-                      : ""
-                  }
-                  readOnly
-                  style={{
-                    marginLeft: "1vw",
-                    width: "auto",
-                    border: "none",
-                    padding: "15px",
-                    paddingLeft: "20px",
-                    cursor: "pointer",
-                    backgroundColor: "#D9D9D9",
-                  }}
-                />
-              </p>
-            </div>
-            {/* Renewal Info */}
-            <div>
-              <div
-                style={{
-                  fontSize: "17px",
-                  fontWeight: "bold",
-                  marginBottom: 10,
-                }}
-              >
-                Renewal Information <br />
+                >
+                  Purchase Information <br />
+                </div>
+                <p>
+                  Purchase Amount :&nbsp;{" "}
+                  <input
+                    type="text"
+                    value={"No Data"}
+                    readOnly
+                    style={{
+                      marginLeft: "1vw",
+                      width: "auto",
+                      border: "none",
+                      padding: "15px",
+                      paddingLeft: "20px",
+                      cursor: "pointer",
+                      backgroundColor: "#D9D9D9",
+                    }}
+                  />
+                </p>
+                <p>
+                  Purchase Date :&nbsp;{" "}
+                  <input
+                    type="text"
+                    value={"No Data"}
+                    readOnly
+                    style={{
+                      marginLeft: "1vw",
+                      width: "auto",
+                      border: "none",
+                      padding: "15px",
+                      paddingLeft: "20px",
+                      cursor: "pointer",
+                      backgroundColor: "#D9D9D9",
+                    }}
+                  />
+                </p>
+                <p>
+                  Membership Starts :&nbsp;{" "}
+                  <input
+                    type="text"
+                    value={"No Data"}
+                    readOnly
+                    style={{
+                      marginLeft: "1vw",
+                      width: "auto",
+                      border: "none",
+                      padding: "15px",
+                      paddingLeft: "20px",
+                      cursor: "pointer",
+                      backgroundColor: "#D9D9D9",
+                    }}
+                  />
+                </p>
+                <p>
+                  Membership Ends :&nbsp;{" "}
+                  <input
+                    type="text"
+                    value={"No Data"}
+                    readOnly
+                    style={{
+                      marginLeft: "1vw",
+                      width: "auto",
+                      border: "none",
+                      padding: "15px",
+                      paddingLeft: "20px",
+                      cursor: "pointer",
+                      backgroundColor: "#D9D9D9",
+                    }}
+                  />
+                </p>
+                <p>
+                  Number of Smifi :&nbsp;{" "}
+                  <input
+                    type="text"
+                    value={
+                      userInformationState.userInformation
+                        ? userInformationState.userInformation.smifis.length
+                        : ""
+                    }
+                    readOnly
+                    style={{
+                      marginLeft: "1vw",
+                      width: "auto",
+                      border: "none",
+                      padding: "15px",
+                      paddingLeft: "20px",
+                      cursor: "pointer",
+                      backgroundColor: "#D9D9D9",
+                    }}
+                  />
+                </p>
               </div>
-              <p>
-                Subscription Amount :&nbsp;{" "}
-                <input
-                  type="text"
-                  value={"No Data"}
-                  readOnly
+              {/* Renewal Info */}
+              <div>
+                <div
                   style={{
-                    marginLeft: "1vw",
-                    width: "auto",
-                    border: "none",
-                    padding: "15px",
-                    paddingLeft: "20px",
-                    cursor: "pointer",
-                    backgroundColor: "#D9D9D9",
+                    fontSize: "17px",
+                    fontWeight: "bold",
+                    marginBottom: 10,
                   }}
-                />
-              </p>
-              <p>
-                Renewal Date :&nbsp;
-                <input
-                  type="text"
-                  value={"No Data"}
-                  readOnly
-                  style={{
-                    marginLeft: "1vw",
-                    width: "auto",
-                    border: "none",
-                    padding: "15px",
-                    paddingLeft: "20px",
-                    cursor: "pointer",
-                    backgroundColor: "#D9D9D9",
-                  }}
-                />
-              </p>
-              <p>
-                Renewal Ends :&nbsp;
-                <input
-                  type="text"
-                  value={"No Data"}
-                  readOnly
-                  style={{
-                    marginLeft: "1vw",
-                    width: "auto",
-                    border: "none",
-                    padding: "15px",
-                    paddingLeft: "20px",
-                    cursor: "pointer",
-                    backgroundColor: "#D9D9D9",
-                  }}
-                />
-              </p>
+                >
+                  Renewal Information <br />
+                </div>
+                <p>
+                  Subscription Amount :&nbsp;{" "}
+                  <input
+                    type="text"
+                    value={"No Data"}
+                    readOnly
+                    style={{
+                      marginLeft: "1vw",
+                      width: "auto",
+                      border: "none",
+                      padding: "15px",
+                      paddingLeft: "20px",
+                      cursor: "pointer",
+                      backgroundColor: "#D9D9D9",
+                    }}
+                  />
+                </p>
+                <p>
+                  Renewal Date :&nbsp;
+                  <input
+                    type="text"
+                    value={"No Data"}
+                    readOnly
+                    style={{
+                      marginLeft: "1vw",
+                      width: "auto",
+                      border: "none",
+                      padding: "15px",
+                      paddingLeft: "20px",
+                      cursor: "pointer",
+                      backgroundColor: "#D9D9D9",
+                    }}
+                  />
+                </p>
+                <p>
+                  Renewal Ends :&nbsp;
+                  <input
+                    type="text"
+                    value={"No Data"}
+                    readOnly
+                    style={{
+                      marginLeft: "1vw",
+                      width: "auto",
+                      border: "none",
+                      padding: "15px",
+                      paddingLeft: "20px",
+                      cursor: "pointer",
+                      backgroundColor: "#D9D9D9",
+                    }}
+                  />
+                </p>
+              </div>
             </div>
-          </div>
-        )}
+          )}
       </div>
     </Layout>
   );

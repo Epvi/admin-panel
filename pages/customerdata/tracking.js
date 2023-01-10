@@ -9,6 +9,7 @@ import EditIcon from "@mui/icons-material/Edit";
 import AddIcon from "@mui/icons-material/Add";
 import Box from "@mui/material/Box";
 import RefreshIcon from "@mui/icons-material/Refresh";
+import { getData, useUserInformation } from "../../auth/informationReducer";
 import { getUserData, usePremiseUser } from "../../auth/premiseUserReducer";
 import { getLogsData, useTrackingLogs } from "../../auth/trackingLogsReducer";
 import InputLabel from "@mui/material/InputLabel";
@@ -45,6 +46,8 @@ const styling = {
 
 const Tracking = () => {
   const [phoneNo, setPhoneNo] = useState(true);
+  const { userInformationState, userInformationDispatch } =
+    useUserInformation();
   const { premiseUserState, premiseUserDispatch } = usePremiseUser();
   const { trackingLogsState, trackingLogsDispatch } = useTrackingLogs();
   // const [graph, setGraph] = useState(false);
@@ -234,7 +237,8 @@ const Tracking = () => {
         <div style={{ display: "flex", alignItems: "center" }}>
           <h2 style={{ marginLeft: "20px", color: "#556CD6" }}>
             Welcome &nbsp;&nbsp;{" "}
-            {premiseUserState.premiseUserData
+            {premiseUserState.premiseUserData &&
+            JSON.stringify(userInformationState.userInformation) != "{}"
               ? premiseUserState.premiseUserData.name
               : null}
           </h2>
@@ -251,12 +255,15 @@ const Tracking = () => {
             name="outlined"
             label="Phone"
             required
+            disabled
+            helperText="Use Information Tab's Search Bar to search user*"
             onChange={(e) => setPhoneNo(e.target.value)}
           />
           <Button
             sx={{ marginLeft: "5px", padding: "13px", width: "7vw" }}
             variant="contained"
             type="submit"
+            disabled
             onClick={search}
           >
             Search
@@ -332,7 +339,8 @@ const Tracking = () => {
         </div>
 
         {premiseUserState.premiseUserData &&
-        trackingLogsState.trackingLogsData ? (
+        trackingLogsState.trackingLogsData &&
+        JSON.stringify(userInformationState.userInformation) != "{}" ? (
           loading ? (
             <>
               <div

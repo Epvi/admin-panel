@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useState } from "react";
 import { useRouter } from "next/router";
 import Router from "next/router";
@@ -7,6 +7,7 @@ import { TextField } from "@mui/material";
 import Button from "@mui/material/Button";
 import EditIcon from "@mui/icons-material/Edit";
 import AddIcon from "@mui/icons-material/Add";
+import { getData, useUserInformation } from "../../auth/informationReducer";
 import { getUserData, usePremiseUser } from "../../auth/premiseUserReducer";
 import { getRoomsData, usePremiseRooms } from "../../auth/premiseRoomsReducer";
 import { Dropdown, css } from "@nextui-org/react";
@@ -47,6 +48,8 @@ const style = {
 };
 
 const Premise = () => {
+  const { userInformationState, userInformationDispatch } =
+    useUserInformation();
   const { premiseUserState, premiseUserDispatch } = usePremiseUser();
   const { premiseRoomsState, premiseRoomsDispatch } = usePremiseRooms();
   const [phoneNo, setPhoneNo] = useState(true);
@@ -75,6 +78,7 @@ const Premise = () => {
   };
   let premiseUserData = [];
   let premiseRoomsData = [];
+  const userInformation = {};
   const handleClick = (index) => {
     if (index == 1) Router.push("/customerdata/information");
     if (index == 2) Router.push("/customerdata/premise");
@@ -91,12 +95,32 @@ const Premise = () => {
     setOpenDialog(false);
   };
 
+  useEffect(() => {
+    // user state is already there so fetch each premise details
+    if (
+      userInformationState.userInformation &&
+      JSON.stringify(userInformationState.userInformation) != "{}"
+    ) {
+      getUserData(
+        premiseUserDispatch,
+        premiseUserData,
+        userInformationState.userInformation.phone
+      );
+      getRoomsData(
+        premiseRoomsDispatch,
+        premiseRoomsData,
+        userInformationState.userInformation.phone
+      );
+    }
+  }, [userInformationState.userInformation]);
+
   const search = async (e) => {
     e.preventDefault();
-    console.log(phoneNo);
     if (phoneNo.length == 10) {
-      getUserData(premiseUserDispatch, premiseUserData, phoneNo);
-      getRoomsData(premiseRoomsDispatch, premiseRoomsData, phoneNo);
+      getData(userInformationDispatch, userInformation, phoneNo);
+      // we only have to get the userInformationState rest useEffect will going to get for us
+      // getUserData(premiseUserDispatch, premiseUserData, phoneNo);
+      // getRoomsData(premiseRoomsDispatch, premiseRoomsData, phoneNo);
     } else {
       alert("Enter Valid Phone No");
     }
@@ -271,7 +295,8 @@ const Premise = () => {
         <div style={{ display: "flex", alignItems: "center" }}>
           <h2 style={{ marginLeft: "20px", color: "#556CD6" }}>
             Welcome &nbsp;&nbsp;{" "}
-            {premiseUserState.premiseUserData
+            {premiseUserState.premiseUserData &&
+            JSON.stringify(userInformationState.userInformation) != "{}"
               ? premiseUserState.premiseUserData.name
               : null}
           </h2>
@@ -288,12 +313,15 @@ const Premise = () => {
             name="outlined"
             label="Phone"
             required
+            disabled
+            helperText="Use Information Tab's Search Bar to search user*"
             onChange={(e) => setPhoneNo(e.target.value)}
           />
           <Button
             sx={{ marginLeft: "5px", padding: "13px", width: "7vw" }}
             variant="contained"
             type="submit"
+            disabled
             onClick={search}
           >
             Search
@@ -367,7 +395,8 @@ const Premise = () => {
             Raise Ticket
           </div>
         </div>
-        {premiseRoomsState.premiseRoomsData ? (
+        {premiseRoomsState.premiseRoomsData &&
+        JSON.stringify(userInformationState.userInformation) != "{}" ? (
           <div>
             <div
               style={{
@@ -836,7 +865,7 @@ const Premise = () => {
                     }}
                   >
                     <Dropdown.Item key="Smi-Fi">Smi-Fi</Dropdown.Item>
-                    {premiseUserState.premiseUserData?.smifis.map((val) => (
+                    {premiseUserState.premiseUserData?.smifis?.map((val) => (
                       <Dropdown.Item key={val}>{val}</Dropdown.Item>
                     ))}
                   </Dropdown.Menu>
