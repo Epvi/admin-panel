@@ -13,10 +13,10 @@ function userInformationReducer(userInformationState, action) {
 }
 async function getData(userInformationDispatch, userInformation, phoneNo) {
   phoneNo = parseInt(phoneNo);
-  const q = query(collection(database, "Users"), where("phone", "==", phoneNo));
+  const q = await query(collection(database, "Users"), where("phone", "==", phoneNo));
 
   userInformationDispatch({ type: "GETTING", payload: {} });
-  const userInformationFunction = onSnapshot(q, (querySnapshot) => {
+  await onSnapshot(q, (querySnapshot) => {
     userInformation = {};
     querySnapshot.forEach((doc) => {
       userInformation = doc.data();
