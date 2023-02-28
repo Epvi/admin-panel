@@ -324,7 +324,7 @@ const Tracking = () => {
                     {premiseUserState.premiseUserData.smifis.length} Smi-Fi
                     Installed
                   </h2>
-                  <p>{count} Smi-Fi not live</p>
+                  {/* <p>{count} Smi-Fi not live</p> */}
                 </div>
                 <div
                   style={{
