@@ -9,6 +9,7 @@ import EditIcon from "@mui/icons-material/Edit";
 import AddIcon from "@mui/icons-material/Add";
 import Box from "@mui/material/Box";
 import RefreshIcon from "@mui/icons-material/Refresh";
+import { useAuth } from "firebase/auth";
 import { getData, useUserInformation } from "../../auth/informationReducer";
 import { getUserData, usePremiseUser } from "../../auth/premiseUserReducer";
 import { getLogsData, useTrackingLogs } from "../../auth/trackingLogsReducer";
@@ -54,7 +55,7 @@ const Tracking = () => {
   const [loading, setLoading] = useState(false);
   const [count, setCount] = useState(0);
   const [smifiState, setSmifiState] = useState();
-  const [deviceStatus, setDeviceStatus] = useState([]);
+  // const [deviceStatus, setDeviceStatus] = useState([]);
   const [unit, setUnit] = useState("Power");
   const [time, setTime] = useState("Today");
   const { asPath, pathname } = useRouter();
@@ -78,7 +79,7 @@ const Tracking = () => {
   };
   let premiseUserData = [];
   let trackingLogsData = [];
-  let arr = [];
+  // let arr = [];
   let currSmifi;
 
   let data = [],
@@ -86,6 +87,7 @@ const Tracking = () => {
     power,
     timeStamp,
     limit = 0;
+
   const search = async (e) => {
     e.preventDefault();
     console.log(phoneNo);
@@ -96,6 +98,7 @@ const Tracking = () => {
       alert("Enter Valid Phone No");
     }
   };
+
   useEffect(() => {
     if (premiseUserState.premiseUserData) {
       (currSmifi = premiseUserState.premiseUserData.smifis[0]),
@@ -104,28 +107,9 @@ const Tracking = () => {
       setTimeout(() => {
         setLoading(true);
       }, premiseUserState.premiseUserData.smifis.length * 3500);
-      premiseUserState.premiseUserData.smifis.map(async (val) => {
-        const options = {
-          method: "GET",
-          url: "https://adminpanelbackendepvi.herokuapp.com/trackingcheck",
-          headers: { devices: val },
-        };
-
-        await axios
-          .request(options)
-          .then(function (response) {
-            arr.push(response.data);
-            if (!response.data) {
-              setCount(count + 1);
-            }
-            setDeviceStatus(arr);
-          })
-          .catch(function (error) {
-            console.error(error);
-          });
-      });
     }
   }, [premiseUserState.premiseUserData]);
+
   if (trackingLogsState.trackingLogsData) {
     limit = 0;
     if (unit == "Power") {
@@ -185,32 +169,7 @@ const Tracking = () => {
       setLoading(true);
     }, 1500);
   };
-  const refreshDevice = () => {
-    setLoading(false);
-    setTimeout(() => {
-      setLoading(true);
-    }, premiseUserState.premiseUserData.smifis.length * 3500);
-    premiseUserState.premiseUserData.smifis.map(async (val) => {
-      const options = {
-        method: "GET",
-        url: "https://adminpanelbackendepvi.herokuapp.com/trackingcheck",
-        headers: { devices: val },
-      };
 
-      await axios
-        .request(options)
-        .then(function (response) {
-          arr.push(response.data);
-          if (!response.data) {
-            setCount(count + 1);
-          }
-          setDeviceStatus(arr);
-        })
-        .catch(function (error) {
-          console.error(error);
-        });
-    });
-  };
   if (trackingLogsState.trackingLogsData)
     console.log(trackingLogsState.trackingLogsData.length);
   const changeSmifiGraph = (smifi) => {
@@ -365,7 +324,7 @@ const Tracking = () => {
                     {premiseUserState.premiseUserData.smifis.length} Smi-Fi
                     Installed
                   </h2>
-                  <p>{count} Smi-Fi not live</p>
+                  {/* <p>{count} Smi-Fi not live</p> */}
                 </div>
                 <div
                   style={{
@@ -377,38 +336,15 @@ const Tracking = () => {
                   }}
                 >
                   {premiseUserState.premiseUserData.smifis.map((val, c) => (
-                    <div
-                      onClick={() => {
-                        changeSmifiGraph(val);
-                      }}
+                    <DeviceStatusComponent
                       key={val}
-                      style={{
-                        marginLeft: "10px",
-                        backgroundColor:
-                          smifiState == val ? "#D9D9D9" : "#f7f5f5",
-                        display: "flex",
-                        alignItems: "center",
-                        padding: "15px",
-                        cursor: "pointer",
-                      }}
-                    >
-                      {val} &nbsp;{" "}
-                      {deviceStatus[c] == true ? (
-                        (console.log(deviceStatus[c], c),
-                        (
-                          <span style={{ color: "#45ff4b" }}>
-                            ● &nbsp; Live
-                          </span>
-                        ))
-                      ) : (
-                        <span style={{ color: "red" }}>● &nbsp; Not Live</span>
-                      )}
-                    </div>
+                      premiseUserState={premiseUserState}
+                      deviceId={val}
+                      changeSmifiGraph={changeSmifiGraph}
+                      smifiState={smifiState}
+                      setSmifiState={setSmifiState}
+                    />
                   ))}
-                  <RefreshIcon
-                    onClick={refreshDevice}
-                    sx={{ fontSize: "40px", cursor: "pointer" }}
-                  />
                 </div>
               </div>
               <div
@@ -583,6 +519,88 @@ const Tracking = () => {
     </Layout>
   );
 };
+
+// ---------------------------- New compoent
+const DeviceStatusComponent = ({
+  premiseUserState,
+  deviceId,
+  changeSmifiGraph,
+  smifiState,
+  setSmifiState,
+}) => {
+  const [DeviceLoading, setDeviceLoading] = useState(false);
+  const [status, setStatus] = useState(false);
+  // deviceId = "epvi175";
+  const options = {
+    method: "GET",
+    url: "https://epviapi.in/trackingcheck",
+    headers: {
+      devices: deviceId,
+    },
+  };
+
+  function getDeviceStatus() {
+    setDeviceLoading(true);
+    axios({
+      ...options,
+    })
+      .then((res) => {
+        console.log(res.data);
+        if (res.data?.deviceid == deviceId) {
+          // console.log("Inside if");
+          setStatus(true);
+        }
+        // console.log("After if");
+        setDeviceLoading(false);
+      })
+      .catch((err) => {
+        console.log(err);
+        setDeviceLoading(false);
+      });
+  }
+
+  useEffect(() => {
+    // console.log("Initial render");
+    getDeviceStatus();
+  }, [premiseUserState.premiseUserData]);
+
+  const refreshDevice = () => {
+    // console.log("Refresh render");
+    getDeviceStatus();
+  };
+
+  return (
+    <>
+      <div
+        onClick={() => {
+          changeSmifiGraph(deviceId);
+        }}
+        style={{
+          marginLeft: "10px",
+          display: "flex",
+          backgroundColor: smifiState == deviceId ? "#D9D9D9" : "#f7f5f5",
+          alignItems: "center",
+          padding: "15px",
+          cursor: "pointer",
+        }}
+      >
+        {deviceId} &nbsp;{" "}
+        {DeviceLoading ? (
+          <CircularProgress />
+        ) : status == true ? (
+          <span style={{ color: "#45ff4b" }}>● &nbsp; Live</span>
+        ) : (
+          <span style={{ color: "red" }}>● &nbsp; Not Live</span>
+        )}
+      </div>
+      <RefreshIcon
+        onClick={refreshDevice}
+        sx={{ fontSize: "40px", cursor: "pointer" }}
+      />
+    </>
+  );
+};
+
 const userRole = "admin";
 export default withProtected(Tracking);
 Tracking.getLayout = function getLayout(page) {
