@@ -66,6 +66,8 @@
   color: white;
   background: #6366f1;
 
+  cursor: pointer;
+
   box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
   border-radius: 500px;
 }
@@ -82,14 +84,16 @@
   color: white;
   background: gray;
 
+  cursor: pointer;
+
   box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
   border-radius: 500px;
 }
 
-.notification_form_btn:hover {
+/* .notification_form_btn:hover {
   box-shadow: none;
   cursor: pointer;
-}
+} */
 
 .findUser {
   display: flex;

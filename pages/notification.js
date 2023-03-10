@@ -1,4 +1,5 @@
 import * as React from "react";
+import axios from "axios";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
 
@@ -17,18 +18,49 @@ const Notification = () => {
   const { userInformationState, userInformationDispatch } =
     useUserInformation();
   const userInformation = {};
-
   const [loading, setLoading] = React.useState(false);
 
   const onSubmit = async (values) => {
     setLoading(true);
     const uid = userInformationState.userInformation?.uid;
+    const tokens = userInformationState.userInformation?.tokens;
+
     const payload = {
-      ...values,
-      uid,
+      notification: {
+        title: values.title,
+        body: values.body,
+      },
     };
+
     if (uid) {
+      if (tokens.length === 0) {
+        alert("No Token found for this User");
+        setLoading(false);
+        return;
+      }
       // make API call here
+      // console.log("Payload is: ", payload, tokens);
+      const makeApiCall = async () => {
+        await axios
+          .post("https://epviapi.in/sendNotification", {
+            payload,
+            tokens,
+          })
+          .then(function (response) {
+            const res = response.data;
+            console.log(res);
+            const failureCount = res.Response1.failureCount;
+            const successCount = res.Response1.successCount;
+            alert(
+              `${successCount} Notification send successfully && Invalid tokens found ${failureCount}`
+            );
+          })
+          .catch(function (error) {
+            console.error(error);
+            alert(error);
+          });
+      };
+      makeApiCall();
     } else {
       alert("No User found with this Number");
     }
@@ -167,7 +199,6 @@ const Notification = () => {
                               : styles.notification_form_btn_on
                           }
                           disabled={loading || !formik.isValid}
-                          onClick={onSubmit}
                           type="submit"
                         >
                           Send notification
