@@ -34,35 +34,34 @@ const Notification = () => {
 
     if (uid) {
       if (tokens.length === 0) {
-        alert("No Token found for this User");
+        alert("No token found for this user");
         setLoading(false);
         return;
       }
-      // make API call here
-      // console.log("Payload is: ", payload, tokens);
       const makeApiCall = async () => {
-        await axios
-          .post("https://epviapi.in/sendNotification", {
-            payload,
-            tokens,
-          })
-          .then(function (response) {
-            const res = response.data;
-            console.log(res);
-            const failureCount = res.Response1.failureCount;
-            const successCount = res.Response1.successCount;
-            alert(
-              `${successCount} Notification send successfully && Invalid tokens found ${failureCount}`
-            );
-          })
-          .catch(function (error) {
-            console.error(error);
-            alert(error);
-          });
+        try {
+          await axios
+            .post("https://epviapi.in/sendNotification", {
+              payload,
+              tokens,
+            })
+            .then(function (response) {
+              const res = response.data;
+              console.log(res);
+              const failureCount = res.Response1.failureCount;
+              const successCount = res.Response1.successCount;
+              alert(
+                `${successCount} Notification send successfully && Invalid tokens found ${failureCount}`
+              );
+            });
+        } catch (error) {
+          console.error(error);
+          alert(error);
+        }
       };
       makeApiCall();
     } else {
-      alert("No User found with this Number");
+      alert("No user found with this number");
     }
     setLoading(false);
   };
@@ -106,9 +105,7 @@ const Notification = () => {
             {(formik) => {
               const handleFindUser = async () => {
                 setLoading(true);
-                console.log("Function called");
                 const phoneNumber = formik.values.phone;
-                console.log(phoneNumber);
                 await getData(
                   userInformationDispatch,
                   userInformation,
@@ -189,21 +186,21 @@ const Notification = () => {
                     </div>
 
                     <div>
-                      {loading ? (
-                        <CircularProgress color="inherit" size={24} />
-                      ) : (
-                        <button
-                          className={
-                            loading || !formik.isValid
-                              ? styles.notification_form_btn_off
-                              : styles.notification_form_btn_on
-                          }
-                          disabled={loading || !formik.isValid}
-                          type="submit"
-                        >
-                          Send notification
-                        </button>
-                      )}
+                      <button
+                        className={
+                          loading || !formik.isValid
+                            ? styles.notification_form_btn_off
+                            : styles.notification_form_btn_on
+                        }
+                        disabled={loading || !formik.isValid}
+                        type="submit"
+                      >
+                        {loading ? (
+                          <CircularProgress color="inherit" size={24} />
+                        ) : (
+                          "Send notification"
+                        )}
+                      </button>
                     </div>
                   </div>
                 </Form>
