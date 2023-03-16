@@ -16,7 +16,6 @@ import Fade from "@mui/material/Fade";
 import { getData, useUserInformation } from "../../auth/informationReducer";
 import Layout from "../../components/Layout";
 import { withProtected } from "../../src/hooks/routes";
-import { async } from "@firebase/util";
 
 const style = {
   position: "absolute",
