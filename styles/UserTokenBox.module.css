@@ -1,0 +1,51 @@
+.main {
+  display: flex;
+  justify-content: space-evenly;
+  margin-bottom: 30px;
+}
+.container {
+  position: relative;
+  width: 400px;
+  height: 200px;
+  box-shadow: 0 3px 10px rgb(0 0 0 / 0.2);
+  overflow-y: auto;
+}
+.header {
+  z-index: 1;
+  position: sticky;
+  top: 0px;
+  font-family: system-ui;
+  font-weight: 400;
+  font-size: 25px;
+  line-height: 38px;
+  text-align: center;
+  color: white;
+  background: #556cd6;
+}
+
+.singleElement {
+  display: flex;
+  gap: 10px;
+  overflow: hidden;
+  background-color: whitesmoke;
+  margin: 10px;
+}
+
+.singleElementActivity {
+  display: flex;
+  gap: 20px;
+  overflow: hidden;
+  background-color: whitesmoke;
+  margin: 10px;
+}
+
+.endHrLine {
+  margin: auto;
+  width: 90%;
+  border: 0;
+  height: 0;
+  border-top: 1px solid rgba(0, 0, 0, 0.1);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.3);
+  margin-top: 20px;
+  margin-bottom: 20px;
+}
