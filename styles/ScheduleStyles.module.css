@@ -1,0 +1,25 @@
+.main {
+  width: 100%;
+  max-width: 1440px;
+  margin: auto;
+}
+.btnCenter {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  margin-top: 50px;
+}
+.ListContainer {
+  width: 100%;
+  max-width: 1440px;
+  margin-top: 50px;
+}
+.singleEl {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: whitesmoke;
+  height: 50px;
+  padding: 10px;
+  margin-bottom: 10px;
+}
