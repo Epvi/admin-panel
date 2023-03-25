@@ -273,7 +273,7 @@ function SideDrawer({ userRole }) {
   const handleClickOne = (index) => {
     if (index === 0) Router.push("/");
     if (index === 1) Router.push("/customercomplaint");
-    if (index === 2) Router.push("/devices");
+    if (index === 2) Router.push("/smifiedit");
   };
   const handleClickTwo = (index) => {
     if (index === 0) Router.push("/users");
@@ -358,7 +358,7 @@ function SideDrawer({ userRole }) {
                     ) : null}
                     {index === 2 ? (
                       <DevicesIcon
-                        sx={pathname === "/devices" ? styling : null}
+                        sx={pathname === "/smifiedit" ? styling : null}
                       />
                     ) : null}
                   </ListItemIcon>
