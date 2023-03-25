@@ -124,7 +124,7 @@ const EditSchedule = () => {
             {schedulesState.schedulesData?.length > 0 ? (
               <ScheduleList />
             ) : (
-              <div> No Schedule available</div>
+              <div className={styles.CenterTheText}> No Schedule available</div>
             )}
           </div>
         </div>
@@ -366,7 +366,7 @@ function ScheduleList() {
                   color="light"
                   css={{
                     fontSize: "$lg",
-                    marginTop: "$11",
+                    marginTop: "$8",
                   }}
                 >
                   {deviceId}
@@ -384,7 +384,9 @@ function ScheduleList() {
                 >
                   <Dropdown.Item key="Smi-Fi">Smi-Fi</Dropdown.Item>
                   {userInformationState.userInformation?.smifis?.map((val) => (
-                    <Dropdown.Item key={val}>{val}</Dropdown.Item>
+                    <Dropdown.Item key={val} withDivider>
+                      {val}
+                    </Dropdown.Item>
                   ))}
                 </Dropdown.Menu>
               </Dropdown>
@@ -395,7 +397,7 @@ function ScheduleList() {
                   color="light"
                   css={{
                     fontSize: "$lg",
-                    marginTop: "$10",
+                    marginTop: "$8",
                   }}
                 >
                   {devicePin}
@@ -407,12 +409,15 @@ function ScheduleList() {
                   selectionMode="single"
                   selectedKeys={devicePin}
                   onSelectionChange={setDevicePin}
+                  width="$12"
                   css={{
                     fontSize: "$lg",
                   }}
                 >
                   <Dropdown.Item key="Pin">Pin</Dropdown.Item>
-                  <Dropdown.Item key="1">1</Dropdown.Item>
+                  <Dropdown.Item key="1" withDivider>
+                    1
+                  </Dropdown.Item>
                   <Dropdown.Item key="2">2</Dropdown.Item>
                   <Dropdown.Item key="3">3</Dropdown.Item>
                   <Dropdown.Item key="4">4</Dropdown.Item>
@@ -427,7 +432,8 @@ function ScheduleList() {
                   color="light"
                   css={{
                     fontSize: "$lg",
-                    marginTop: "$11",
+                    marginTop: "$8",
+                    marginBottom: "$8",
                   }}
                 >
                   {deviceState}
@@ -446,7 +452,9 @@ function ScheduleList() {
                   <Dropdown.Item key="deviceStatus">
                     Device Status
                   </Dropdown.Item>
-                  <Dropdown.Item key="on">On</Dropdown.Item>
+                  <Dropdown.Item key="on" withDivider>
+                    On
+                  </Dropdown.Item>
                   <Dropdown.Item key="off">Off</Dropdown.Item>
                 </Dropdown.Menu>
               </Dropdown>

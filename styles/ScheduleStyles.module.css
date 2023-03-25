@@ -23,3 +23,8 @@
   padding: 10px;
   margin-bottom: 10px;
 }
+.CenterTheText {
+  width: 100%;
+  margin-top: 100px;
+  text-align: center;
+}
