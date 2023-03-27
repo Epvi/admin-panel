@@ -145,6 +145,7 @@ const EditSmifi = () => {
     if (deviceId !== null) {
       try {
         await deleteDoc(doc(database, "Smifis", deviceId));
+        setDeviceId(null);
         setLoadData(!loadData);
       } catch (error) {
         console.log("Error", error);
@@ -191,7 +192,7 @@ const EditSmifi = () => {
     if (limitVal !== null) {
       const newValue = parseFloat(limitVal);
       let newArray = smifiInfoState.smifiInformation?.limits;
-      newArray[newlimitPinVal-1] = newValue;
+      newArray[newlimitPinVal - 1] = newValue;
       try {
         await updateDoc(doc(database, "Smifis", deviceId), {
           limits: newArray,
@@ -287,7 +288,7 @@ const EditSmifi = () => {
                             return (
                               <div className={styles.room_deleteContainer}>
                                 <div key={index}>&nbsp;{room}</div>
-                                <div className={styles.addbtn}>
+                                <div className={styles.deleteBtn}>
                                   <DeleteIcon
                                     onClick={() => {
                                       setRoomToDelete(room);
@@ -309,6 +310,7 @@ const EditSmifi = () => {
                         )}
                       </div>
                     </div>
+                    {/* others */}
                     <div className={styles.pinStyles}>
                       <div>Pin 2 - Rooms: </div>
                       <div>
@@ -317,7 +319,7 @@ const EditSmifi = () => {
                             return (
                               <div className={styles.room_deleteContainer}>
                                 <div key={index}>&nbsp;{room}</div>
-                                <div className={styles.addbtn}>
+                                <div className={styles.deleteBtn}>
                                   <DeleteIcon
                                     onClick={() => {
                                       setRoomToDelete(room);
@@ -347,7 +349,7 @@ const EditSmifi = () => {
                             return (
                               <div className={styles.room_deleteContainer}>
                                 <div key={index}>&nbsp;{room}</div>
-                                <div className={styles.addbtn}>
+                                <div className={styles.deleteBtn}>
                                   <DeleteIcon
                                     onClick={() => {
                                       setRoomToDelete(room);
@@ -377,7 +379,7 @@ const EditSmifi = () => {
                             return (
                               <div className={styles.room_deleteContainer}>
                                 <div key={index}>&nbsp;{room}</div>
-                                <div className={styles.addbtn}>
+                                <div className={styles.deleteBtn}>
                                   <DeleteIcon
                                     onClick={() => {
                                       setRoomToDelete(room);
@@ -407,7 +409,7 @@ const EditSmifi = () => {
                             return (
                               <div className={styles.room_deleteContainer}>
                                 <div key={index}>&nbsp;{room}</div>
-                                <div className={styles.addbtn}>
+                                <div className={styles.deleteBtn}>
                                   <DeleteIcon
                                     onClick={() => {
                                       setRoomToDelete(room);
@@ -437,7 +439,7 @@ const EditSmifi = () => {
                             return (
                               <div className={styles.room_deleteContainer}>
                                 <div key={index}>&nbsp;{room}</div>
-                                <div className={styles.addbtn}>
+                                <div className={styles.deleteBtn}>
                                   <DeleteIcon
                                     onClick={() => {
                                       setRoomToDelete(room);
@@ -461,24 +463,20 @@ const EditSmifi = () => {
                     </div>
                     {/* other details*/}
                     <div className={styles.wifiInfo}>
-                      {/* {smifiInfoState.smifiInformation?.wifi && ( */}
-                      <div>
-                        <div>Wifi: </div>
-                        <div>{smifiInfoState.smifiInformation?.wifi}</div>
-                        <div className={styles.addbtn}>
-                          <EditIcon
-                            onClick={() => setOpenWifiModal(true)}
-                            sx={{
-                              marginLeft: "10px",
-                              padding: "3px",
-                              cursor: "pointer",
-                              color: "white",
-                              cursor: "pointer",
-                            }}
-                          />
-                        </div>
+                      <div>Wifi: </div>
+                      <div>{smifiInfoState.smifiInformation?.wifi}</div>
+                      <div className={styles.addbtn}>
+                        <EditIcon
+                          onClick={() => setOpenWifiModal(true)}
+                          sx={{
+                            marginLeft: "10px",
+                            padding: "3px",
+                            cursor: "pointer",
+                            color: "white",
+                            cursor: "pointer",
+                          }}
+                        />
                       </div>
-                      {/* )} */}
                     </div>
                   </div>
                   <div className={styles.limits}>
