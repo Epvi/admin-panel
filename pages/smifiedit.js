@@ -176,7 +176,7 @@ const EditSmifi = () => {
     let newWifiValue = parseInt(wifiValue["anchorKey"]);
     try {
       await updateDoc(doc(database, "Smifis", deviceId), {
-        wifi: newWifiValue,
+        wifi: newWifiValue - 1,
       });
     } catch (error) {
       console.log("Error: ", error);
@@ -716,7 +716,7 @@ const EditSmifi = () => {
           aria-labelledby="transition-modal-title"
           aria-describedby="transition-modal-description"
           open={openWifiModal}
-          onClose={() => setOpenAddModal(false)}
+          onClose={() => setOpenWifiModal(false)}
           closeAfterTransition
         >
           <Fade in={openWifiModal}>

@@ -1,7 +1,13 @@
 import React from "react";
 import { useState, useEffect } from "react";
 import { database } from "../../firebaseConfig";
-import { doc, updateDoc, deleteDoc, setDoc } from "firebase/firestore";
+import {
+  doc,
+  updateDoc,
+  deleteDoc,
+  setDoc,
+  arrayUnion,
+} from "firebase/firestore";
 
 import { TextField } from "@mui/material";
 import Button from "@mui/material/Button";
@@ -12,6 +18,10 @@ import Backdrop from "@mui/material/Backdrop";
 import Box from "@mui/material/Box";
 import Modal from "@mui/material/Modal";
 import Fade from "@mui/material/Fade";
+import Dialog from "@mui/material/Dialog";
+import DialogActions from "@mui/material/DialogActions";
+import DialogContent from "@mui/material/DialogContent";
+import DialogContentText from "@mui/material/DialogContentText";
 import { Dropdown, css } from "@nextui-org/react";
 
 import { getData, useUserInformation } from "../../auth/informationReducer";
@@ -148,6 +158,8 @@ function ScheduleList() {
   const [startTime, setStartTime] = useState("");
   const [stopTime, setStopTime] = useState("");
   const [pinToEdit, setPinToEdit] = useState();
+  const [deleteScheduale, setDeleteScheduale] = useState(null);
+  const [openDelDialog, setOpenDelDialog] = useState(false);
 
   const uid = userInformationState.userInformation?.uid;
 
@@ -161,9 +173,7 @@ function ScheduleList() {
     const nSchedules = userInformationState.userInformation?.nSchedules;
     const backId = nSchedules + 1;
     const docName = `${uid}_${backId}`;
-    const pinArray = [];
     const pinData = `${smifiVal}_${pinVal}_${deState}`;
-    pinArray.push(pinData);
 
     if (startTime !== "" && stopTime !== "") {
       const func = async () => {
@@ -171,10 +181,13 @@ function ScheduleList() {
           await setDoc(doc(database, "Schedules", docName), {
             id: backId,
             name: "",
-            pins: pinArray,
+            pins: arrayUnion(pinData),
             start: startTime,
             stop: stopTime,
             uid: uid,
+          });
+          await updateDoc(doc(database, "Users", uid), {
+            nSchedules: backId,
           });
         } catch (error) {
           console.log("Error", error);
@@ -184,14 +197,14 @@ function ScheduleList() {
       // close the modal after use
       setOpenAddModal(false);
 
-      const func2 = async () => {
-        // need to update the backId as well in user array
-        await updateDoc(doc(database, "Users", uid), {
-          nSchedules: backId,
-        });
-        await getSchedulesData(schedulesDispatch, schedulesData, uid);
-      };
-      func2();
+      // const func2 = async () => {
+      //   // need to update the backId as well in user array
+      //   await updateDoc(doc(database, "Users", uid), {
+      //     nSchedules: backId,
+      //   });
+      //   await getSchedulesData(schedulesDispatch, schedulesData, uid);
+      // };
+      // func2();
     } else {
       alert("Please enter valid data!");
     }
@@ -214,10 +227,8 @@ function ScheduleList() {
     setOpenEditModal(false);
   };
 
-  // useEffect(() => {}, [schedulesState.schedulesData]);
-
-  const handleDeleteClick = async (id) => {
-    const del = `${uid}_${id}`;
+  const handleDeleteClick = async () => {
+    const del = `${uid}_${deleteScheduale}`;
     try {
       await deleteDoc(doc(database, "Schedules", del));
       await getSchedulesData(schedulesDispatch, schedulesData, uid);
@@ -262,7 +273,8 @@ function ScheduleList() {
             />
             <DeleteIcon
               onClick={() => {
-                handleDeleteClick(el.id);
+                setDeleteScheduale(el.id);
+                setOpenDelDialog(true);
               }}
               sx={{
                 marginLeft: "6px",
@@ -497,6 +509,31 @@ function ScheduleList() {
           </Box>
         </Fade>
       </Modal>
+      {/* Dialog */}
+      <Dialog
+        open={openDelDialog}
+        onClose={() => setOpenDelDialog(false)}
+        aria-labelledby="alert-dialog-title"
+        aria-describedby="alert-dialog-description"
+      >
+        <DialogContent>
+          <DialogContentText id="alert-dialog-description">
+            Are you sure you want to remove this schedule?
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button
+            onClick={() => {
+              handleDeleteClick();
+              setOpenDelDialog(false);
+            }}
+            autoFocus
+          >
+            Agree
+          </Button>
+          <Button onClick={() => setOpenDelDialog(false)}>Disagree</Button>
+        </DialogActions>
+      </Dialog>
     </div>
   );
 }
