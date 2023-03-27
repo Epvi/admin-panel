@@ -53,12 +53,21 @@
   overflow-y: auto;
 }
 
-.singleDeviceInfo div {
+.pinStyles {
+  display: flex;
+  min-height: 50px;
+  margin: 10px;
+  align-items: center;
+}
+.pinStyles > div {
   display: flex;
   align-items: center;
-  margin-bottom: 9px;
-  margin: 10px;
-  overflow-x: auto;
+  justify-content: space-between;
+  overflow: auto;
+  margin-right: 10px;
+}
+.pinRoom_supportText {
+  width: 100px;
 }
 
 .activate {
@@ -68,12 +77,25 @@
 .addbtn {
   display: flex;
   justify-content: center;
-  align-items: center;
+  margin-left: 10px;
   margin-bottom: 20px;
   color: white;
   background-color: #556cd6;
   border-radius: 5px;
-  /* margin-bottom: 0px; */
+}
+.deleteBtn {
+  display: flex;
+  justify-content: center;
+  margin-left: 10px;
+  color: white;
+  background-color: #556cd6;
+  border-radius: 5px;
+}
+
+.wifiInfo {
+  display: flex;
+  margin-left: 10px;
+  gap: 15px;
 }
 
 .decideIdField {
@@ -88,6 +110,7 @@
   justify-content: space-between;
   align-items: center;
   margin: 5px;
+  margin-right: 15px;
   background-color: whitesmoke;
 }
 .limits {
