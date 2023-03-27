@@ -145,6 +145,7 @@ const EditSmifi = () => {
     if (deviceId !== null) {
       try {
         await deleteDoc(doc(database, "Smifis", deviceId));
+        setDeviceId(null);
         setLoadData(!loadData);
       } catch (error) {
         console.log("Error", error);
