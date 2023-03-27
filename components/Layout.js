@@ -22,8 +22,9 @@ import DevicesIcon from "@mui/icons-material/Devices";
 import TextField from "@mui/material/TextField";
 import Avatar from "@mui/material/Avatar";
 import NotificationsIcon from "@mui/icons-material/Notifications";
-import NotificationsActiveIcon from '@mui/icons-material/NotificationsActive';
+import NotificationsActiveIcon from "@mui/icons-material/NotificationsActive";
 import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
+import MoreTimeIcon from "@mui/icons-material/MoreTime";
 import SearchIcon from "@mui/icons-material/Search";
 import SendIcon from "@mui/icons-material/Send";
 import InsightsIcon from "@mui/icons-material/Insights";
@@ -272,13 +273,14 @@ function SideDrawer({ userRole }) {
   const handleClickOne = (index) => {
     if (index === 0) Router.push("/");
     if (index === 1) Router.push("/customercomplaint");
-    if (index === 2) Router.push("/devices");
+    if (index === 2) Router.push("/smifiedit");
   };
   const handleClickTwo = (index) => {
     if (index === 0) Router.push("/users");
     if (index === 1) Router.push("/sub");
     if (index === 2) Router.push("/customerdata/information");
     if (index == 3) Router.push("/notification");
+    if (index == 4) Router.push("/schedules");
   };
   const styling = {
     color: "#556cd6",
@@ -356,7 +358,7 @@ function SideDrawer({ userRole }) {
                     ) : null}
                     {index === 2 ? (
                       <DevicesIcon
-                        sx={pathname === "/devices" ? styling : null}
+                        sx={pathname === "/smifiedit" ? styling : null}
                       />
                     ) : null}
                   </ListItemIcon>
@@ -392,63 +394,72 @@ function SideDrawer({ userRole }) {
               </ListItem>
             ) : null */}
           {/* )} */}
-          {["Users", "MqttData", "Customer Data", "Notification"].map(
-            (text, index) =>
-              userRole === "admin" || userRole === "developer" ? (
-                <ListItem
-                  onClick={() => handleClickTwo(index)}
-                  key={text}
-                  disablePadding
-                  sx={{ display: "block" }}
+          {[
+            "Users",
+            "MqttData",
+            "Customer Data",
+            "Notification",
+            "Schedules",
+          ].map((text, index) =>
+            userRole === "admin" || userRole === "developer" ? (
+              <ListItem
+                onClick={() => handleClickTwo(index)}
+                key={text}
+                disablePadding
+                sx={{ display: "block" }}
+              >
+                <ListItemButton
+                  sx={{
+                    minHeight: 48,
+                    justifyContent: open ? "initial" : "center",
+                    px: 2.5,
+                  }}
                 >
-                  <ListItemButton
+                  <ListItemIcon
                     sx={{
-                      minHeight: 48,
-                      justifyContent: open ? "initial" : "center",
-                      px: 2.5,
+                      minWidth: 0,
+                      mr: open ? 3 : "auto",
+                      justifyContent: "center",
                     }}
                   >
-                    <ListItemIcon
-                      sx={{
-                        minWidth: 0,
-                        mr: open ? 3 : "auto",
-                        justifyContent: "center",
-                      }}
-                    >
-                      {index === 0 ? (
-                        <ContactPageIcon
-                          sx={pathname === "/users" ? styling : null}
-                        />
-                      ) : null}
-                      {index === 1 ? (
-                        <SettingsApplicationsIcon
-                          sx={pathname === "/sub" ? styling : null}
-                        />
-                      ) : null}
-                      {index === 2 ? (
-                        <IntegrationInstructionsIcon
-                          sx={
-                            pathname === "/customerdata/information" ||
-                            pathname === "/customerdata/premise" ||
-                            pathname === "/customerdata/raiseticket" ||
-                            pathname === "/customerdata/service" ||
-                            pathname === "/customerdata/tracking"
-                              ? styling
-                              : null
-                          }
-                        />
-                      ) : null}
-                      {index === 3 ? (
-                        <NotificationsActiveIcon />
-                        ) : null}
-                    </ListItemIcon>
-                    <ListItemText
-                      primary={text}
-                      sx={{ opacity: open ? 1 : 0 }}
-                    />
-                  </ListItemButton>
-                </ListItem>
-              ) : null
+                    {index === 0 ? (
+                      <ContactPageIcon
+                        sx={pathname === "/users" ? styling : null}
+                      />
+                    ) : null}
+                    {index === 1 ? (
+                      <SettingsApplicationsIcon
+                        sx={pathname === "/sub" ? styling : null}
+                      />
+                    ) : null}
+                    {index === 2 ? (
+                      <IntegrationInstructionsIcon
+                        sx={
+                          pathname === "/customerdata/information" ||
+                          pathname === "/customerdata/premise" ||
+                          pathname === "/customerdata/raiseticket" ||
+                          pathname === "/customerdata/service" ||
+                          pathname === "/customerdata/tracking"
+                            ? styling
+                            : null
+                        }
+                      />
+                    ) : null}
+                    {index === 3 ? (
+                      <NotificationsActiveIcon
+                        sx={pathname === "/notifications" ? styling : null}
+                      />
+                    ) : null}
+                    {index === 4 ? (
+                      <MoreTimeIcon
+                        sx={pathname === "/schedules" ? styling : null}
+                      />
+                    ) : null}
+                  </ListItemIcon>
+                  <ListItemText primary={text} sx={{ opacity: open ? 1 : 0 }} />
+                </ListItemButton>
+              </ListItem>
+            ) : null
           )}
           {["Logout"].map((text, index) => (
             <ListItem

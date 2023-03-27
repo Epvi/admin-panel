@@ -1,0 +1,119 @@
+.main {
+  width: 100%;
+  max-width: 1440px;
+  margin: auto;
+}
+.heading {
+  font-weight: 600;
+  font-size: 36px;
+  line-height: 44px;
+  text-align: center;
+  letter-spacing: -0.02em;
+}
+
+.singleEl {
+  display: flex;
+  justify-content: space-between;
+  font-weight: 600;
+  font-size: 17.7535px;
+  line-height: 25px;
+  letter-spacing: -0.02em;
+  background-color: white;
+  margin-bottom: 10px;
+  cursor: pointer;
+}
+
+.list_smifiInfo_container {
+  width: 100%;
+  max-width: 1440px;
+  margin: auto;
+  padding: 10px;
+
+  display: flex;
+  justify-content: space-between;
+  margin-top: 40px;
+}
+.smifiList {
+  width: 30%;
+  height: 70vh;
+  padding: 10px;
+  box-shadow: 0 3px 10px rgb(0 0 0 / 0.2);
+  overflow-y: auto;
+}
+.smifiInfo {
+  width: 60%;
+  height: 70vh;
+  padding: 10px;
+  font-weight: 400;
+  font-size: 17.7535px;
+  line-height: 25px;
+  letter-spacing: -0.02em;
+
+  box-shadow: 0 3px 10px rgb(0 0 0 / 0.2);
+  overflow-y: auto;
+}
+
+.singleDeviceInfo div {
+  display: flex;
+  align-items: center;
+  margin-bottom: 9px;
+  margin: 10px;
+  overflow-x: auto;
+}
+
+.activate {
+  background-color: whitesmoke;
+}
+
+.addbtn {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 20px;
+  color: white;
+  background-color: #556cd6;
+  border-radius: 5px;
+  /* margin-bottom: 0px; */
+}
+
+.decideIdField {
+  width: 70%;
+}
+.decideIdField:hover {
+  background-color: whitesmoke;
+}
+
+.room_deleteContainer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin: 5px;
+  background-color: whitesmoke;
+}
+.limits {
+  width: 100%;
+  max-width: 1440px;
+  background-color: whitesmoke;
+  padding: 20px;
+}
+.limitHeading {
+  font-weight: 500;
+  font-size: 25px;
+  line-height: 25px;
+  text-align: center;
+  letter-spacing: -0.02em;
+  color: #556cd6;
+}
+.singleLimit {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px;
+}
+.singleLimit:hover {
+  background-color: white;
+}
+.index_limitBlock {
+  display: flex;
+  gap: 20px;
+}

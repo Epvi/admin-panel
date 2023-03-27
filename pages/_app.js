@@ -19,6 +19,8 @@ import { UserInformationStateProvider } from "../auth/informationReducer";
 import { PremiseUserStateProvider } from "../auth/premiseUserReducer";
 import { PremiseRoomsStateProvider } from "../auth/premiseRoomsReducer";
 import { TrackingLogsStateProvider } from "../auth/trackingLogsReducer";
+import { SchedulesStateProvider } from "../auth/scheduleReducer";
+import { SmifiInfoStateProvider } from "../auth/smifiReducer";
 // Client-side cache, shared for the whole session of the user in the browser.
 const clientSideEmotionCache = createEmotionCache();
 
@@ -46,16 +48,18 @@ export default function MyApp(props) {
                         <PremiseUserStateProvider>
                           <PremiseRoomsStateProvider>
                             <TrackingLogsStateProvider>
-
-                  {/* <Layout userRole={userRole}> */}
-                  {/* {getLayout(<Component {...pageProps} />)} */}
-                  <Component {...pageProps} />
-              
+                              <SchedulesStateProvider>
+                                <SmifiInfoStateProvider>
+                                  {/* <Layout userRole={userRole}> */}
+                                  {/* {getLayout(<Component {...pageProps} />)} */}
+                                  <Component {...pageProps} />
+                                </SmifiInfoStateProvider>
+                              </SchedulesStateProvider>
                             </TrackingLogsStateProvider>
                           </PremiseRoomsStateProvider>
                         </PremiseUserStateProvider>
                       </UserInformationStateProvider>
-                  </SubStateProvider>
+                    </SubStateProvider>
                   </RoomPinsProvider>
                 </DeviceProvider>
               </TotalUserProvider>
