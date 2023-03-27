@@ -160,9 +160,10 @@ const Information = () => {
 
   const handleRoomNumChange = async (e) => {
     e.preventDefault();
+    const newRoomNumber  = parseInt(numRooms);
     if (numRooms != "" && numRooms != null) {
       await updateDoc(doc(database, "Users", uid), {
-        nRooms: numRooms,
+        nRooms: newRoomNumber,
       });
     } else {
       alert("Please provide number of rooms!");
