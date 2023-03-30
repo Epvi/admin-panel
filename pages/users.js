@@ -490,7 +490,7 @@ function UsersData() {
                     marginBottom: "$8",
                   }}
                 >
-                  Field : {chooseField}
+                  Select Field : {chooseField}
                 </Dropdown.Button>
                 <Dropdown.Menu
                   aria-label="Single selection actions"
@@ -504,12 +504,7 @@ function UsersData() {
                     fontSize: "$lg",
                   }}
                 >
-                  <Dropdown.Item key="label">
-                    Select Field to edit
-                  </Dropdown.Item>
-                  <Dropdown.Item key="name" withDivider>
-                    Name
-                  </Dropdown.Item>
+                  <Dropdown.Item key="name">Name</Dropdown.Item>
                   <Dropdown.Item key="email">Email</Dropdown.Item>
                   <Dropdown.Item key="phone">Phone</Dropdown.Item>
                   <Dropdown.Item key="nRooms">Number of Rooms</Dropdown.Item>
