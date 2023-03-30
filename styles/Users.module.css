@@ -1,0 +1,9 @@
+.addBtnContainer {
+  display: flex;
+  justify-content: center;
+  margin-left: 10px;
+  margin-bottom: 20px;
+  color: white;
+  background-color: #556cd6;
+  border-radius: 5px;
+}
