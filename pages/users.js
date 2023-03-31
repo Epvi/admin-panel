@@ -57,6 +57,8 @@ function UsersData() {
 
   const [chooseField, setChooseField] = useState(null);
   const [newValue, setNewValue] = useState(null);
+  const [isSubscribe, setIsSubscribe] = useState(null);
+
   const [openChooseField, setOpenChooseField] = useState(false);
 
   const [openDelete, setOpenDelete] = useState(false);
@@ -84,6 +86,7 @@ function UsersData() {
     setOpenAddUser(false);
   };
   const resetValue = () => {
+    setIsSubscribe(null);
     setDeviceList([]);
     setDeviceName(null);
     setUserUID(null);
@@ -93,85 +96,138 @@ function UsersData() {
 
   const handleSelectedField = async (e) => {
     e.preventDefault();
+    if (!chooseField) {
+      alert("Please select a field to edit!");
+      return;
+    }
     const fieldValue = chooseField["anchorKey"];
     const userId = userUID.trim();
-    // console.log("Inside handleSeletedField uid:", userId);
-    // console.log("Inside handleSeletedField field:", fieldValue);
-    // console.log("Inside handleSeletedField newValue:", newValue);
+    const subState = isSubscribe && (isSubscribe === "true" ? true : false);
+
     const dofRef = doc(database, "Users", userId);
 
     if (fieldValue === "name") {
       // Update the name value
-      try {
-        await updateDoc(dofRef, {
-          name: newValue,
-        });
-      } catch (error) {
-        console.log(error);
+      if (newValue != "" && newValue != null) {
+        try {
+          await updateDoc(dofRef, {
+            name: newValue,
+          });
+        } catch (error) {
+          console.log(error);
+        }
+      } else {
+        alert("Please enter your name!");
+        return;
       }
-      // resetValue();
     } else if (fieldValue === "email") {
       // update the email value
-      try {
-        await updateDoc(dofRef, {
-          email: newValue,
-        });
-      } catch (error) {
-        console.log(error);
+      if (newValue != "" && newValue != null) {
+        try {
+          await updateDoc(dofRef, {
+            email: newValue,
+          });
+        } catch (error) {
+          console.log(error);
+        }
+      } else {
+        alert("Please enter your email!");
+        return;
       }
-      // resetValue();
     } else if (fieldValue === "phone") {
       // update the phone number
-      try {
-        const num = parseInt(newValue);
-        if (num !== NaN) {
-          await updateDoc(dofRef, {
-            phone: num,
-          });
-        } else {
-          alert("Please Enter numeric value!");
+      if (newValue != "" && newValue != null) {
+        try {
+          const num = parseInt(newValue);
+          if (num !== NaN) {
+            await updateDoc(dofRef, {
+              phone: num,
+            });
+          } else {
+            alert("Please Enter numeric value!");
+            return;
+          }
+        } catch (error) {
+          console.log(error);
         }
-      } catch (error) {
-        console.log(error);
+      } else {
+        alert("Please enter your phone number!");
+        return;
       }
-      // resetValue();
+    } else if (fieldValue === "location") {
+      if (newValue != "" && newValue != null) {
+        try {
+          const locTrim = newValue.trim();
+          await updateDoc(dofRef, {
+            location: locTrim,
+          });
+        } catch (error) {
+          console.log(error);
+        }
+      } else {
+        alert("Please enter your Address!");
+        return;
+      }
     } else if (fieldValue === "nRooms") {
       // update the rooms
-      try {
-        const nroom = parseInt(newValue);
-        if (nroom !== NaN) {
-          await updateDoc(dofRef, {
-            nRooms: nroom,
-          });
-        } else {
-          alert("Please Enter numeric value!");
+      if (newValue != "" && newValue != null) {
+        try {
+          const nroom = parseInt(newValue);
+          if (nroom !== NaN) {
+            await updateDoc(dofRef, {
+              nRooms: nroom,
+            });
+          } else {
+            alert("Please Enter numeric value!");
+            return;
+          }
+        } catch (error) {
+          console.log(error);
         }
-      } catch (error) {
-        console.log(error);
+      } else {
+        alert("Please enter number of rooms!");
+        return;
       }
-      // resetValue();
     } else if (fieldValue === "nSchedules") {
       // update the schedules
-      try {
-        const nschedule = parseInt(newValue);
-        if (nschedule !== NaN) {
-          await updateDoc(dofRef, {
-            nSchedules: nschedule,
-          });
-        } else {
-          alert("Please Enter numeric value!");
+      if (newValue != "" && newValue != null) {
+        try {
+          const nschedule = parseInt(newValue);
+          if (nschedule != NaN) {
+            await updateDoc(dofRef, {
+              nSchedules: nschedule,
+            });
+          } else {
+            alert("Please Enter numeric value!");
+            return;
+          }
+        } catch (error) {
+          console.log(error);
         }
-      } catch (error) {
-        console.log(error);
+      } else {
+        alert("Please enter number of schedules!");
+        return;
       }
-      // resetValue();
+    } else if (fieldValue === "subscribe") {
+      if (isSubscribe !== null) {
+        try {
+          await updateDoc(dofRef, {
+            subscribed: subState,
+          });
+        } catch (error) {
+          console.log(error);
+        }
+      } else {
+        alert("To change subscription state please check one of the botton!");
+        return;
+      }
     } else {
       setNewValue(null);
       alert("Please select the field it's value to update!");
     }
     // reset
-    resetValue();
     resetModals();
+    resetValue();
   };
 
   const handleDeleteUser = async () => {
@@ -186,12 +242,14 @@ function UsersData() {
     } else {
       alert("No device Found!");
     }
+
     resetModals();
     resetValue();
   };
 
   const handleCreateNewUser = async (e) => {
     e.preventDefault();
+    const num = parseInt(userPhone);
     const newDocRef = doc(collection(database, "Users"));
     await setDoc(newDocRef, {
       activitiesQueue: [],
@@ -201,7 +259,7 @@ function UsersData() {
       nSchedules: 0,
       name: userName,
       order: [],
-      phone: userPhone,
+      phone: num,
       smifis: [],
       subscribed: false,
       timestamp: Date.now(),
@@ -507,25 +565,72 @@ function UsersData() {
                   <Dropdown.Item key="name">Name</Dropdown.Item>
                   <Dropdown.Item key="email">Email</Dropdown.Item>
                   <Dropdown.Item key="phone">Phone</Dropdown.Item>
-                  <Dropdown.Item key="nRooms">Number of Rooms</Dropdown.Item>
+                  <Dropdown.Item key="location">Address</Dropdown.Item>
+                  <Dropdown.Item key="nRooms">No. of Rooms</Dropdown.Item>
                   <Dropdown.Item key="nSchedules">
-                    Number of Schedules
+                    No. of Schedules
                   </Dropdown.Item>
+                  <Dropdown.Item key="subscribe">Subscribe</Dropdown.Item>
                 </Dropdown.Menu>
               </Dropdown>
-              <input
-                id="newValue"
-                placeholder="Enter value to update..."
-                onChange={(e) => setNewValue(e.target.value)}
-                style={{
-                  width: "100%",
-                  border: "none",
-                  padding: "15px",
-                  paddingLeft: "20px",
-                  backgroundColor: "#D9D9D9",
-                  fontSize: "17px",
-                }}
-              />
+              {chooseField &&
+                (chooseField["anchorKey"] === "subscribe" ? (
+                  <>
+                    <label>Subscribe</label>
+                    <input
+                      id="subscribe"
+                      name="subscription"
+                      value={true}
+                      onChange={(e) => setIsSubscribe(e.target.value)}
+                      type="radio"
+                      style={{
+                        margin: "10px",
+                      }}
+                    />
+                    <label>Unsubscribe</label>
+                    <input
+                      id="UnSubscribe"
+                      name="subscription"
+                      value={false}
+                      onChange={(e) => setIsSubscribe(e.target.value)}
+                      type="radio"
+                      style={{
+                        margin: "10px",
+                      }}
+                    />
+                  </>
+                ) : chooseField["anchorKey"] === "name" ||
+                  chooseField["anchorKey"] === "email" ||
+                  chooseField["anchorKey"] === "location" ? (
+                  <input
+                    id="newValue"
+                    placeholder="Enter value to update..."
+                    onChange={(e) => setNewValue(e.target.value)}
+                    style={{
+                      width: "100%",
+                      border: "none",
+                      padding: "15px",
+                      paddingLeft: "20px",
+                      backgroundColor: "#D9D9D9",
+                      fontSize: "17px",
+                    }}
+                  />
+                ) : (
+                  <input
+                    id="newValue"
+                    type="number"
+                    placeholder="Enter value to update..."
+                    onChange={(e) => setNewValue(e.target.value)}
+                    style={{
+                      width: "100%",
+                      border: "none",
+                      padding: "15px",
+                      paddingLeft: "20px",
+                      backgroundColor: "#D9D9D9",
+                      fontSize: "17px",
+                    }}
+                  />
+                ))}
               <Button
                 variant="contained"
                 style={{
@@ -555,6 +660,7 @@ function UsersData() {
               <label htmlFor="userName">Name</label>
               <input
                 id="userName"
+                required
                 placeholder="Enter your name..."
                 onChange={(e) => setUserName(e.target.value)}
                 style={{
@@ -569,6 +675,7 @@ function UsersData() {
               <label htmlFor="userEmail">Email</label>
               <input
                 id="userEmail"
+                required
                 placeholder="Enter your email..."
                 type="email"
                 onChange={(e) => setUserEmail(e.target.value)}
@@ -584,6 +691,7 @@ function UsersData() {
               <label htmlFor="userPhone">Phone</label>
               <input
                 id="userPhone"
+                required
                 type="number"
                 placeholder="Enter your phone number..."
                 onChange={(e) => setUserPhone(e.target.value)}

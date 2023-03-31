@@ -555,10 +555,7 @@ const EditSmifi = () => {
                       fontSize: "$lg",
                     }}
                   >
-                    <Dropdown.Item key="Pin">Pin</Dropdown.Item>
-                    <Dropdown.Item key="1" withDivider>
-                      1
-                    </Dropdown.Item>
+                    <Dropdown.Item key="1">1</Dropdown.Item>
                     <Dropdown.Item key="2">2</Dropdown.Item>
                     <Dropdown.Item key="3">3</Dropdown.Item>
                     <Dropdown.Item key="4">4</Dropdown.Item>
