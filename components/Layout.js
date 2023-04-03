@@ -25,6 +25,7 @@ import NotificationsIcon from "@mui/icons-material/Notifications";
 import NotificationsActiveIcon from "@mui/icons-material/NotificationsActive";
 import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
 import MoreTimeIcon from "@mui/icons-material/MoreTime";
+import LocalOfferIcon from '@mui/icons-material/LocalOffer';
 import SearchIcon from "@mui/icons-material/Search";
 import SendIcon from "@mui/icons-material/Send";
 import InsightsIcon from "@mui/icons-material/Insights";
@@ -274,6 +275,7 @@ function SideDrawer({ userRole }) {
     if (index === 0) Router.push("/");
     if (index === 1) Router.push("/customercomplaint");
     if (index === 2) Router.push("/smifiedit");
+    if(index === 3) Router.push("/coupons")
   };
   const handleClickTwo = (index) => {
     if (index === 0) Router.push("/users");
@@ -326,7 +328,7 @@ function SideDrawer({ userRole }) {
         </DrawerHeader>
         <Divider />
         <List sx={{ backgroundColor: "white" }}>
-          {["Dashboard", "Customer Complaint", "Devices"].map((text, index) =>
+          {["Dashboard", "Customer Complaint", "Devices", "Coupons"].map((text, index) =>
             userRole === "admin" || userRole === "support" ? (
               <ListItem
                 onClick={() => handleClickOne(index)}
@@ -359,6 +361,11 @@ function SideDrawer({ userRole }) {
                     {index === 2 ? (
                       <DevicesIcon
                         sx={pathname === "/smifiedit" ? styling : null}
+                      />
+                    ) : null}
+                    {index === 3 ? (
+                      <LocalOfferIcon
+                        sx={pathname === "/coupons" ? styling : null}
                       />
                     ) : null}
                   </ListItemIcon>
