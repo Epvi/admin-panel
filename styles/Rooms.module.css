@@ -1,0 +1,140 @@
+.main {
+  width: 100%;
+  max-width: 1440px;
+  padding: 5px;
+  margin: auto;
+}
+.headingContainer {
+  display: flex;
+  justify-content: space-between;
+  font-weight: 600;
+  font-size: 36px;
+  line-height: 44px;
+  letter-spacing: -0.02em;
+  margin-bottom: 50px;
+}
+.heading1 {
+  width: 30%;
+}
+.heading2 {
+  width: 60%;
+}
+.wrapper {
+  display: flex;
+  justify-content: space-between;
+}
+
+.couponList {
+  width: 30%;
+  height: 70vh;
+  padding: 10px;
+  box-shadow: 0 3px 10px rgb(0 0 0 / 0.2);
+  overflow-y: auto;
+}
+
+.couponInfo {
+  width: 60%;
+  height: 70vh;
+  padding: 10px;
+  font-weight: 400;
+  font-size: 17.7535px;
+  line-height: 25px;
+  letter-spacing: -0.02em;
+
+  box-shadow: 0 3px 10px rgb(0 0 0 / 0.2);
+  overflow-y: auto;
+}
+
+.singleEl {
+  display: flex;
+  justify-content: space-between;
+  font-weight: 600;
+  font-size: 15.7535px;
+  line-height: 25px;
+  letter-spacing: -0.02em;
+  background-color: white;
+  margin-bottom: 10px;
+  cursor: pointer;
+}
+
+.decideIdField {
+  width: 80%;
+}
+
+.decideIdField:hover {
+  background-color: whitesmoke;
+}
+
+.activate {
+  background-color: whitesmoke;
+}
+
+.addbtn {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 20px;
+  color: white;
+  background-color: #556cd6;
+  border-radius: 5px;
+}
+
+.roomInfowrapper > div {
+  display: flex;
+  justify-content: space-between;
+}
+
+/* -----Array css------*/
+.arrayContainer {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  background-color: aliceblue;
+  padding: 10px;
+  margin-bottom: 20px;
+}
+.array_supportText {
+  display: flex;
+  gap: 20px;
+}
+.fieldArray {
+  display: inline-block;
+  width: 200px;
+  height: 150px;
+  overflow: auto;
+  margin-bottom: 20px;
+}
+.singleDev_btn {
+  display: flex;
+  justify-content: space-between;
+  padding: 5px;
+}
+.devBtn {
+  width: 35px;
+  display: flex;
+  justify-content: center;
+  margin-bottom: 20px;
+  color: white;
+  background-color: #556cd6;
+  border-radius: 5px;
+}
+
+/*-- other arrays */
+.restArray {
+  overflow: auto;
+}
+
+/* Other css*/
+.edit_delete_btn {
+  display: flex;
+  height: fit-content;
+  gap: 10px;
+}
+.editBtn {
+  width: 35px;
+  display: flex;
+  justify-content: center;
+  margin-bottom: 20px;
+  color: white;
+  background-color: #556cd6;
+  border-radius: 5px;
+}
