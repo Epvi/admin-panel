@@ -21,6 +21,8 @@ import { PremiseRoomsStateProvider } from "../auth/premiseRoomsReducer";
 import { TrackingLogsStateProvider } from "../auth/trackingLogsReducer";
 import { SchedulesStateProvider } from "../auth/scheduleReducer";
 import { SmifiInfoStateProvider } from "../auth/smifiReducer";
+import { CouponsProvider } from "../auth/couponsReducer";
+import { RoomProvider } from "../auth/RoomsDataReducer";
 // Client-side cache, shared for the whole session of the user in the browser.
 const clientSideEmotionCache = createEmotionCache();
 
@@ -43,23 +45,27 @@ export default function MyApp(props) {
               <TotalUserProvider>
                 <DeviceProvider>
                   <RoomPinsProvider>
-                    <SubStateProvider>
-                      <UserInformationStateProvider>
-                        <PremiseUserStateProvider>
-                          <PremiseRoomsStateProvider>
-                            <TrackingLogsStateProvider>
-                              <SchedulesStateProvider>
-                                <SmifiInfoStateProvider>
-                                  {/* <Layout userRole={userRole}> */}
-                                  {/* {getLayout(<Component {...pageProps} />)} */}
-                                  <Component {...pageProps} />
-                                </SmifiInfoStateProvider>
-                              </SchedulesStateProvider>
-                            </TrackingLogsStateProvider>
-                          </PremiseRoomsStateProvider>
-                        </PremiseUserStateProvider>
-                      </UserInformationStateProvider>
-                    </SubStateProvider>
+                    <RoomProvider>
+                      <SubStateProvider>
+                        <UserInformationStateProvider>
+                          <PremiseUserStateProvider>
+                            <PremiseRoomsStateProvider>
+                              <TrackingLogsStateProvider>
+                                <SchedulesStateProvider>
+                                  <SmifiInfoStateProvider>
+                                    <CouponsProvider>
+                                      {/* <Layout userRole={userRole}> */}
+                                      {/* {getLayout(<Component {...pageProps} />)} */}
+                                      <Component {...pageProps} />
+                                    </CouponsProvider>
+                                  </SmifiInfoStateProvider>
+                                </SchedulesStateProvider>
+                              </TrackingLogsStateProvider>
+                            </PremiseRoomsStateProvider>
+                          </PremiseUserStateProvider>
+                        </UserInformationStateProvider>
+                      </SubStateProvider>
+                    </RoomProvider>
                   </RoomPinsProvider>
                 </DeviceProvider>
               </TotalUserProvider>
