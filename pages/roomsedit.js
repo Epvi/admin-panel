@@ -4,6 +4,7 @@ import { database } from "../firebaseConfig";
 import {
   doc,
   getDocs,
+  getDoc,
   setDoc,
   collection,
   updateDoc,
@@ -18,7 +19,6 @@ import Button from "@mui/material/Button";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 import AddBoxIcon from "@mui/icons-material/AddBox";
-import Backdrop from "@mui/material/Backdrop";
 import Box from "@mui/material/Box";
 import Modal from "@mui/material/Modal";
 import Fade from "@mui/material/Fade";
@@ -28,7 +28,8 @@ import DialogContent from "@mui/material/DialogContent";
 import DialogContentText from "@mui/material/DialogContentText";
 import { Dropdown, css } from "@nextui-org/react";
 
-import { getData, useRoomData } from "../auth/RoomsDataReducer";
+import { getData, useUserInformation } from "../auth/informationReducer";
+import { getRoomData, useRoomData } from "../auth/RoomsDataReducer";
 import Layout from "../components/Layout";
 import { withProtected } from "../src/hooks/routes";
 
@@ -47,7 +48,34 @@ const style = {
 };
 
 const CouponsPage = () => {
+  const { userInformationState, userInformationDispatch } =
+    useUserInformation();
+  const [userNumber, setUserNumber] = useState(null);
+  const userInformation = {};
+  let uid = userInformationState.userInformation
+    ? userInformationState.userInformation.uid
+    : null;
+  let totalRooms = userInformationState.userInformation
+    ? userInformationState.userInformation.nRooms
+    : null;
+
+  const findUserHandler = async (e) => {
+    e.preventDefault();
+    let userN = parseInt(userNumber);
+    console.log(userN);
+    if (userNumber.length == 10) {
+      await getData(userInformationDispatch, userInformation, userN);
+    } else {
+      alert("Enter Valid Phone Number");
+    }
+    setOpenFindUserModal(false);
+    setOpenAddRoomModal(true);
+  };
+  const [openFindUserModal, setOpenFindUserModal] = useState(false);
+
+  // ----------------------- rooms Data Starts from here ------------------
   const { roomState, roomDispatch } = useRoomData();
+
   const [reload, setReload] = useState(false);
   const [cleanDisplay, setCleanDisplay] = useState(false);
 
@@ -186,11 +214,34 @@ const CouponsPage = () => {
       return;
     }
     try {
-      const docRef = doc(database, "Rooms", selectedDoc);
-      await deleteDoc(docRef);
-      setCleanDisplay(true);
+      const userRef = doc(database, "Users", uid);
+      const userSnap = await getDoc(userRef);
+      const nr = userSnap.data().nRooms;
+      const lastRoomRef = doc(database, "Rooms", `${uid}_${nr}`);
+      const lastRoomSnap = await getDoc(lastRoomRef);
+      const lastRoomData = lastRoomSnap.data();
+
+      const str = selectedDoc;
+      const parts = str.split("_");
+      const position = parseInt(parts[1]);
+
+      // console.log("User UID: ", uid);
+      // console.log("Selected room number: ", position);
+      // console.log("Room that will be deleted: ", nr);
+
+      if (lastRoomData) {
+        const targetRoomRef = doc(database, "Rooms", `${uid}_${position}`);
+        await updateDoc(targetRoomRef, lastRoomData);
+        await deleteDoc(lastRoomRef);
+        const newNr = nr - 1;
+        await updateDoc(userRef, {
+          nRooms: newNr,
+        });
+      } else {
+        return;
+      }
     } catch (error) {
-      console.log(error);
+      return Promise.reject(error.toString());
     }
     resetModal();
     resetVal();
@@ -238,15 +289,22 @@ const CouponsPage = () => {
       alert("Please enter the field name!");
       return;
     }
-    const newDocRef = doc(collection(database, "Rooms"));
+    const colRef = collection(database, "Rooms");
+    const roomDocId = `${uid}_${totalRooms + 1}`;
+    // console.log(roomDocId);
     try {
-      await setDoc(newDocRef, { name: newVal, smifi: [], uid: newDocRef.id });
+      const myDocument = doc(colRef, roomDocId);
+      await setDoc(myDocument, { name: newVal, smifi: [], uid: uid });
+      // update the user nRooms field
+      await updateDoc(doc(database, "Users", uid), {
+        nRooms: totalRooms + 1,
+      });
     } catch (error) {
       console.log(error);
     }
     resetModal();
     resetVal();
-    setSelectedDoc(newDocRef.id);
+    setSelectedDoc(roomDocId);
   };
   const handleAddValueToField = async (e) => {
     e.preventDefault();
@@ -319,7 +377,7 @@ const CouponsPage = () => {
       async function getMarker() {
         if (selectedDoc != "") {
           try {
-            await getData(roomDispatch, selectedDoc);
+            await getRoomData(roomDispatch, selectedDoc);
           } catch (error) {
             console.log(error);
           }
@@ -369,7 +427,10 @@ const CouponsPage = () => {
                   color: "white",
                   cursor: "pointer",
                 }}
-                onClick={() => setOpenAddRoomModal(true)}
+                onClick={() => {
+                  setOpenFindUserModal(true);
+                  // setOpenAddRoomModal(true);
+                }}
               />
             </div>
             {docList?.map((el, index) => {
@@ -753,6 +814,21 @@ const CouponsPage = () => {
         <Fade in={openAddRoomModal}>
           <Box sx={style}>
             <form onSubmit={handleAddNewRoom}>
+              <label>User UID</label>
+              <input
+                readonly
+                value={uid}
+                style={{
+                  border: "none",
+                  outline: "none",
+                  width: "100%",
+                  border: "none",
+                  padding: "15px",
+                  paddingLeft: "20px",
+                  backgroundColor: "#D9D9D9",
+                  fontSize: "17px",
+                }}
+              />
               <label htmlFor="roomName">Room Name</label>
               <input
                 id="roomName"
@@ -874,6 +950,46 @@ const CouponsPage = () => {
                 type="submit"
               >
                 Delete
+              </Button>
+            </form>
+          </Box>
+        </Fade>
+      </Modal>
+      {/* findUser modal */}
+      <Modal
+        aria-labelledby="transition-modal-title"
+        aria-describedby="transition-modal-description"
+        open={openFindUserModal}
+        onClose={() => setOpenFindUserModal(false)}
+        closeAfterTransition
+      >
+        <Fade in={openFindUserModal}>
+          <Box sx={style}>
+            <form onSubmit={findUserHandler}>
+              <label htmlFor="userNumber">Phone number</label>
+              <input
+                id="userNumber"
+                placeholder="User number to add new room"
+                onChange={(e) => setUserNumber(e.target.value)}
+                style={{
+                  width: "100%",
+                  border: "none",
+                  padding: "15px",
+                  paddingLeft: "20px",
+                  backgroundColor: "#D9D9D9",
+                  fontSize: "17px",
+                }}
+              />
+              <Button
+                variant="contained"
+                style={{
+                  marginTop: "10px",
+                  width: "100%",
+                  cursor: "pointer",
+                }}
+                type="submit"
+              >
+                Submit
               </Button>
             </form>
           </Box>
