@@ -12,7 +12,7 @@ function userReducer(roomState, action) {
   }
 }
 
-async function getData(roomDispatch, selectedDoc) {
+async function getRoomData(roomDispatch, selectedDoc) {
   let roomData = {};
   roomDispatch({ type: "GETTING", payload: {} });
   const docRef = doc(database, "Rooms", selectedDoc);
@@ -47,4 +47,4 @@ function useRoomData() {
   return context;
 }
 
-export { RoomProvider, useRoomData, getData };
+export { RoomProvider, useRoomData, getRoomData };

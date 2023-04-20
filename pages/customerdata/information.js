@@ -53,6 +53,9 @@ const Information = () => {
   const [profileImage, setProfileImage] = useState("");
   const [openProfileImage, setOpenProfileImage] = useState(false);
 
+  const [numRooms, setNumRooms] = useState(null);
+  const [openNumRooms, setOpenNumRooms] = useState(false);
+
   const { asPath, pathname } = useRouter();
   const styling = {
     backgroundColor: "#556cd6",
@@ -153,6 +156,19 @@ const Information = () => {
       alert("Please provide a proper URL!");
     }
     setOpenProfileImage(false);
+  };
+
+  const handleRoomNumChange = async (e) => {
+    e.preventDefault();
+    const newRoomNumber  = parseInt(numRooms);
+    if (numRooms != "" && numRooms != null) {
+      await updateDoc(doc(database, "Users", uid), {
+        nRooms: newRoomNumber,
+      });
+    } else {
+      alert("Please provide number of rooms!");
+    }
+    setOpenNumRooms(false);
   };
 
   return (
@@ -642,6 +658,81 @@ const Information = () => {
                             id="oldImage"
                             placeholder="Enter new image url"
                             onChange={(e) => setProfileImage(e.target.value)}
+                            style={{
+                              // marginLeft: "1vw",
+                              width: "100%",
+                              border: "none",
+                              padding: "15px",
+                              paddingLeft: "20px",
+                              backgroundColor: "#D9D9D9",
+                              fontSize: "17px",
+                            }}
+                          />
+                          <Button
+                            variant="contained"
+                            style={{ marginTop: "10px", width: "100%" }}
+                            type="submit"
+                          >
+                            Submit
+                          </Button>
+                        </form>
+                      </Box>
+                    </Fade>
+                  </Modal>
+                  {/* n - Rooms */}
+                  <p>
+                    Number of Rooms :&nbsp;{" "}
+                    <input
+                      type="text"
+                      value={
+                        userInformationState.userInformation
+                          ? userInformationState.userInformation.nRooms
+                          : ""
+                      }
+                      readOnly
+                      style={{
+                        marginLeft: "1vw",
+                        width: "auto",
+                        border: "none",
+                        padding: "15px",
+                        paddingLeft: "20px",
+                        cursor: "pointer",
+                        backgroundColor: "#D9D9D9",
+                      }}
+                    />
+                    <EditIcon
+                      onClick={() => {
+                        setOpenNumRooms(true);
+                      }}
+                      sx={{
+                        marginLeft: "6px",
+                        padding: "3px",
+                        cursor: "pointer",
+                        backgroundColor: "black",
+                        color: "white",
+                        cursor: "pointer",
+                      }}
+                    />
+                  </p>
+                  <Modal
+                    aria-labelledby="transition-modal-title"
+                    aria-describedby="transition-modal-description"
+                    open={openNumRooms}
+                    onClose={() => setOpenNumRooms(false)}
+                    closeAfterTransition
+                    BackdropComponent={Backdrop}
+                    BackdropProps={{
+                      timeout: 500,
+                    }}
+                  >
+                    <Fade in={openNumRooms}>
+                      <Box sx={style}>
+                        <form onSubmit={handleRoomNumChange}>
+                          <input
+                            id="oldRooms"
+                            type="number"
+                            placeholder="Enter number of rooms..."
+                            onChange={(e) => setNumRooms(e.target.value)}
                             style={{
                               // marginLeft: "1vw",
                               width: "100%",
